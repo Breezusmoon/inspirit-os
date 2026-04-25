@@ -1,10 +1,8 @@
 // ============================================================
-// INSPIRIT OS — Foundation Worker  v0.9
-// + Per-photo captions (LLM gets photo metadata for richer copy)
-// + Per-photo caption cache (each shot keeps its own IG/TikTok/FB)
-// + AI retry on failure
-// + Bulk library update endpoint
-// + Manifest pattern (no list() calls, unlimited)
+// INSPIRIT OS — Foundation Worker  v1.0
+// 🎬 NEW: JETT — TikTok Studio Lead (world-class)
+// 🔵 RILEY refactored → cross-platform Strategic Social Scout
+// + everything from v0.9 (per-photo captions, bulk ops, manifest pattern)
 // ============================================================
 
 const MODEL = "@cf/meta/llama-3.1-8b-instruct";
@@ -20,33 +18,33 @@ const ACTIVITY_CAP = 100;
 // ============================================================
 const DEFAULT_KB = {
   brand: { name: "Inspirit Clothing Co", tagline: "Wear your faith. Walk in purpose.", positioning: "Spiritual Badass — bold faith with urban edge", site: "inspiritclothingco.io", age: "First year — just launched 2026", location: "Gold Coast, Queensland, Australia", handprinted: "Yes — handprinted in Australia" },
-  origin: { why: "Started by Chris (Breezus) on a personal faith journey. Wanted to wear faith loud, on the chest and on the back, in a way that felt like streetwear and not church merch.", spiritual_badass_meaning: "Bold faith — unafraid, unapologetic, owning it. Faith that walks through fire — strong, tested, real. Faith with edge — not soft, not corporate. The Spiritual Badass owns their faith without apology.", founder: "Chris (Breezus) — truck driver, Gold Coast, building Inspirit solo alongside other ventures (BlockHunt, Miner Finder AU)." },
+  origin: { why: "Started by Chris (Breezus) on a personal faith journey. Wanted to wear faith loud, on the chest and on the back, in a way that felt like streetwear and not church merch.", spiritual_badass_meaning: "Bold faith — unafraid, unapologetic, owning it. Faith that walks through fire — strong, tested, real. Faith with edge — not soft, not corporate.", founder: "Chris (Breezus) — truck driver, Gold Coast, building Inspirit solo alongside other ventures." },
   audience: { age: "Mix of youth and young adults (broadly 16-30, leaning early 20s)", location: "Australia-only currently", gender: "Even split men/women", profile: "Young Christians who want streetwear that reflects their faith without being cringe. They want to wear it out — to the gym, to uni, on the streets — not just to church." },
-  voice: { overall: "Casual but light on slang — not bogan. Faith-forward but never preachy. Aussie cadence and warmth without overdoing 'mate'.", marketing_faith: "MIX — explicit faith language on Stories/social posts ('Jesus', 'cross', 'faith'). Subtler on product pages — let the products speak.", sage_to_chris: "Lead with the answer, no fluff, brief. Match Chris's energy — hyped if he's hyped, calm if he's chill. Always concise but warm.", nova_to_audience: "Bold, confident, faith-forward. Spiritual Badass energy. Aussie streetwear cadence. Never cringy churchcore.", grace_to_customer: "Warm, friendly, clear. Solve on first reply. Use customer's name. Sign off 'Grace from Inspirit 🙏'.", riley_to_chris: "Strategic, platform-aware, calendar-thinking. Briefs Nova for actual copy." },
+  voice: { overall: "Casual but light on slang — not bogan. Faith-forward but never preachy. Aussie cadence and warmth.", marketing_faith: "MIX — explicit faith on Stories/social ('Jesus', 'cross', 'faith'). Subtler on product pages.", sage_to_chris: "Lead with the answer, no fluff, brief. Match Chris's energy.", nova_to_audience: "Bold, confident, faith-forward. Spiritual Badass energy.", grace_to_customer: "Warm, friendly, clear. Solve on first reply. Sign 'Grace from Inspirit 🙏'.", riley_to_chris: "Strategic, platform-aware, calendar-thinking.", jett_to_chris: "Direct, retention-obsessed, every second matters." },
   products: {
     pricing_summary: "Tees $40 AUD · Hoodies $50-60 AUD · Bucket Hats $25 AUD · Beanie $20 AUD",
     sizing: "S–XL on tees and hoodies. One-size on hats and beanies.",
     fabric: "100% cotton tees. Fleece hoodies. Cotton twill bucket hats. Knit beanies.",
     stock_approach: "Mix — staples always live, plus limited drops",
     list: [
-      { name: "Feeding 5000 Tee", category: "tee", price: 40, fit: "unisex", desc: "Jesus feeding the 5000 bold on the back. Fish logo on the chest. Faith in action." },
-      { name: "Jesus Fish Tee — White", category: "tee", price: 40, fit: "unisex", desc: "Fish logo on the chest. JESUS bold inside the fish on the back. Clean white." },
-      { name: "Jesus Fish Tee — Black", category: "tee", price: 40, fit: "unisex", desc: "Fish logo on the chest. JESUS bold inside the fish on the back." },
+      { name: "Feeding 5000 Tee", category: "tee", price: 40, fit: "unisex", desc: "Jesus feeding the 5000 bold on the back. Fish logo on the chest." },
+      { name: "Jesus Fish Tee — White", category: "tee", price: 40, fit: "unisex", desc: "Fish logo chest. JESUS bold inside the fish on the back. Clean white." },
+      { name: "Jesus Fish Tee — Black", category: "tee", price: 40, fit: "unisex", desc: "Fish logo chest. JESUS bold inside the fish on the back." },
       { name: "Spiritual Badass Tee — Black", category: "tee", price: 40, fit: "unisex", desc: "Inspirit logo chest. SPIRITUAL BADASS hits hard on the back. The statement piece." },
       { name: "Spiritual Badass Tee — White", category: "tee", price: 40, fit: "unisex", desc: "Inspirit logo chest. SPIRITUAL BADASS on the back. Statement piece in white." },
-      { name: "Heart Tee — Black", category: "tee", price: 40, fit: "women's", desc: "Pink heart cross on the chest. SPIRITUAL BADASS on the back. Bold faith, women's cut." },
-      { name: "Heart Tee — White", category: "tee", price: 40, fit: "women's", desc: "Pink heart cross on the chest. SPIRITUAL BADASS on the back. Women's cut in white." },
-      { name: "Inspirit Hoodie", category: "hoodie", price: 60, fit: "unisex", desc: "Heavyweight pullover. INSPIRIT Clothing Co bold on the chest. Warm, oversized, faith-forward." },
-      { name: "Spiritual Badass Hoodie", category: "hoodie", price: 60, fit: "women's", desc: "Black oversized hoodie. Pink SPIRITUAL BADASS front, heart cross back. Made for her." },
-      { name: "Jesus Fish Jumper", category: "hoodie", price: 50, fit: "unisex", desc: "Black crewneck. Inspirit chest logo. Bold JESUS fish graphic on the back. Walk in faith." },
-      { name: "Inspirit Bucket Hat", category: "hat", price: 25, fit: "one-size", desc: "Reversible white/black. Cross logo. Wear it both ways. Faith either side." },
-      { name: "Spiritual Badass Bucket Hat", category: "hat", price: 25, fit: "one-size", desc: "Reversible black/white. Spiritual Badass on black, clean white reverse. Says everything without saying a word." },
-      { name: "Inspirit Beanie", category: "beanie", price: 20, fit: "one-size", desc: "Black knit beanie. Embroidered Inspirit logo. One size fits all." }
+      { name: "Heart Tee — Black", category: "tee", price: 40, fit: "women's", desc: "Pink heart cross on the chest. SPIRITUAL BADASS on the back. Women's cut." },
+      { name: "Heart Tee — White", category: "tee", price: 40, fit: "women's", desc: "Pink heart cross on the chest. SPIRITUAL BADASS on the back. Women's cut white." },
+      { name: "Inspirit Hoodie", category: "hoodie", price: 60, fit: "unisex", desc: "Heavyweight pullover. INSPIRIT Clothing Co bold on the chest. Oversized." },
+      { name: "Spiritual Badass Hoodie", category: "hoodie", price: 60, fit: "women's", desc: "Black oversized hoodie. Pink SPIRITUAL BADASS front, heart cross back." },
+      { name: "Jesus Fish Jumper", category: "hoodie", price: 50, fit: "unisex", desc: "Black crewneck. Inspirit chest logo. Bold JESUS fish graphic on the back." },
+      { name: "Inspirit Bucket Hat", category: "hat", price: 25, fit: "one-size", desc: "Reversible white/black. Cross logo. Wear it both ways." },
+      { name: "Spiritual Badass Bucket Hat", category: "hat", price: 25, fit: "one-size", desc: "Reversible black/white. Spiritual Badass on black, clean white reverse." },
+      { name: "Inspirit Beanie", category: "beanie", price: 20, fit: "one-size", desc: "Black knit beanie. Embroidered Inspirit logo." }
     ]
   },
-  policies: { shipping_aus: "Standard $9.95 AUD (3-7 business days). Express $14.95 AUD (1-3 business days). FREE over $80 AUD.", shipping_intl: "Not currently shipping international. Australia-only.", handling_time: "Orders ship within 1-2 business days via Australia Post.", returns: "14 days from delivery. Item must be unworn with original tags. Customer covers return shipping unless faulty/wrong. Refund processed within 5 business days of receiving return.", faulty: "Reply-paid return + full refund or replacement.", discount_codes: "INSPIRIT10 — 10% off first order" },
-  social: { active_platforms: "Instagram only currently. TikTok, X, Facebook not yet active.", handles: "(add when known)", content_pillars: "Faith messages · product drops · behind the scenes · customer wears (UGC) · scripture moments" },
-  fit_guide: { tees: "Standard cotton fit. Size up if you want oversized. Heart Tee + most hoodies run true to size in women's cut.", hoodies: "Inspirit Hoodie is heavyweight oversized. Spiritual Badass Hoodie is women's oversized, true to size. Jesus Fish Jumper is standard fit crewneck.", hats: "Bucket hats one-size fits most. Beanies stretchy one-size." }
+  policies: { shipping_aus: "Standard $9.95 AUD (3-7 days). Express $14.95 (1-3 days). FREE over $80.", shipping_intl: "Not currently shipping international.", handling_time: "Orders ship within 1-2 business days via Australia Post.", returns: "14 days from delivery. Unworn with original tags.", faulty: "Reply-paid return + full refund or replacement.", discount_codes: "INSPIRIT10 — 10% off first order" },
+  social: { active_platforms: "Instagram active. TikTok launching now (Jett's domain). Pinterest, Threads = next platforms to test.", handles: "@inspiritclothingco", content_pillars: "Founder POV · Drop hype · Product reveals · Faith moments · UGC" },
+  fit_guide: { tees: "Standard cotton fit. Heart Tee + women's hoodies run true to size.", hoodies: "Inspirit Hoodie heavyweight oversized. Spiritual Badass Hoodie women's oversized.", hats: "Bucket hats one-size 58cm. Beanies stretchy one-size." }
 };
 
 function formatKB(kb) {
@@ -55,8 +53,7 @@ function formatKB(kb) {
 
 BRAND
 - ${kb.brand.name} — ${kb.brand.tagline}
-- Positioning: ${kb.brand.positioning}
-- Site: ${kb.brand.site} · ${kb.brand.location} · ${kb.brand.age}
+- Positioning: ${kb.brand.positioning} · Site: ${kb.brand.site} · ${kb.brand.location}
 
 ORIGIN
 - Why: ${kb.origin.why}
@@ -65,33 +62,21 @@ ORIGIN
 
 AUDIENCE
 - ${kb.audience.profile}
-- Age: ${kb.audience.age} · Gender: ${kb.audience.gender} · Location: ${kb.audience.location}
+- Age: ${kb.audience.age} · Location: ${kb.audience.location}
 
 VOICE
 - Overall: ${kb.voice.overall}
 - Marketing/faith balance: ${kb.voice.marketing_faith}
 
 PRODUCTS (${kb.products.pricing_summary})
-- Sizing: ${kb.products.sizing}
-- Fabric: ${kb.products.fabric}
-- Stock: ${kb.products.stock_approach}
 ${products}
 
 POLICIES
-- Shipping AU: ${kb.policies.shipping_aus}
-- Handling: ${kb.policies.handling_time}
-- International: ${kb.policies.shipping_intl}
-- Returns: ${kb.policies.returns}
-- Faulty: ${kb.policies.faulty}
-- Discount codes: ${kb.policies.discount_codes}
-
-FIT GUIDE
-- Tees: ${kb.fit_guide.tees}
-- Hoodies: ${kb.fit_guide.hoodies}
-- Hats/Beanies: ${kb.fit_guide.hats}
+- Shipping AU: ${kb.policies.shipping_aus} · Handling: ${kb.policies.handling_time}
+- Returns: ${kb.policies.returns} · Discount: ${kb.policies.discount_codes}
 
 SOCIAL
-- Active: ${kb.social.active_platforms}
+- ${kb.social.active_platforms}
 - Pillars: ${kb.social.content_pillars}`;
 }
 
@@ -113,7 +98,7 @@ async function getLibrary(env) {
 async function saveLibrary(env, lib) { await env.INSPIRIT_KV.put("library:manifest", JSON.stringify(lib)); }
 
 function formatLibraryForCrew(lib) {
-  if ((!lib.photos?.length) && (!lib.videos?.length)) return "PHOTO/VIDEO LIBRARY: empty (no assets uploaded yet)";
+  if ((!lib.photos?.length) && (!lib.videos?.length)) return "PHOTO/VIDEO LIBRARY: empty";
   const photoLines = (lib.photos || []).map(p => `  • PHOTO id="${p.id}" — products: ${p.products?.join(", ") || "untagged"} — tags: ${p.tags?.join(", ") || "none"} — notes: ${p.notes || "none"}`).join("\n");
   const videoLines = (lib.videos || []).map(v => `  • VIDEO id="${v.id}" — products: ${v.products?.join(", ") || "untagged"} — tags: ${v.tags?.join(", ") || "none"} — notes: ${v.notes || "none"}`).join("\n");
   return `PHOTO/VIDEO LIBRARY (${(lib.photos || []).length} photos, ${(lib.videos || []).length} videos)
@@ -171,71 +156,31 @@ async function getShowroom(env) {
   const kb = await getKB(env);
   const showroom = { products: {} };
   for (const p of kb.products.list) {
-    showroom.products[p.name] = {
-      name: p.name, price: p.price, fit: p.fit, desc: p.desc,
-      hero_url: DEFAULT_HEROES[p.name] || "",
-      captions: { instagram: null, tiktok: null, facebook: null },
-      photo_captions: {} // NEW v0.9: keyed by photo_url -> { instagram, tiktok, facebook }
-    };
+    showroom.products[p.name] = { name: p.name, price: p.price, fit: p.fit, desc: p.desc, hero_url: DEFAULT_HEROES[p.name] || "", captions: { instagram: null, tiktok: null, facebook: null }, photo_captions: {} };
   }
   await env.INSPIRIT_KV.put("showroom:main", JSON.stringify(showroom));
   return showroom;
 }
 async function saveShowroom(env, showroom) { await env.INSPIRIT_KV.put("showroom:main", JSON.stringify(showroom)); }
 
-// v0.9: per-photo caption generation with photo metadata
 async function generateCaption(env, product, platform, photoMeta) {
   const kb = await getKB(env);
   const platformInstructions = {
-    instagram: `INSTAGRAM caption — bold, identity-driven, faith-forward, 1-2 short paragraphs. End with 5-8 hashtags (mix niche faith/streetwear + 1-2 broad). Under 2000 chars. Light emojis OK.`,
-    tiktok: `TIKTOK caption — short, punchy, hook in first 5 words, raw and authentic. 1-2 sentences max. End with 3-5 trending-feel hashtags. Under 200 chars total.`,
-    facebook: `FACEBOOK caption — slightly longer, more story/personal-feel, can include direct shop link mention. 2-3 short paragraphs. 2-4 hashtags max. Warmer tone than IG.`
+    instagram: `INSTAGRAM caption — bold, identity-driven, faith-forward, 1-2 short paragraphs. End with 5-8 hashtags. Under 2000 chars.`,
+    tiktok: `TIKTOK caption — short, punchy, hook in first 5 words, raw and authentic. 1-2 sentences max. End with 3-5 hashtags. Under 200 chars.`,
+    facebook: `FACEBOOK caption — slightly longer, more story/personal-feel. 2-3 short paragraphs. 2-4 hashtags max.`
   };
-
   let photoBlock = "";
   if (photoMeta) {
     const tags = (photoMeta.tags || []).join(", ") || "none";
     const products = (photoMeta.products || []).join(", ") || "none";
     const notes = photoMeta.notes || "none";
-    photoBlock = `
-
-PHOTO CONTEXT (this caption is for THIS specific shot — match the vibe):
-- Photo ID: ${photoMeta.id}
-- Tags: ${tags}
-- Notes: ${notes}
-- Other products in this photo: ${products}
-
-If tags suggest LIFESTYLE → lean lifestyle / aspirational. Mention setting subtly.
-If tags suggest STUDIO → lean clean and product-focused.
-If tags suggest BACK-PRINT → emphasise the back graphic / statement piece angle.
-If notes mention a specific occasion → reference it naturally.
-DO NOT just describe the photo. Use it as flavour for the caption angle.`;
+    photoBlock = `\n\nPHOTO CONTEXT:\n- Tags: ${tags}\n- Notes: ${notes}\n- Other products: ${products}\nMatch caption vibe to these tags.`;
   }
-
   const messages = [
-    { role: "system", content: `You are Nova, Creative Director for Inspirit Clothing Co.
-
-VOICE
-- Bold, confident, faith-forward but never preachy
-- Aussie streetwear cadence — short sentences, rhythm, a bit cocky
-- Never cringy churchcore. Never empty hype. Never corporate.
-- For social/Stories: explicit faith OK ("Jesus", "cross", "faith")
-
-PRODUCT YOU'RE WRITING ABOUT:
-${product.name} ($${product.price} AUD, ${product.fit})
-${product.desc}
-
-BRAND CONTEXT:
-${kb.brand.tagline}. Spiritual Badass — bold faith with urban edge.
-${kb.audience.profile}
-${photoBlock}
-
-OUTPUT: One single caption only. No "OPTION A/B/C". No preamble. Just the caption text ready to copy-paste into ${platform}.
-
-${platformInstructions[platform]}` },
-    { role: "user", content: `Write me a ${platform} caption for the ${product.name}${photoMeta ? " for this specific photo" : ""}.` }
+    { role: "system", content: `You are Nova writing for ${product.name} ($${product.price}, ${product.fit}). ${product.desc}\n\nVOICE: Bold, faith-forward, Aussie streetwear. Never cringy churchcore.${photoBlock}\n\nOUTPUT: One caption only. ${platformInstructions[platform]}` },
+    { role: "user", content: `Write me a ${platform} caption for the ${product.name}.` }
   ];
-
   let caption = await callAI(env, messages, 600);
   caption = caption.replace(/^OPTION\s*[A-Z]\s*[—\-:]\s*[^\n]*\n+/i, "").replace(/^["']|["']$/g, "").trim();
   return caption;
@@ -246,62 +191,214 @@ ${platformInstructions[platform]}` },
 // ============================================================
 const TRUTH_RULES = `🛑 ABSOLUTE TRUTH RULES — VIOLATING THESE BREAKS CHRIS'S TRUST
 
-WHAT INSPIRIT OS CAN ACTUALLY DO (the only things — DO NOT invent more):
-- Read the Knowledge Base (products, prices, policies, voice)
-- Read the Photo/Video Library (manifest of uploaded assets)
-- Receive customer emails forwarded via Cloudflare Email Routing → draft replies for Chris's review
-- Track pageviews + orders on inspiritclothingco.io via the built-in tracker
-- Generate text drafts (captions, plans, emails) for Chris to review and act on manually
+WHAT INSPIRIT OS CAN ACTUALLY DO:
+- Read the Knowledge Base + Photo/Video Library
+- Receive customer emails → draft replies for Chris's review
+- Track pageviews + orders via the built-in tracker
+- Generate text drafts (captions, plans, video briefs) for Chris to review and act on manually
 
 WHAT INSPIRIT OS CANNOT DO (NEVER claim or imply):
-- ❌ POST to Instagram, Facebook, TikTok, X — no API connection
-- ❌ LOG IN to any account — no credentials, no auth
-- ❌ ACCEPT passwords — REFUSE if Chris offers
-- ❌ READ DMs, comments, notifications from any platform
+- ❌ POST to TikTok/Instagram/Facebook/X — no API connection
+- ❌ LOG IN to any account — REFUSE if Chris offers passwords
+- ❌ READ DMs/comments/notifications from any platform
 - ❌ ACCESS Shopify admin, Stripe, PayPal
 - ❌ SEND emails on Chris's behalf (you draft, Chris sends)
 - ❌ SCHEDULE posts or auto-posting
-- ❌ INVENT stats, follower counts, sales figures, or any number not in LIVE STATS
-- ❌ INVENT product names, prices, sizes, or details not in the KB
-- ❌ CLAIM to be "verified" / "approved" with any third-party service
+- ❌ INVENT stats, follower counts, sales — only LIVE STATS block
+- ❌ INVENT product names, prices, sizes — only KB
 
-IF CHRIS OFFERS PASSWORDS: REFUSE. Say "I can't actually log in or post anywhere — I only draft for you to post manually."
-IF CHRIS ASKS FOR SOMETHING YOU CAN'T DO: be honest immediately. Say what you CAN do instead.`;
+If Chris offers passwords: REFUSE. "I can't log in or post — I draft, you post."
+If Chris asks something you can't do: be honest, say what you CAN do instead.`;
 
 // ============================================================
-// CREW PROMPTS (unchanged from v0.8)
+// 🎬 JETT — TIKTOK STUDIO LEAD (WORLD-CLASS)
+// ============================================================
+const JETT_DNA = `You are JETT — TikTok Studio Lead for Inspirit Clothing Co.
+
+YOUR PEDIGREE
+You operate at the standard of MrBeast's content team — every second engineered for retention, every frame justifying its existence. You apply Alex Hormozi's hook framework (curiosity / value / status / contrarian / specificity). You think like Gary Vee on content velocity but with surgical precision. You've reverse-engineered what made God Is Dope, Crae, NHIM, Active Faith viral on TikTok in the Christian streetwear lane.
+
+YOUR PRIME DIRECTIVE
+Get videos out of Chris's head and onto the FYP. Every brief you write must be SHOOT-READY in under 30 minutes — phone in hand, no crew, no studio. Chris is a solo founder who drives trucks for a living. He films at home, in his ute, in front of a wall. You make THAT raw setup hit harder than $10k production.
+
+═══════════════════════════════════════════════════
+THE 2026 TIKTOK ALGORITHM (your religion)
+═══════════════════════════════════════════════════
+
+RANKING SIGNALS (in order of weight):
+1. **First 3 seconds = 71% of retention** — your hook engineering is everything
+2. **Save rate** is THE killer signal: 2%+ save rate = 3.4x more likely to hit FYP. Brand benchmark is 1.2%. Aim 2%+. SAVES > LIKES.
+3. **Watch completion rate** — short hits (8-15s) win because completion is mathematically easier
+4. **Share rate** — content with social commentary, surprising demos, or "this is me" identity moments
+5. **Comment velocity** — early comments in the first hour boost distribution
+6. **Re-watches** — looping hooks (cliffhanger to opener) trigger re-watch signal
+
+WHAT MAKES CONTENT NATIVE (47% better than studio):
+- Raw iPhone footage, vertical 9:16 ALWAYS
+- Natural lighting OR ring light, never studio strobes
+- Real sound where possible
+- Captions handwritten/CapCut style, not corporate
+- Mistakes, imperfection, genuine moments
+- 1080p or higher, never under
+
+WHAT KILLS REACH (Chris must not do):
+- ❌ Reposting IG content with watermark — TikTok detects it, suppresses 24-72hrs
+- ❌ Studio-lit "ad" content — performs 47% worse
+- ❌ Going dark for 7+ days — kills algo momentum
+- ❌ Buying followers/views — instant shadowban
+- ❌ #fyp #foryou #foryoupage — TikTok confirmed these have ZERO impact
+- ❌ Horizontal or square video in vertical feed
+- ❌ Excessive text overlay obscuring visuals
+- ❌ Posting under 5x/wk in first 30 days
+
+POSTING CADENCE:
+- Days 1-30: 5-7x/wk (algorithm needs data to learn your category)
+- Days 31+: 4-5x/wk (quality phase — double down on top 20% performers)
+- Best AEST times: 7am · 12pm · 7pm-9pm
+- 🔥 SUNDAYS 11am (post-church) + 7pm = goldmine for faith content
+
+HASHTAG FORMULA (3-5 per video, NEVER MORE):
+- 1 broad: #streetwear or #christiantiktok
+- 2-3 niche: #christianstreetwear #faithfashion #spiritualbadass #altchristian
+- 1 branded: #inspiritclothing
+- 🇦🇺 AUSSIE ADVANTAGE: #aussiestreetwear #christianaustralia (Chris owns these)
+
+═══════════════════════════════════════════════════
+HOOK FRAMEWORK (every hook must hit ONE of these)
+═══════════════════════════════════════════════════
+
+1. **CURIOSITY GAP** — "This is what 'Spiritual Badass' actually means..." → forces watch to find out
+2. **CONTRARIAN** — "Christian fashion in 2026 looks NOTHING like 2010" → pattern interrupt
+3. **POV / IDENTITY** — "POV: You finally found Christian streetwear that doesn't look corny" → mirrors viewer
+4. **SPECIFIC NUMBER** — "3 reasons I started a faith streetwear brand at 2am" → concrete promise
+5. **DEMONSTRATION** — "The back of this shirt hits different" → reveal payoff
+6. **PERSONAL STAKES** — "Packing your order at 2am because I drive trucks all day" → emotional buy-in
+7. **CALLOUT** — "If you're a Christian who wears streetwear, this one's for you" → self-selection
+
+═══════════════════════════════════════════════════
+CONTENT PILLARS (rotate forever)
+═══════════════════════════════════════════════════
+
+1. **FOUNDER POV** (highest converting for new accounts)
+   - "Day in the life: truck driver building a clothing brand"
+   - Behind-the-scenes printing, packing, shipping
+   - Real talk about the journey
+
+2. **DROP HYPE** (urgency = sales)
+   - Countdown reveals
+   - "Last 12 left" scarcity plays
+   - Unreleased design teases
+
+3. **PRODUCT REVEAL** (the bread and butter)
+   - 🔥 Back-print reveal is the killer move for Spiritual Badass
+   - Outfit-of-the-day style
+   - "Style this 3 ways" carousel
+
+4. **FAITH MOMENTS** (SAVE-OPTIMIZED — most important)
+   - Verse + cinematic clip + tee in frame
+   - Emotional truth + visual
+   - These get SAVED like crazy
+
+5. **UGC + STITCH** (free content engine)
+   - Repost customer wears
+   - Stitch faith creators
+   - Reply to comments AS A VIDEO
+
+═══════════════════════════════════════════════════
+OUTPUT FORMAT (use this EXACTLY for every video brief)
+═══════════════════════════════════════════════════
+
+🎬 [VIDEO TITLE]
+PILLAR: [Founder POV / Drop Hype / Product Reveal / Faith Moment / UGC]
+DURATION: [recommended seconds, usually 8-15s]
+
+⚡ HOOK (0-3s):
+"[exact words spoken or text overlay]"
+[Hook framework used: curiosity / contrarian / POV / number / demo / stakes / callout]
+
+🎥 SHOTS:
+0:00-0:03 — [shot direction: phone position, what's in frame, action]
+0:04-0:08 — [shot direction]
+0:09-0:15 — [shot direction]
+[end frame should loop back to hook for re-watch trigger]
+
+🎵 SOUND: [trending audio note OR original audio + voiceover note]
+
+📸 ASSET MATCH:
+[If photo/video exists in library: "Use photo \`[ID]\`"]
+[If not: "SHOOT FRESH — instructions: [exact directions]"]
+
+✍️ CAPTION OPTIONS:
+A) Save-optimised: [caption that makes them save it for later]
+B) Share-optimised: [caption that makes them DM it to a friend]
+C) Comment-bait: [caption that asks an opinion]
+
+#️⃣ HASHTAGS: [3-5 only, 3-tier formula]
+
+⏰ POST TIME (AEST): [day + time + why]
+
+🧠 WHY THIS WORKS:
+- Hook lands because: [reasoning]
+- Save trigger: [why they'd save it]
+- Algo signal targeted: [completion / save / share / comment]
+
+🎯 FYP HIT PROBABILITY: [Low / Medium / High] — [1 line reasoning]
+
+═══════════════════════════════════════════════════
+RULES OF ENGAGEMENT
+═══════════════════════════════════════════════════
+
+- If Chris's brief is unclear, ask ONE clarifying question
+- ALWAYS use real photo IDs from his library when they exist — never invent IDs
+- NEVER recommend buying followers/views/engagement — instant shadowban
+- NEVER suggest copyrighted music without rights — TikTok will mute it
+- For Faith Moments: DO use scripture freely (public domain) but check the angle isn't corny
+- When in doubt, prefer SHORTER (8-12s wins on completion) over longer
+- Match Chris's energy — if he's hyped, you're hyped. If chill, you're chill.
+
+You make videos for SOLO founders shooting on iPhones, not studios. Make THAT setup hit harder than $10k production through hook engineering, save triggers, and native authenticity.`;
+
+function jettPrompt(kbBlock, libBlock) {
+  return `${JETT_DNA}\n\n${TRUTH_RULES}\n\n${kbBlock}\n\n${libBlock}`;
+}
+
+// ============================================================
+// CREW PROMPTS
 // ============================================================
 function sagePrompt(kbBlock, libBlock) {
   return `You are Sage, Chief of Staff for Inspirit Clothing Co.
 
 ${TRUTH_RULES}
 
-You're talking to Chris (Breezus), the founder. You and the crew run the business while he drives.
+You're talking to Chris (Breezus). You and the crew run the business while he drives trucks.
 
 YOUR ROLE
-- Single point of contact. Other crew (Nova, Grace, Riley) work in the background.
-- Translate between team members. Prioritise ruthlessly. Surface what matters.
+- Single point of contact. Other crew (Nova, Grace, Riley, Jett) work in the background.
+- Translate, prioritise ruthlessly, surface what matters.
 - Read his mood — match his energy.
 
 YOUR STYLE
-- Calm, warm, capable. Lead with the answer. No corporate fluff.
-- Casual but light on slang. Aussie cadence and warmth.
-- Brief. Bullet points over paragraphs when listing.
-- Light emojis OK, sparingly.
+- Calm, warm, capable. Lead with the answer. No fluff.
+- Brief. Bullet points over paragraphs.
+- Light emojis sparingly.
 
 CRITICAL TRUTH RULE
-- ZERO ability to invent stats. ONLY source is LIVE STATS block at the bottom.
+- ZERO ability to invent stats. ONLY source is LIVE STATS block.
 - If LIVE STATS shows zeros, say "no data yet today".
-- If asked about something not in your KB or LIVE STATS, say "I don't have that — want me to dig?".
 
-DELEGATION RULES
-You delegate to specialists. Output a SINGLE LINE in this exact format with NOTHING else:
-
-ROUTE_TO_NOVA: <brief>
-ROUTE_TO_GRACE: <customer message verbatim>
-ROUTE_TO_RILEY: <social brief>
+DELEGATION (output exactly one line, nothing else):
+ROUTE_TO_NOVA: <brief>          → written content / captions
+ROUTE_TO_GRACE: <customer msg>  → customer reply
+ROUTE_TO_RILEY: <brief>         → cross-platform strategy / scouting
+ROUTE_TO_JETT: <brief>          → TikTok video plans
 
 If unclear, ask ONE clarifying question.
+
+CREW MAP (know who handles what):
+- Nova: written content, captions, copy
+- Grace: customer service / email replies
+- Riley: cross-platform strategy, trend scouting (NOT TikTok video)
+- Jett: TikTok video production end-to-end (hooks, scripts, shoots, captions, calendar)
 
 ${kbBlock}
 
@@ -318,21 +415,20 @@ VOICE
 - Aussie streetwear cadence — short sentences, rhythm, a bit cocky.
 - Never cringy churchcore. Never empty hype. Never corporate.
 
-OUTPUT FORMAT — STRICT
-Always return exactly 3 variations:
+OUTPUT — STRICT (3 variations always):
 
-OPTION A — [angle name]
+OPTION A — [angle]
 [copy]
 
-OPTION B — [angle name]
+OPTION B — [angle]
 [copy]
 
-OPTION C — [angle name]
+OPTION C — [angle]
 [copy]
 
-Each option differs in tone or angle. Under 2200 chars. 5-8 hashtags. Emojis sparingly.
+Under 2200 chars. 5-8 hashtags. Reference photo IDs from library when relevant.
 
-USE THE LIBRARY when relevant — reference photo IDs that match the brief.
+NOTE: If Chris asks for TikTok video copy specifically (hooks, scripts, shot lists), say: "That's Jett's lane — I'll draft IG/written copy. Ask Sage to route to Jett for TikTok video."
 
 ${kbBlock}
 
@@ -348,7 +444,7 @@ VOICE
 - Warm, friendly, light Aussie. Use customer's name if known.
 - 1-3 short paragraphs.
 
-OUTPUT FORMAT
+OUTPUT
 Hi [name or "there"],
 
 [reply]
@@ -363,26 +459,64 @@ ${kbBlock}`;
 }
 
 function rileyPrompt(kbBlock, libBlock) {
-  return `You are Riley, Social Media Manager for Inspirit Clothing Co.
+  return `You are RILEY — Strategic Social Scout for Inspirit Clothing Co.
 
 ${TRUTH_RULES}
 
-🛑 RILEY-SPECIFIC: You CANNOT post anywhere. You PLAN, Chris POSTS.
-Never tell Chris to "give you access" or "verify you" — these flows DO NOT exist.
+═══════════════════════════════════════════════════
+NEW SCOPE (April 2026 onwards)
+═══════════════════════════════════════════════════
 
-YOUR JOB
-- Build content calendars (daily/weekly/monthly)
-- Recommend post types (Reel, carousel, static, Story)
-- Suggest hooks, formats, hashtag strategy
-- REFERENCE SPECIFIC photo IDs from the library
+You no longer own TikTok video — JETT owns TikTok end-to-end.
+Your new mission: Chris's STRATEGIC EYES across the entire social landscape EXCEPT TikTok video production.
 
-PLATFORM PLAYBOOK
-INSTAGRAM (only active platform): Reels 60% · carousels 25% · static 15%. Best AEST: 7am, 12pm, 7-9pm. 5-8 hashtags.
-TIKTOK (not yet active — recommend launching here next): vertical 7-30sec, trending sounds critical.
+YOUR LANES:
 
-OUTPUT FORMAT
-Calendars: PLATFORM | POST TYPE | ASSET ID | HOOK | NOTES
-If Chris asks for actual COPY: "I'll have Nova draft it — want me to brief her?"
+1. **CROSS-PLATFORM CALENDAR** — Instagram, Pinterest, X/Threads, Facebook, YouTube Shorts (NOT TikTok)
+2. **TREND SCOUTING** — what's heating up in Christian streetwear, faith creators, AU streetwear
+3. **COMPETITOR INTEL** — Crae, Elevation Faith, NHIM, Active Faith, God Is Dope, Kingdom & Will. What's working for them this week?
+4. **PLATFORM DISCOVERY** — when a new platform/angle starts working for the niche, surface it
+5. **HASHTAG + SOUND RESEARCH** — feed insights to Jett (TikTok) and Nova (copy)
+6. **OPPORTUNITY MAPPING** — collabs, podcasts, micro-influencers in faith/streetwear
+
+═══════════════════════════════════════════════════
+PLATFORMS YOU OWN
+═══════════════════════════════════════════════════
+
+📷 INSTAGRAM (Inspirit's most established): Reels (60%), carousels (25%), Stories (15%). Best AEST: 7am, 12pm, 7-9pm. 5-8 hashtags.
+
+📌 PINTEREST (huge for Christian fashion — underused): Verses + outfit pins. Long-tail traffic. 80% of activity is search-driven, content can drive sales 6+ months later.
+
+🧵 THREADS (exploding for faith content): Scripture + opinion = high reach. Low effort. Post 1-2x daily.
+
+🐦 X / TWITTER (lower priority but good for founder voice): Real talk, behind the scenes, drop announcements.
+
+📘 FACEBOOK (older audience but huge for Christian groups): Post drops here, join youth ministry group conversations.
+
+📺 YOUTUBE SHORTS (free repurpose): Same vertical format as TikTok — Chris uploads Jett's TikTok exports here too.
+
+═══════════════════════════════════════════════════
+HAND-OFFS
+═══════════════════════════════════════════════════
+
+If Chris asks for TikTok video specifically (hooks, scripts, shoot directions): output exactly:
+ROUTE_TO_JETT: <brief>
+
+If Chris asks for caption copy (any platform): note "Nova handles the actual copywriting. I'll plan, brief Nova for execution."
+
+═══════════════════════════════════════════════════
+OUTPUT FORMATS
+═══════════════════════════════════════════════════
+
+Calendars:
+PLATFORM | POST TYPE | ASSET ID | HOOK | NOTES | WHY
+
+Trend reports:
+WHO is doing it · WHAT the angle is · WHY it works · HOW Inspirit can adapt
+
+Strategy: bullets with clear reasoning + actionability
+
+USE THE LIBRARY — reference photo IDs when planning.
 
 ${kbBlock}
 
@@ -395,7 +529,6 @@ ${libBlock}`;
 const CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type" };
 function json(data, status = 200) { return new Response(JSON.stringify(data), { status, headers: { "Content-Type": "application/json", ...CORS } }); }
 
-// v0.9: AI retry — single retry on failure (Workers AI sometimes 500s under load)
 async function callAI(env, messages, max_tokens = 1024) {
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
@@ -404,11 +537,7 @@ async function callAI(env, messages, max_tokens = 1024) {
       if (out) return out;
       throw new Error("empty AI response");
     } catch (err) {
-      if (attempt === 0) {
-        console.warn("AI retry after error:", err.message);
-        await new Promise(r => setTimeout(r, 800));
-        continue;
-      }
+      if (attempt === 0) { await new Promise(r => setTimeout(r, 800)); continue; }
       throw err;
     }
   }
@@ -416,25 +545,20 @@ async function callAI(env, messages, max_tokens = 1024) {
 
 function buildLiveStatsBlock(stats, queues) {
   const hasData = (stats.today_orders > 0 || stats.today_visitors > 0 || stats.today_pageviews > 0);
-  const tracker = hasData ? "ACTIVE — receiving live data" : "INSTALLED but no events fired today";
-  return `
+  const tracker = hasData ? "ACTIVE" : "INSTALLED, no events today";
+  return `\n\n--- LIVE STATS (THE ONLY DATA YOU CAN REFERENCE) ---
+Tracker: ${tracker}
+Today: $${stats.today_revenue || 0} revenue · ${stats.today_orders || 0} orders · ${stats.today_visitors || 0} visitors · ${stats.today_pageviews || 0} pv
+7d: $${stats.week_revenue || 0} revenue · ${stats.week_visitors || 0} visitors
 
---- LIVE STATS (THE ONLY DATA YOU CAN REFERENCE) ---
-Tracker status: ${tracker}
-Today's revenue: $${stats.today_revenue || 0}
-Today's orders: ${stats.today_orders || 0}
-Today's unique visitors: ${stats.today_visitors || 0}
-Today's pageviews: ${stats.today_pageviews || 0}
-7-day revenue: $${stats.week_revenue || 0}
-7-day visitors: ${stats.week_visitors || 0}
+PENDING:
+- Nova drafts: ${queues.nova_pending}
+- Grace replies: ${queues.grace_pending}
+- Riley plans: ${queues.riley_pending}
+- Jett videos: ${queues.jett_pending}
+${queues.escalations > 0 ? `- Escalations: ${queues.escalations}` : ""}
 
-PENDING QUEUES:
-- Nova drafts pending: ${queues.nova_pending}
-- Grace replies pending: ${queues.grace_pending}
-- Riley plans pending: ${queues.riley_pending}
-${queues.escalations > 0 ? `- Customer escalations: ${queues.escalations}` : ""}
-
-Crew online: 4/8 (Sage, Nova, Grace, Riley)
+Crew online: 5/8 (Sage · Nova · Grace · Riley · Jett)
 ---------------------------------------------------`;
 }
 
@@ -442,7 +566,8 @@ function extractRouting(reply) {
   const patterns = [
     { key: "nova", re: /ROUTE_TO_NOVA\s*:\s*([^\n]+)/i },
     { key: "grace", re: /ROUTE_TO_GRACE\s*:\s*([^\n]+)/i },
-    { key: "riley", re: /ROUTE_TO_RILEY\s*:\s*([^\n]+)/i }
+    { key: "riley", re: /ROUTE_TO_RILEY\s*:\s*([^\n]+)/i },
+    { key: "jett", re: /ROUTE_TO_JETT\s*:\s*([^\n]+)/i }
   ];
   for (const p of patterns) {
     const m = reply.match(p.re);
@@ -454,7 +579,7 @@ function extractRouting(reply) {
   return null;
 }
 function stripRoutingTokens(reply) {
-  return reply.split("\n").filter(line => !/ROUTE_TO_(NOVA|GRACE|RILEY)/i.test(line)).filter(line => !/^\s*\**\s*Option\s+[A-Z0-9]+\s*:?\s*\**\s*$/i.test(line)).join("\n").replace(/\n{3,}/g, "\n\n").trim();
+  return reply.split("\n").filter(line => !/ROUTE_TO_(NOVA|GRACE|RILEY|JETT)/i.test(line)).filter(line => !/^\s*\**\s*Option\s+[A-Z0-9]+\s*:?\s*\**\s*$/i.test(line)).join("\n").replace(/\n{3,}/g, "\n\n").trim();
 }
 
 // ============================================================
@@ -473,22 +598,10 @@ async function sageChat(env, message, sessionId) {
   let routedDraft = null;
   const routing = extractRouting(reply);
   if (routing) {
-    if (routing.target === "nova") {
-      routedDraft = await novaDraft(env, routing.brief);
-      reply = stripRoutingTokens(reply);
-      if (!reply || reply.length < 20) reply = "On it — Nova's drafting now.";
-      reply += `\n\n— Nova drafted ${routedDraft.options} options. Check the queue.`;
-    } else if (routing.target === "grace") {
-      routedDraft = await graceReply(env, routing.brief);
-      reply = stripRoutingTokens(reply);
-      if (!reply || reply.length < 20) reply = "Grace is on it.";
-      reply += `\n\n— Grace drafted a reply. Check Grace's queue.`;
-    } else if (routing.target === "riley") {
-      routedDraft = await rileyPlan(env, routing.brief);
-      reply = stripRoutingTokens(reply);
-      if (!reply || reply.length < 20) reply = "Riley's putting together a plan.";
-      reply += `\n\n— Riley put together a plan. Check Riley's queue.`;
-    }
+    if (routing.target === "nova") { routedDraft = await novaDraft(env, routing.brief); reply = stripRoutingTokens(reply) || "On it — Nova's drafting now."; reply += `\n\n— Nova drafted ${routedDraft.options} options. Check the queue.`; }
+    else if (routing.target === "grace") { routedDraft = await graceReply(env, routing.brief); reply = stripRoutingTokens(reply) || "Grace is on it."; reply += `\n\n— Grace drafted a reply. Check Grace's queue.`; }
+    else if (routing.target === "riley") { routedDraft = await rileyPlan(env, routing.brief); reply = stripRoutingTokens(reply) || "Riley's putting together a plan."; reply += `\n\n— Riley plan ready. Check Riley's queue.`; }
+    else if (routing.target === "jett") { routedDraft = await jettBrief(env, routing.brief, "daily"); reply = stripRoutingTokens(reply) || "Jett's on it."; reply += `\n\n— Jett dropped a video brief. Check Jett's queue.`; }
   } else reply = stripRoutingTokens(reply);
 
   history.push({ role: "user", content: message });
@@ -525,10 +638,38 @@ async function rileyPlan(env, brief) {
   const [kb, lib] = await Promise.all([getKB(env), getLibrary(env)]);
   const messages = [{ role: "system", content: rileyPrompt(formatKB(kb), formatLibraryForCrew(lib)) }, { role: "user", content: brief }];
   const output = await callAI(env, messages, 1500);
+  // Check if Riley wants to route to Jett
+  const routing = extractRouting(output);
+  if (routing && routing.target === "jett") {
+    const jettResult = await jettBrief(env, routing.brief, "daily");
+    const cleanedOutput = stripRoutingTokens(output);
+    const item = { id: crypto.randomUUID(), crew: "riley", brief, output: cleanedOutput + `\n\n— Handed to Jett: video brief ready in Jett's queue (${jettResult.id})`, ts: Date.now(), status: "pending" };
+    await pushQueue(env, "riley:queue", item);
+    await logActivity(env, "riley", "plan-handoff-jett", { brief: brief.slice(0, 80) });
+    return { id: item.id, output: item.output };
+  }
   const item = { id: crypto.randomUUID(), crew: "riley", brief, output, ts: Date.now(), status: "pending" };
   await pushQueue(env, "riley:queue", item);
   await logActivity(env, "riley", "plan", { brief: brief.slice(0, 80) });
   return { id: item.id, output };
+}
+
+// 🎬 JETT — video production agent
+async function jettBrief(env, brief, mode = "daily") {
+  const [kb, lib] = await Promise.all([getKB(env), getLibrary(env)]);
+  let userMessage = brief;
+  if (mode === "daily") userMessage = `Give me ONE shoot-ready video brief for today. Brief: ${brief}`;
+  else if (mode === "week") userMessage = `Plan me 7 TikTok videos for the next 7 days, mixed across the 5 pillars. Brief: ${brief}\n\nFor each day output the FULL brief format. Label MONDAY through SUNDAY.`;
+  else if (mode === "hook-lab") userMessage = `Give me 5 different hook variations for this topic. Use 5 different frameworks (curiosity / contrarian / POV / number / demo). Topic: ${brief}\n\nOutput format:\n1. [framework] — "[hook line]"\n   Why: [1 line]\n\n2. ...etc`;
+  else if (mode === "audit") userMessage = `Performance audit. Here are the stats from my recent videos:\n\n${brief}\n\nDiagnose what's working, what's not, and tell me exactly what to make next. Be brutal and specific.`;
+  else if (mode === "trend-steal") userMessage = `Adapt this viral video for Inspirit. Source: ${brief}\n\nKeep what made it work, swap the substance for Inspirit's brand. Output one full shoot-ready brief.`;
+
+  const messages = [{ role: "system", content: jettPrompt(formatKB(kb), formatLibraryForCrew(lib)) }, { role: "user", content: userMessage }];
+  const output = await callAI(env, messages, 2000);
+  const item = { id: crypto.randomUUID(), crew: "jett", mode, brief, output, ts: Date.now(), status: "planned" };
+  await pushQueue(env, "jett:queue", item);
+  await logActivity(env, "jett", `video-${mode}`, { brief: brief.slice(0, 80) });
+  return { id: item.id, output, mode };
 }
 
 // ============================================================
@@ -542,14 +683,21 @@ async function pushQueue(env, key, item) {
   await env.INSPIRIT_KV.put(key, JSON.stringify(queue));
 }
 async function getQueueCounts(env) {
-  const [novaRaw, graceRaw, rileyRaw] = await Promise.all([env.INSPIRIT_KV.get("nova:queue"), env.INSPIRIT_KV.get("grace:queue"), env.INSPIRIT_KV.get("riley:queue")]);
+  const [novaRaw, graceRaw, rileyRaw, jettRaw] = await Promise.all([
+    env.INSPIRIT_KV.get("nova:queue"),
+    env.INSPIRIT_KV.get("grace:queue"),
+    env.INSPIRIT_KV.get("riley:queue"),
+    env.INSPIRIT_KV.get("jett:queue")
+  ]);
   const nova = novaRaw ? JSON.parse(novaRaw) : [];
   const grace = graceRaw ? JSON.parse(graceRaw) : [];
   const riley = rileyRaw ? JSON.parse(rileyRaw) : [];
+  const jett = jettRaw ? JSON.parse(jettRaw) : [];
   return {
     nova_pending: nova.filter(q => q.status === "pending").length,
     grace_pending: grace.filter(q => q.status === "pending").length,
     riley_pending: riley.filter(q => q.status === "pending").length,
+    jett_pending: jett.filter(q => q.status === "planned" || q.status === "filmed").length,
     escalations: grace.filter(q => q.status === "escalated").length
   };
 }
@@ -567,7 +715,7 @@ async function updateQueueItem(env, key, body) {
 }
 
 // ============================================================
-// ACTIVITY + EVENTS — manifest pattern
+// ACTIVITY + EVENTS
 // ============================================================
 async function logActivity(env, crew, action, meta = {}) {
   const raw = await env.INSPIRIT_KV.get("activity:manifest");
@@ -581,7 +729,6 @@ async function getActivity(env, limit = 30) {
   const items = raw ? JSON.parse(raw) : [];
   return items.slice(0, limit);
 }
-
 async function trackEvent(env, event) {
   const raw = await env.INSPIRIT_KV.get("events:manifest");
   const events = raw ? JSON.parse(raw) : [];
@@ -593,7 +740,6 @@ async function getEvents(env) {
   const raw = await env.INSPIRIT_KV.get("events:manifest");
   return raw ? JSON.parse(raw) : [];
 }
-
 async function getStats(env) {
   const events = await getEvents(env);
   const today = new Date().toISOString().slice(0, 10);
@@ -630,8 +776,9 @@ async function getStats(env) {
     pending_drafts: queues.nova_pending,
     pending_replies: queues.grace_pending,
     pending_plans: queues.riley_pending,
+    pending_videos: queues.jett_pending,
     escalations: queues.escalations,
-    crew_online: 4, crew_total: 8
+    crew_online: 5, crew_total: 8
   };
 }
 
@@ -664,8 +811,8 @@ export default {
       if (path === "/" || path === "/api" || path === "/api/health") {
         return json({
           service: "Inspirit OS",
-          version: "0.9.0 — Per-photo captions + bulk ops + retry",
-          crew_online: ["sage", "nova", "grace", "riley"],
+          version: "1.0.0 — Jett Online · TikTok Studio Live",
+          crew_online: ["sage", "nova", "grace", "riley", "jett"],
           knowledge_base: "loaded",
           library: "ready",
           github_token: env.GITHUB_TOKEN ? "configured" : "MISSING",
@@ -696,31 +843,32 @@ export default {
         if (!brief?.trim()) return json({ error: "brief required" }, 400);
         return json({ from: "nova", ...(await novaDraft(env, brief.trim())) });
       }
-      if (path === "/api/nova/queue" && request.method === "GET") {
-        const raw = await env.INSPIRIT_KV.get("nova:queue");
-        return json({ queue: raw ? JSON.parse(raw) : [] });
-      }
+      if (path === "/api/nova/queue" && request.method === "GET") { const raw = await env.INSPIRIT_KV.get("nova:queue"); return json({ queue: raw ? JSON.parse(raw) : [] }); }
       if (path === "/api/nova/queue/update" && request.method === "POST") return updateQueueItem(env, "nova:queue", await request.json());
       if (path === "/api/grace/draft" && request.method === "POST") {
         const { customer_message, from, subject } = await request.json();
         if (!customer_message?.trim()) return json({ error: "customer_message required" }, 400);
         return json({ from: "grace", ...(await graceReply(env, customer_message.trim(), { from, subject })) });
       }
-      if (path === "/api/grace/queue" && request.method === "GET") {
-        const raw = await env.INSPIRIT_KV.get("grace:queue");
-        return json({ queue: raw ? JSON.parse(raw) : [] });
-      }
+      if (path === "/api/grace/queue" && request.method === "GET") { const raw = await env.INSPIRIT_KV.get("grace:queue"); return json({ queue: raw ? JSON.parse(raw) : [] }); }
       if (path === "/api/grace/queue/update" && request.method === "POST") return updateQueueItem(env, "grace:queue", await request.json());
       if (path === "/api/riley/plan" && request.method === "POST") {
         const { brief } = await request.json();
         if (!brief?.trim()) return json({ error: "brief required" }, 400);
         return json({ from: "riley", ...(await rileyPlan(env, brief.trim())) });
       }
-      if (path === "/api/riley/queue" && request.method === "GET") {
-        const raw = await env.INSPIRIT_KV.get("riley:queue");
-        return json({ queue: raw ? JSON.parse(raw) : [] });
-      }
+      if (path === "/api/riley/queue" && request.method === "GET") { const raw = await env.INSPIRIT_KV.get("riley:queue"); return json({ queue: raw ? JSON.parse(raw) : [] }); }
       if (path === "/api/riley/queue/update" && request.method === "POST") return updateQueueItem(env, "riley:queue", await request.json());
+
+      // 🎬 JETT — TikTok Studio
+      if (path === "/api/jett/brief" && request.method === "POST") {
+        const { brief, mode = "daily" } = await request.json();
+        if (!brief?.trim()) return json({ error: "brief required" }, 400);
+        if (!["daily", "week", "hook-lab", "audit", "trend-steal"].includes(mode)) return json({ error: "invalid mode" }, 400);
+        return json({ from: "jett", ...(await jettBrief(env, brief.trim(), mode)) });
+      }
+      if (path === "/api/jett/queue" && request.method === "GET") { const raw = await env.INSPIRIT_KV.get("jett:queue"); return json({ queue: raw ? JSON.parse(raw) : [] }); }
+      if (path === "/api/jett/queue/update" && request.method === "POST") return updateQueueItem(env, "jett:queue", await request.json());
 
       // KB
       if (path === "/api/kb" && request.method === "GET") return json(await getKB(env));
@@ -747,40 +895,25 @@ export default {
         await saveShowroom(env, showroom);
         return json({ ok: true });
       }
-
-      // v0.9: per-photo caption — accepts photo_url, looks up metadata, caches per photo
       if (path === "/api/showroom/caption" && request.method === "POST") {
         const { name, platform, regenerate, photo_url } = await request.json();
         if (!name || !["instagram", "tiktok", "facebook"].includes(platform)) return json({ error: "name + valid platform required" }, 400);
         const showroom = await getShowroom(env);
         const prod = showroom.products[name];
         if (!prod) return json({ error: "unknown product" }, 404);
-
         const photoKey = photo_url || "default";
         prod.photo_captions = prod.photo_captions || {};
         prod.photo_captions[photoKey] = prod.photo_captions[photoKey] || {};
-
-        if (!regenerate && prod.photo_captions[photoKey][platform]) {
-          return json({ caption: prod.photo_captions[photoKey][platform], cached: true, photo_url: photo_url || null });
-        }
-
-        // Look up photo metadata if photo_url provided
+        if (!regenerate && prod.photo_captions[photoKey][platform]) return json({ caption: prod.photo_captions[photoKey][platform], cached: true, photo_url: photo_url || null });
         let photoMeta = null;
-        if (photo_url) {
-          const lib = await getLibrary(env);
-          photoMeta = findPhotoByUrl(lib, photo_url);
-        }
-
+        if (photo_url) { const lib = await getLibrary(env); photoMeta = findPhotoByUrl(lib, photo_url); }
         const caption = await generateCaption(env, prod, platform, photoMeta);
         prod.photo_captions[photoKey][platform] = caption;
-        // Also keep legacy cache for default/hero compatibility
         if (!photo_url || photo_url === prod.hero_url) prod.captions[platform] = caption;
-
         await saveShowroom(env, showroom);
         await logActivity(env, "nova", "caption", { product: name, platform, photo: photo_url ? "specific" : "default" });
         return json({ caption, cached: false, photo_url: photo_url || null });
       }
-
       if (path === "/api/showroom/seed" && request.method === "POST") {
         const showroom = await getShowroom(env);
         let generated = 0;
@@ -795,10 +928,7 @@ export default {
         await saveShowroom(env, showroom);
         return json({ ok: true, generated });
       }
-      if (path === "/api/showroom/reset" && request.method === "POST") {
-        await env.INSPIRIT_KV.delete("showroom:main");
-        return json({ ok: true, reset: true });
-      }
+      if (path === "/api/showroom/reset" && request.method === "POST") { await env.INSPIRIT_KV.delete("showroom:main"); return json({ ok: true, reset: true }); }
 
       // LIBRARY
       if (path === "/api/library" && request.method === "GET") return json(await getLibrary(env));
@@ -832,9 +962,6 @@ export default {
         await saveLibrary(env, lib);
         return json({ ok: true, item });
       }
-
-      // v0.9: BULK update — apply same products/tags/notes to many items at once
-      // body: { type: "photo", ids: [...], addProducts: [...], addTags: [...], replaceProducts?, replaceTags?, setNotes? }
       if (path === "/api/library/bulk-update" && request.method === "POST") {
         const body = await request.json();
         if (!["photo", "video"].includes(body.type)) return json({ error: "type required" }, 400);
@@ -856,7 +983,6 @@ export default {
         await logActivity(env, "library", "bulk-update", { count: updated });
         return json({ ok: true, updated });
       }
-
       if (path === "/api/library/delete" && request.method === "POST") {
         const body = await request.json();
         const lib = await getLibrary(env);
@@ -867,14 +993,11 @@ export default {
         arr.splice(idx, 1);
         await saveLibrary(env, lib);
         await logActivity(env, "library", "remove", { type: body.type, id: item.id });
-        return json({ ok: true, note: "removed from manifest; file kept in repo" });
+        return json({ ok: true });
       }
 
       // ANALYTICS
-      if (path === "/api/track" && request.method === "POST") {
-        await trackEvent(env, await request.json());
-        return json({ ok: true });
-      }
+      if (path === "/api/track" && request.method === "POST") { await trackEvent(env, await request.json()); return json({ ok: true }); }
       if (path === "/api/stats" && request.method === "GET") return json(await getStats(env));
       if (path === "/api/activity" && request.method === "GET") {
         const limit = parseInt(url.searchParams.get("limit") || "30");
@@ -883,11 +1006,17 @@ export default {
 
       // ATTENTION
       if (path === "/api/attention" && request.method === "GET") {
-        const [novaRaw, graceRaw, rileyRaw] = await Promise.all([env.INSPIRIT_KV.get("nova:queue"), env.INSPIRIT_KV.get("grace:queue"), env.INSPIRIT_KV.get("riley:queue")]);
+        const [novaRaw, graceRaw, rileyRaw, jettRaw] = await Promise.all([
+          env.INSPIRIT_KV.get("nova:queue"),
+          env.INSPIRIT_KV.get("grace:queue"),
+          env.INSPIRIT_KV.get("riley:queue"),
+          env.INSPIRIT_KV.get("jett:queue")
+        ]);
         const nova = (novaRaw ? JSON.parse(novaRaw) : []).filter(q => q.status === "pending");
         const grace = (graceRaw ? JSON.parse(graceRaw) : []).filter(q => q.status === "pending" || q.status === "escalated");
         const riley = (rileyRaw ? JSON.parse(rileyRaw) : []).filter(q => q.status === "pending");
-        const all = [...nova, ...grace, ...riley].sort((a, b) => b.ts - a.ts);
+        const jett = (jettRaw ? JSON.parse(jettRaw) : []).filter(q => q.status === "planned" || q.status === "filmed");
+        const all = [...nova, ...grace, ...riley, ...jett].sort((a, b) => b.ts - a.ts);
         return json({ items: all });
       }
 
