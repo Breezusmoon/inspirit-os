@@ -20,280 +20,266 @@
       --green: #7cc174;
       --amber: #d4a544;
       --red: #c47373;
+      --blue: #7a9cc9;
+      --pink: #c97abf;
       --mono: 'JetBrains Mono', ui-monospace, monospace;
       --serif: 'Fraunces', Georgia, serif;
       --sans: 'Manrope', -apple-system, sans-serif;
     }
     html, body { height: 100%; }
     body {
-      font-family: var(--sans);
-      background: var(--void);
-      color: var(--paper);
-      font-size: 15px;
-      line-height: 1.5;
-      min-height: 100vh;
-      padding: 24px;
+      font-family: var(--sans); background: var(--void); color: var(--paper);
+      font-size: 15px; line-height: 1.5; min-height: 100vh; padding: 24px;
       background-image:
         radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201, 184, 122, 0.04), transparent),
         url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' /></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.04'/></svg>");
     }
 
-    /* ---- HEADER ---- */
-    .header {
-      display: flex; justify-content: space-between; align-items: flex-end;
-      padding-bottom: 18px; margin-bottom: 24px;
-      border-bottom: 1px solid var(--line);
-    }
+    /* HEADER */
+    .header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--line); }
     .brand { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
-    .brand-mark {
-      font-family: var(--mono); font-weight: 700; letter-spacing: 0.18em;
-      font-size: 13px; color: var(--bone);
-    }
-    .brand-title {
-      font-family: var(--serif); font-weight: 500;
-      font-size: 28px; letter-spacing: -0.01em;
-    }
+    .brand-mark { font-family: var(--mono); font-weight: 700; letter-spacing: 0.18em; font-size: 13px; color: var(--bone); }
+    .brand-title { font-family: var(--serif); font-weight: 500; font-size: 28px; letter-spacing: -0.01em; }
     .brand-title em { font-style: italic; color: var(--pulse); font-weight: 400; }
     .header-meta { font-family: var(--mono); font-size: 11px; color: var(--bone); opacity: 0.7; text-align: right; }
     .header-meta .live { color: var(--green); }
-    .live-dot {
-      display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-      background: var(--green); margin-right: 6px;
-      animation: pulse 2s ease-in-out infinite;
-    }
+    .live-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-right: 6px; animation: pulse 2s ease-in-out infinite; }
     @keyframes pulse { 50% { opacity: 0.4; } }
 
-    /* ---- STATS ROW ---- */
-    .stats {
-      display: grid; gap: 1px;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      background: var(--line);
-      border: 1px solid var(--line);
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 24px;
-    }
-    .stat { padding: 18px 20px; background: var(--ink); }
-    .stat-label {
-      font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--bone); opacity: 0.7;
-    }
-    .stat-value {
-      font-family: var(--serif); font-weight: 500; font-size: 28px;
-      margin-top: 6px; letter-spacing: -0.02em;
-    }
-    .stat-value .currency { font-size: 16px; opacity: 0.6; margin-right: 2px; }
+    /* TABS */
+    .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 24px; }
+    .tab { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 18px; background: transparent; border: none; color: var(--bone); cursor: pointer; opacity: 0.6; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .tab:hover { opacity: 1; }
+    .tab.active { opacity: 1; color: var(--pulse); border-bottom-color: var(--pulse); }
+    .tab-pill { display: inline-block; min-width: 18px; padding: 1px 6px; border-radius: 9px; background: var(--amber); color: var(--void); font-size: 9px; margin-left: 6px; vertical-align: middle; }
+
+    .pane { display: none; }
+    .pane.active { display: block; }
+
+    /* STATS */
+    .stats { display: grid; gap: 1px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); background: var(--line); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
+    .stat { padding: 16px 18px; background: var(--ink); }
+    .stat-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bone); opacity: 0.7; }
+    .stat-value { font-family: var(--serif); font-weight: 500; font-size: 26px; margin-top: 6px; letter-spacing: -0.02em; }
+    .stat-value .currency { font-size: 14px; opacity: 0.6; margin-right: 2px; }
     .stat-sub { font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.5; margin-top: 2px; }
+    .stat-attn { color: var(--pulse); }
 
-    /* ---- MAIN GRID ---- */
-    .grid {
-      display: grid; gap: 16px;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-      margin-bottom: 24px;
-    }
-    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    .grid { display: grid; gap: 16px; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); margin-bottom: 16px; }
+    @media (max-width: 1100px) { .grid { grid-template-columns: 1fr; } }
 
-    .panel {
-      background: var(--ink);
-      border: 1px solid var(--line);
-      border-radius: 4px;
-      display: flex; flex-direction: column;
-      min-height: 540px;
-    }
-    .panel-head {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--line);
-    }
-    .crew-mark {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: var(--whisper);
-      border: 1px solid var(--line);
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--serif); font-weight: 600; font-size: 16px;
-      color: var(--pulse);
-    }
+    .panel { background: var(--ink); border: 1px solid var(--line); border-radius: 4px; display: flex; flex-direction: column; }
+    .panel.tall { min-height: 580px; }
+    .panel-head { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+    .crew-mark { width: 36px; height: 36px; border-radius: 50%; background: var(--whisper); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-weight: 600; font-size: 16px; color: var(--pulse); }
+    .crew-mark.grace { color: var(--green); border-color: var(--green); }
+    .crew-mark.riley { color: var(--blue); border-color: var(--blue); }
+    .crew-mark.nova { color: var(--pink); border-color: var(--pink); }
     .crew-meta { flex: 1; min-width: 0; }
     .crew-name { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.01em; }
     .crew-role { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bone); opacity: 0.7; }
-    .crew-status {
-      font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--green);
-    }
+    .crew-status { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); }
 
-    /* ---- SAGE CHAT ---- */
-    #chat {
-      flex: 1; overflow-y: auto;
-      padding: 20px; display: flex; flex-direction: column; gap: 14px;
-    }
+    /* SAGE CHAT */
+    #chat { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; min-height: 380px; }
     #chat::-webkit-scrollbar { width: 6px; }
     #chat::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
     .msg { max-width: 85%; padding: 12px 16px; border-radius: 14px; font-size: 14px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
-    .msg.user {
-      align-self: flex-end;
-      background: var(--paper); color: var(--void);
-      font-family: var(--sans); font-weight: 500;
-    }
-    .msg.sage {
-      align-self: flex-start;
-      background: var(--whisper); color: var(--paper);
-      border: 1px solid var(--line);
-      font-family: var(--serif); font-size: 15px;
-    }
-    .msg.thinking {
-      align-self: flex-start;
-      font-family: var(--mono); font-size: 11px; color: var(--bone); opacity: 0.6;
-      letter-spacing: 0.08em; padding: 4px 8px;
-    }
-    .msg.thinking::after {
-      content: '...'; display: inline-block; width: 18px; text-align: left;
-      animation: dots 1.4s steps(4, end) infinite;
-    }
+    .msg.user { align-self: flex-end; background: var(--paper); color: var(--void); font-family: var(--sans); font-weight: 500; }
+    .msg.sage { align-self: flex-start; background: var(--whisper); color: var(--paper); border: 1px solid var(--line); font-family: var(--serif); font-size: 15px; }
+    .msg.thinking { align-self: flex-start; font-family: var(--mono); font-size: 11px; color: var(--bone); opacity: 0.6; letter-spacing: 0.08em; padding: 4px 8px; }
+    .msg.thinking::after { content: '...'; display: inline-block; width: 18px; text-align: left; animation: dots 1.4s steps(4, end) infinite; }
     @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75%, 100% { content: '...'; } }
 
-    .chat-input {
-      display: flex; gap: 8px; padding: 14px;
-      border-top: 1px solid var(--line);
-    }
-    .chat-input input {
-      flex: 1; background: var(--whisper);
-      border: 1px solid var(--line);
-      color: var(--paper);
-      padding: 12px 16px; border-radius: 8px;
-      font-family: var(--sans); font-size: 14px;
-    }
+    .chat-input { display: flex; gap: 8px; padding: 14px; border-top: 1px solid var(--line); }
+    .chat-input input { flex: 1; background: var(--whisper); border: 1px solid var(--line); color: var(--paper); padding: 12px 16px; border-radius: 8px; font-family: var(--sans); font-size: 14px; }
     .chat-input input:focus { outline: none; border-color: var(--pulse); }
     .chat-input input::placeholder { color: var(--bone); opacity: 0.4; }
-    .btn {
-      background: var(--paper); color: var(--void);
-      border: none; padding: 10px 18px; border-radius: 8px;
-      font-family: var(--sans); font-weight: 700; font-size: 13px;
-      letter-spacing: 0.02em; cursor: pointer;
-      transition: opacity 0.15s;
-    }
+    .btn { background: var(--paper); color: var(--void); border: none; padding: 10px 18px; border-radius: 8px; font-family: var(--sans); font-weight: 700; font-size: 13px; letter-spacing: 0.02em; cursor: pointer; transition: opacity 0.15s; }
     .btn:hover { opacity: 0.85; }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-ghost {
-      background: transparent; color: var(--bone);
-      border: 1px solid var(--line);
-    }
+    .btn-ghost { background: transparent; color: var(--paper); border: 1px solid var(--line); }
+    .btn-ghost:hover { border-color: var(--pulse); background: var(--whisper); }
 
-    /* ---- NOVA QUEUE ---- */
-    #queue {
-      flex: 1; overflow-y: auto;
-    }
-    #queue::-webkit-scrollbar { width: 6px; }
-    #queue::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
-    .q-item {
-      padding: 16px 18px;
-      border-bottom: 1px solid var(--line);
-    }
-    .q-item:last-child { border-bottom: none; }
-    .q-item.approved { opacity: 0.5; background: rgba(124, 193, 116, 0.04); }
-    .q-item.rejected { opacity: 0.4; background: rgba(196, 115, 115, 0.04); }
+    /* ATTENTION */
+    #attention { flex: 1; overflow-y: auto; max-height: 580px; }
+    #attention::-webkit-scrollbar { width: 6px; }
+    #attention::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+    .attn-empty { padding: 60px 24px; text-align: center; color: var(--bone); opacity: 0.5; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; }
+    .attn-item { padding: 14px 18px; border-bottom: 1px solid var(--line); cursor: pointer; transition: background 0.15s; }
+    .attn-item:hover { background: var(--whisper); }
+    .attn-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .attn-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; }
+    .attn-tag.nova { background: rgba(201, 122, 191, 0.15); color: var(--pink); }
+    .attn-tag.grace { background: rgba(124, 193, 116, 0.15); color: var(--green); }
+    .attn-tag.riley { background: rgba(122, 156, 201, 0.15); color: var(--blue); }
+    .attn-tag.escalated { background: var(--red); color: var(--void); }
+    .attn-time { font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.5; margin-left: auto; }
+    .attn-brief { font-family: var(--mono); font-size: 11px; color: var(--bone); opacity: 0.85; margin-top: 4px; line-height: 1.4; }
+
+    /* CHART */
+    .chart-panel { background: var(--ink); border: 1px solid var(--line); border-radius: 4px; padding: 18px; margin-bottom: 16px; }
+    .chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+    .chart-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bone); opacity: 0.7; }
+    .chart-tabs { display: flex; gap: 4px; }
+    .chart-tab { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 3px; background: transparent; border: 1px solid var(--line); color: var(--bone); cursor: pointer; text-transform: uppercase; }
+    .chart-tab.active { background: var(--pulse); color: var(--void); border-color: var(--pulse); }
+    #chart { width: 100%; height: 140px; }
+
+    /* QUEUES */
+    .queues { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); margin-bottom: 24px; }
+    .qpanel { background: var(--ink); border: 1px solid var(--line); border-radius: 4px; display: flex; flex-direction: column; min-height: 320px; max-height: 480px; }
+    .q-list { flex: 1; overflow-y: auto; }
+    .q-list::-webkit-scrollbar { width: 6px; }
+    .q-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+    .q-item { padding: 14px 16px; border-bottom: 1px solid var(--line); }
+    .q-item.approved { opacity: 0.5; }
+    .q-item.rejected, .q-item.sent { opacity: 0.4; }
     .q-time { font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.5; letter-spacing: 0.06em; }
-    .q-brief {
-      font-family: var(--mono); font-size: 11px; color: var(--pulse);
-      margin: 4px 0 10px; letter-spacing: 0.02em;
-    }
+    .q-brief { font-family: var(--mono); font-size: 11px; color: var(--pulse); margin: 4px 0 8px; letter-spacing: 0.02em; }
     .q-brief::before { content: 'BRIEF · '; opacity: 0.6; }
-    .q-output {
-      font-size: 13px; line-height: 1.6; white-space: pre-wrap;
-      max-height: 140px; overflow: hidden; position: relative;
-      color: var(--paper); opacity: 0.92;
-    }
+    .q-output { font-size: 12.5px; line-height: 1.55; white-space: pre-wrap; max-height: 110px; overflow: hidden; position: relative; color: var(--paper); opacity: 0.92; }
     .q-output.expanded { max-height: none; }
-    .q-output:not(.expanded)::after {
-      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 30px;
-      background: linear-gradient(transparent, var(--ink));
-    }
-    .q-actions { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
-    .q-btn {
-      padding: 5px 10px; font-size: 11px; border-radius: 4px;
-      font-family: var(--mono); letter-spacing: 0.05em;
-      border: 1px solid var(--line); background: transparent;
-      color: var(--bone); cursor: pointer; transition: all 0.15s;
-    }
+    .q-output:not(.expanded)::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 30px; background: linear-gradient(transparent, var(--ink)); }
+    .q-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+    .q-btn { padding: 5px 10px; font-size: 10px; border-radius: 4px; font-family: var(--mono); letter-spacing: 0.05em; border: 1px solid var(--line); background: transparent; color: var(--bone); cursor: pointer; transition: all 0.15s; }
     .q-btn:hover { background: var(--whisper); color: var(--paper); }
     .q-btn.approve { border-color: var(--green); color: var(--green); }
     .q-btn.approve:hover { background: var(--green); color: var(--void); }
     .q-btn.reject { border-color: var(--red); color: var(--red); }
     .q-btn.reject:hover { background: var(--red); color: var(--void); }
-    .q-status {
-      display: inline-block; font-family: var(--mono); font-size: 10px;
-      letter-spacing: 0.1em; padding: 2px 6px; border-radius: 3px;
-      margin-left: 6px;
-    }
-    .q-status.approved { background: var(--green); color: var(--void); }
+    .q-status { display: inline-block; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; padding: 2px 6px; border-radius: 3px; margin-left: 6px; }
+    .q-status.approved, .q-status.sent { background: var(--green); color: var(--void); }
     .q-status.rejected { background: var(--red); color: var(--void); }
+    .q-status.escalated { background: var(--amber); color: var(--void); }
+    .q-customer { font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.6; margin-bottom: 4px; }
+    .empty { padding: 60px 24px; text-align: center; color: var(--bone); opacity: 0.5; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; }
 
-    .empty {
-      padding: 60px 24px; text-align: center;
-      color: var(--bone); opacity: 0.5;
-      font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
-    }
+    /* ACTIVITY */
+    .activity-panel { background: var(--ink); border: 1px solid var(--line); border-radius: 4px; padding: 18px; margin-bottom: 24px; }
+    .activity-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+    .activity-feed { max-height: 260px; overflow-y: auto; }
+    .activity-row { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 11px; }
+    .activity-time { color: var(--bone); opacity: 0.5; min-width: 60px; }
+    .activity-crew { letter-spacing: 0.08em; text-transform: uppercase; min-width: 60px; font-weight: 700; }
+    .activity-crew.sage { color: var(--pulse); }
+    .activity-crew.nova { color: var(--pink); }
+    .activity-crew.grace { color: var(--green); }
+    .activity-crew.riley { color: var(--blue); }
+    .activity-crew.library { color: var(--amber); }
+    .activity-text { flex: 1; color: var(--bone); opacity: 0.85; }
 
-    /* ---- CREW ROSTER ---- */
-    .roster-head {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 12px;
-      font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em;
-      text-transform: uppercase; color: var(--bone); opacity: 0.7;
-    }
-    .roster-head::before, .roster-head::after {
-      content: ''; flex: 1; height: 1px; background: var(--line);
-    }
-    .crew-grid {
-      display: grid; gap: 8px;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    }
-    .crew-tile {
-      background: var(--ink);
-      border: 1px solid var(--line);
-      border-radius: 4px;
-      padding: 14px 12px;
-      text-align: center;
-      transition: all 0.2s;
-    }
+    /* CREW ROSTER */
+    .roster-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bone); opacity: 0.7; }
+    .roster-head::before, .roster-head::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+    .crew-grid { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+    .crew-tile { background: var(--ink); border: 1px solid var(--line); border-radius: 4px; padding: 14px 12px; text-align: center; }
     .crew-tile.online { border-color: var(--pulse); background: linear-gradient(180deg, var(--ink), rgba(201, 184, 122, 0.04)); }
-    .crew-tile.online:hover { transform: translateY(-2px); }
     .crew-tile.offline { opacity: 0.5; }
-    .crew-tile-mark {
-      width: 38px; height: 38px; margin: 0 auto 8px; border-radius: 50%;
-      background: var(--whisper); border: 1px solid var(--line);
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--serif); font-weight: 600; font-size: 16px; color: var(--bone);
-    }
+    .crew-tile-mark { width: 38px; height: 38px; margin: 0 auto 8px; border-radius: 50%; background: var(--whisper); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-weight: 600; font-size: 16px; color: var(--bone); }
     .crew-tile.online .crew-tile-mark { color: var(--pulse); border-color: var(--pulse); }
     .crew-tile-name { font-family: var(--serif); font-weight: 500; font-size: 14px; }
     .crew-tile-role { font-family: var(--mono); font-size: 9px; color: var(--bone); opacity: 0.6; letter-spacing: 0.08em; margin-top: 2px; text-transform: uppercase; }
-    .crew-tile-pill {
-      display: inline-block; margin-top: 6px;
-      font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 2px 6px; border-radius: 3px;
-      background: var(--whisper); color: var(--bone);
-    }
+    .crew-tile-pill { display: inline-block; margin-top: 6px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; background: var(--whisper); color: var(--bone); }
     .crew-tile.online .crew-tile-pill { background: var(--pulse); color: var(--void); }
 
-    /* ---- FOOTER ---- */
-    footer {
-      margin-top: 32px; padding-top: 16px;
-      border-top: 1px solid var(--line);
-      text-align: center;
-      font-family: var(--mono); font-size: 10px;
-      color: var(--bone); opacity: 0.4; letter-spacing: 0.12em;
-    }
+    /* ===== LIBRARY TAB ===== */
+    .lib-toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+    .lib-toolbar h2 { font-family: var(--serif); font-weight: 500; font-size: 22px; flex: 1; min-width: 200px; }
+    .lib-tabs { display: flex; gap: 4px; }
+    .lib-filter-tab { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; padding: 6px 12px; border-radius: 3px; background: transparent; border: 1px solid var(--line); color: var(--bone); cursor: pointer; text-transform: uppercase; }
+    .lib-filter-tab.active { background: var(--pulse); color: var(--void); border-color: var(--pulse); }
 
-    /* ---- CONFIG WARNING ---- */
-    .config-warn {
-      background: rgba(212, 165, 68, 0.08);
-      border: 1px solid var(--amber);
-      color: var(--amber);
-      padding: 12px 16px; border-radius: 4px;
-      font-family: var(--mono); font-size: 12px;
-      margin-bottom: 16px;
+    .upload-zone {
+      background: var(--ink); border: 2px dashed var(--line); border-radius: 6px;
+      padding: 40px 20px; text-align: center; margin-bottom: 24px;
+      cursor: pointer; transition: all 0.2s;
     }
-    .config-warn code { background: var(--ink); padding: 2px 6px; border-radius: 3px; }
+    .upload-zone:hover, .upload-zone.dragover { border-color: var(--pulse); background: var(--whisper); }
+    .upload-zone-mark { font-family: var(--serif); font-size: 32px; color: var(--pulse); margin-bottom: 8px; }
+    .upload-zone-text { font-family: var(--mono); font-size: 12px; color: var(--bone); letter-spacing: 0.1em; text-transform: uppercase; }
+    .upload-zone-sub { font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.5; margin-top: 6px; }
+
+    .upload-progress {
+      background: var(--whisper); border: 1px solid var(--line); padding: 12px 16px;
+      border-radius: 4px; margin-bottom: 16px; font-family: var(--mono); font-size: 12px;
+    }
+    .upload-progress.hidden { display: none; }
+    .upload-bar { height: 4px; background: var(--line); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+    .upload-bar-fill { height: 100%; background: var(--pulse); width: 0; transition: width 0.3s; }
+
+    .lib-grid {
+      display: grid; gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+    .lib-card {
+      background: var(--ink); border: 1px solid var(--line); border-radius: 6px;
+      overflow: hidden; transition: all 0.2s;
+    }
+    .lib-card:hover { border-color: var(--pulse); transform: translateY(-2px); }
+    .lib-thumb {
+      width: 100%; aspect-ratio: 1; background: var(--whisper); position: relative;
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .lib-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .lib-thumb video { width: 100%; height: 100%; object-fit: cover; }
+    .lib-type-badge {
+      position: absolute; top: 8px; left: 8px;
+      background: rgba(10,9,8,0.85); color: var(--paper);
+      font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+      padding: 3px 7px; border-radius: 3px; text-transform: uppercase;
+    }
+    .lib-meta { padding: 12px; }
+    .lib-id { font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.6; letter-spacing: 0.04em; word-break: break-all; }
+    .lib-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+    .lib-pill { font-family: var(--mono); font-size: 9px; letter-spacing: 0.05em; padding: 2px 6px; border-radius: 3px; background: var(--whisper); color: var(--bone); }
+    .lib-pill.product { background: rgba(201, 184, 122, 0.15); color: var(--pulse); }
+    .lib-actions { display: flex; gap: 4px; padding: 0 12px 12px; flex-wrap: wrap; }
+    .lib-btn { flex: 1; min-width: 60px; padding: 5px 8px; font-size: 10px; border-radius: 3px; font-family: var(--mono); letter-spacing: 0.05em; border: 1px solid var(--line); background: transparent; color: var(--bone); cursor: pointer; }
+    .lib-btn:hover { background: var(--whisper); color: var(--paper); }
+    .lib-btn.danger { border-color: var(--red); color: var(--red); }
+    .lib-btn.danger:hover { background: var(--red); color: var(--void); }
+
+    /* MODAL */
+    .modal-bg {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px;
+    }
+    .modal-bg.show { display: flex; }
+    .modal {
+      background: var(--ink); border: 1px solid var(--line); border-radius: 8px;
+      max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;
+    }
+    .modal-head { padding: 18px 22px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+    .modal-title { font-family: var(--serif); font-size: 20px; font-weight: 500; }
+    .modal-close { background: transparent; border: none; color: var(--bone); cursor: pointer; font-size: 22px; }
+    .modal-body { padding: 20px 22px; }
+    .modal-row { margin-bottom: 16px; }
+    .modal-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bone); opacity: 0.7; margin-bottom: 6px; }
+    .modal-input, .modal-select, .modal-textarea {
+      width: 100%; background: var(--whisper); border: 1px solid var(--line);
+      color: var(--paper); padding: 10px 14px; border-radius: 6px;
+      font-family: var(--sans); font-size: 14px;
+    }
+    .modal-textarea { font-family: var(--mono); font-size: 12px; min-height: 60px; resize: vertical; }
+    .modal-input:focus, .modal-select:focus, .modal-textarea:focus { outline: none; border-color: var(--pulse); }
+    .modal-foot { padding: 16px 22px; border-top: 1px solid var(--line); display: flex; gap: 8px; justify-content: flex-end; }
+    .modal-preview { width: 100%; max-height: 250px; object-fit: contain; background: var(--void); border-radius: 4px; margin-bottom: 12px; }
+    .product-checkbox-grid { display: grid; gap: 6px; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+    .product-check { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--whisper); border-radius: 4px; cursor: pointer; font-size: 12px; font-family: var(--mono); }
+    .product-check input { cursor: pointer; }
+
+    footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); text-align: center; font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.4; letter-spacing: 0.12em; }
+
+    .config-warn { background: rgba(212, 165, 68, 0.08); border: 1px solid var(--amber); color: var(--amber); padding: 12px 16px; border-radius: 4px; font-family: var(--mono); font-size: 12px; margin-bottom: 16px; }
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--ink); border: 1px solid var(--pulse); color: var(--paper);
+      padding: 12px 20px; border-radius: 6px; font-family: var(--mono); font-size: 12px;
+      letter-spacing: 0.06em; z-index: 200; opacity: 0; transition: opacity 0.3s;
+    }
+    .toast.show { opacity: 1; }
+    .toast.error { border-color: var(--red); color: var(--red); }
   </style>
 </head>
 <body>
@@ -304,73 +290,187 @@
       <h1 class="brand-title">The <em>Bridge</em></h1>
     </div>
     <div class="header-meta">
-      <div class="live"><span class="live-dot"></span>ALL SYSTEMS ONLINE</div>
+      <div class="live"><span class="live-dot"></span>ALL SYSTEMS ONLINE · v0.6</div>
       <div id="clock"></div>
     </div>
   </header>
 
   <div id="config-warn" class="config-warn" style="display:none;">
-    ⚠ Worker URL not set. Edit <code>API</code> at the bottom of this file once you've deployed your worker.
+    ⚠ Worker URL not set. Edit <code>API</code> at bottom of this file.
   </div>
 
-  <section class="stats" id="stats">
-    <div class="stat"><div class="stat-label">Today's Revenue</div><div class="stat-value"><span class="currency">$</span>0</div><div class="stat-sub">— pending data</div></div>
-    <div class="stat"><div class="stat-label">Orders</div><div class="stat-value">0</div><div class="stat-sub">today</div></div>
-    <div class="stat"><div class="stat-label">Visitors</div><div class="stat-value">0</div><div class="stat-sub">today</div></div>
-    <div class="stat"><div class="stat-label">Drafts Pending</div><div class="stat-value">0</div><div class="stat-sub">awaiting review</div></div>
-    <div class="stat"><div class="stat-label">Crew Online</div><div class="stat-value">2<span style="opacity:.4;font-size:18px;"> / 8</span></div><div class="stat-sub">phase 2</div></div>
-  </section>
+  <!-- TABS -->
+  <nav class="tabs">
+    <button class="tab active" data-pane="ops">Ops</button>
+    <button class="tab" data-pane="library">Library <span id="lib-count" class="tab-pill" style="display:none;">0</span></button>
+  </nav>
 
-  <section class="grid">
-    <!-- SAGE -->
-    <div class="panel">
-      <div class="panel-head">
-        <div class="crew-mark">S</div>
-        <div class="crew-meta">
-          <div class="crew-name">Sage</div>
-          <div class="crew-role">Chief of Staff</div>
+  <!-- PANE: OPS -->
+  <div id="pane-ops" class="pane active">
+    <section class="stats" id="stats">
+      <div class="stat"><div class="stat-label">Today's Revenue</div><div class="stat-value"><span class="currency">$</span>0</div><div class="stat-sub">today</div></div>
+      <div class="stat"><div class="stat-label">Orders</div><div class="stat-value">0</div><div class="stat-sub">today</div></div>
+      <div class="stat"><div class="stat-label">Visitors</div><div class="stat-value">0</div><div class="stat-sub">today</div></div>
+      <div class="stat"><div class="stat-label">7d Revenue</div><div class="stat-value"><span class="currency">$</span>0</div><div class="stat-sub">last 7 days</div></div>
+      <div class="stat"><div class="stat-label">Needs Attention</div><div class="stat-value stat-attn">0</div><div class="stat-sub">pending review</div></div>
+      <div class="stat"><div class="stat-label">Crew Online</div><div class="stat-value">4<span style="opacity:.4;font-size:18px;"> / 8</span></div><div class="stat-sub">phase 3</div></div>
+    </section>
+
+    <section class="chart-panel">
+      <div class="chart-head">
+        <div class="chart-title">7-Day Trend</div>
+        <div class="chart-tabs">
+          <button class="chart-tab active" data-metric="visitors">Visitors</button>
+          <button class="chart-tab" data-metric="pageviews">Pageviews</button>
+          <button class="chart-tab" data-metric="revenue">Revenue</button>
+          <button class="chart-tab" data-metric="orders">Orders</button>
         </div>
-        <div class="crew-status">● ONLINE</div>
       </div>
-      <div id="chat"></div>
-      <div class="chat-input">
-        <input id="chat-input" placeholder="Talk to Sage…" autocomplete="off" />
-        <button id="chat-send" class="btn">Send</button>
+      <svg id="chart" viewBox="0 0 700 140" preserveAspectRatio="none"></svg>
+    </section>
+
+    <section class="grid">
+      <div class="panel tall">
+        <div class="panel-head">
+          <div class="crew-mark">S</div>
+          <div class="crew-meta">
+            <div class="crew-name">Sage</div>
+            <div class="crew-role">Chief of Staff</div>
+          </div>
+          <div class="crew-status">● ONLINE</div>
+        </div>
+        <div id="chat"></div>
+        <div class="chat-input">
+          <input id="chat-input" placeholder="Talk to Sage…" autocomplete="off" />
+          <button id="chat-send" class="btn">Send</button>
+        </div>
+      </div>
+
+      <div class="panel tall">
+        <div class="panel-head">
+          <div class="crew-mark" style="color: var(--amber); border-color: var(--amber);">!</div>
+          <div class="crew-meta">
+            <div class="crew-name">Needs Attention</div>
+            <div class="crew-role">Pending across all crew</div>
+          </div>
+        </div>
+        <div id="attention"></div>
+      </div>
+    </section>
+
+    <section class="activity-panel">
+      <div class="activity-head">
+        <div class="chart-title">Live Activity Feed</div>
+        <span style="font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.5;">Last 30 events</span>
+      </div>
+      <div class="activity-feed" id="activity"></div>
+    </section>
+
+    <section class="queues">
+      <div class="qpanel">
+        <div class="panel-head">
+          <div class="crew-mark nova">N</div>
+          <div class="crew-meta"><div class="crew-name">Nova</div><div class="crew-role">Creative · Drafts</div></div>
+        </div>
+        <div class="q-list" id="nova-queue"></div>
+      </div>
+      <div class="qpanel">
+        <div class="panel-head">
+          <div class="crew-mark grace">G</div>
+          <div class="crew-meta"><div class="crew-name">Grace</div><div class="crew-role">CX · Replies</div></div>
+        </div>
+        <div class="q-list" id="grace-queue"></div>
+      </div>
+      <div class="qpanel">
+        <div class="panel-head">
+          <div class="crew-mark riley">R</div>
+          <div class="crew-meta"><div class="crew-name">Riley</div><div class="crew-role">Social · Plans</div></div>
+        </div>
+        <div class="q-list" id="riley-queue"></div>
+      </div>
+    </section>
+
+    <div class="roster-head">CREW ROSTER · 8</div>
+    <section class="crew-grid">
+      <div class="crew-tile online"><div class="crew-tile-mark">S</div><div class="crew-tile-name">Sage</div><div class="crew-tile-role">Chief of Staff</div><div class="crew-tile-pill">Online</div></div>
+      <div class="crew-tile online"><div class="crew-tile-mark">N</div><div class="crew-tile-name">Nova</div><div class="crew-tile-role">Creative</div><div class="crew-tile-pill">Online</div></div>
+      <div class="crew-tile online"><div class="crew-tile-mark">G</div><div class="crew-tile-name">Grace</div><div class="crew-tile-role">CX</div><div class="crew-tile-pill">Online</div></div>
+      <div class="crew-tile online"><div class="crew-tile-mark">R</div><div class="crew-tile-name">Riley</div><div class="crew-tile-role">Social</div><div class="crew-tile-pill">Online</div></div>
+      <div class="crew-tile offline"><div class="crew-tile-mark">M</div><div class="crew-tile-name">Marcus</div><div class="crew-tile-role">CFO</div><div class="crew-tile-pill">Phase 4</div></div>
+      <div class="crew-tile offline"><div class="crew-tile-mark">A</div><div class="crew-tile-name">Atlas</div><div class="crew-tile-role">Growth</div><div class="crew-tile-pill">Phase 4</div></div>
+      <div class="crew-tile offline"><div class="crew-tile-mark">P</div><div class="crew-tile-name">Pax</div><div class="crew-tile-role">Ops</div><div class="crew-tile-pill">Phase 4</div></div>
+      <div class="crew-tile offline"><div class="crew-tile-mark">E</div><div class="crew-tile-name">Echo</div><div class="crew-tile-role">Night Shift</div><div class="crew-tile-pill">Phase 5</div></div>
+    </section>
+  </div>
+
+  <!-- PANE: LIBRARY -->
+  <div id="pane-library" class="pane">
+    <div class="lib-toolbar">
+      <h2>Photo &amp; Video Library</h2>
+      <div class="lib-tabs">
+        <button class="lib-filter-tab active" data-filter="all">All</button>
+        <button class="lib-filter-tab" data-filter="photos">Photos</button>
+        <button class="lib-filter-tab" data-filter="videos">Videos</button>
       </div>
     </div>
 
-    <!-- NOVA -->
-    <div class="panel">
-      <div class="panel-head">
-        <div class="crew-mark">N</div>
-        <div class="crew-meta">
-          <div class="crew-name">Nova</div>
-          <div class="crew-role">Creative Director · Queue</div>
-        </div>
-        <div class="crew-status">● ONLINE</div>
-      </div>
-      <div id="queue"></div>
+    <div class="upload-zone" id="upload-zone">
+      <div class="upload-zone-mark">+</div>
+      <div class="upload-zone-text">Drop files here, or click to upload</div>
+      <div class="upload-zone-sub">Photos: jpg/png/webp · Videos: mp4/mov · Max 5 MB per file</div>
+      <input type="file" id="file-input" multiple accept="image/*,video/*" style="display:none;" />
     </div>
-  </section>
 
-  <div class="roster-head">CREW ROSTER · 8</div>
-  <section class="crew-grid">
-    <div class="crew-tile online"><div class="crew-tile-mark">S</div><div class="crew-tile-name">Sage</div><div class="crew-tile-role">Chief of Staff</div><div class="crew-tile-pill">Online</div></div>
-    <div class="crew-tile online"><div class="crew-tile-mark">N</div><div class="crew-tile-name">Nova</div><div class="crew-tile-role">Creative</div><div class="crew-tile-pill">Online</div></div>
-    <div class="crew-tile offline"><div class="crew-tile-mark">G</div><div class="crew-tile-name">Grace</div><div class="crew-tile-role">CX</div><div class="crew-tile-pill">Phase 3</div></div>
-    <div class="crew-tile offline"><div class="crew-tile-mark">R</div><div class="crew-tile-name">Riley</div><div class="crew-tile-role">Social</div><div class="crew-tile-pill">Phase 3</div></div>
-    <div class="crew-tile offline"><div class="crew-tile-mark">M</div><div class="crew-tile-name">Marcus</div><div class="crew-tile-role">CFO</div><div class="crew-tile-pill">Phase 4</div></div>
-    <div class="crew-tile offline"><div class="crew-tile-mark">A</div><div class="crew-tile-name">Atlas</div><div class="crew-tile-role">Growth</div><div class="crew-tile-pill">Phase 4</div></div>
-    <div class="crew-tile offline"><div class="crew-tile-mark">P</div><div class="crew-tile-name">Pax</div><div class="crew-tile-role">Ops</div><div class="crew-tile-pill">Phase 4</div></div>
-    <div class="crew-tile offline"><div class="crew-tile-mark">E</div><div class="crew-tile-name">Echo</div><div class="crew-tile-role">Night Shift</div><div class="crew-tile-pill">Phase 5</div></div>
-  </section>
+    <div id="upload-progress" class="upload-progress hidden">
+      <div id="upload-status">Uploading...</div>
+      <div class="upload-bar"><div id="upload-bar-fill" class="upload-bar-fill"></div></div>
+    </div>
 
-  <footer>INSPIRIT OS · v0.1 · BUILT BY CHRIS · GOLD COAST</footer>
+    <div class="lib-grid" id="library-grid"></div>
+  </div>
+
+  <!-- TAG MODAL -->
+  <div class="modal-bg" id="tag-modal">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="modal-title" id="modal-title">Edit Asset</div>
+        <button class="modal-close" id="modal-close">×</button>
+      </div>
+      <div class="modal-body">
+        <img id="modal-preview-img" class="modal-preview" style="display:none;" />
+        <video id="modal-preview-video" class="modal-preview" style="display:none;" controls></video>
+        <div class="modal-row">
+          <div class="modal-label">Asset ID</div>
+          <input class="modal-input" id="modal-id" readonly />
+        </div>
+        <div class="modal-row">
+          <div class="modal-label">Tag products this asset features</div>
+          <div class="product-checkbox-grid" id="product-checks"></div>
+        </div>
+        <div class="modal-row">
+          <div class="modal-label">Tags (comma separated)</div>
+          <input class="modal-input" id="modal-tags" placeholder="lifestyle, studio, model, drop, tee, hoodie..." />
+        </div>
+        <div class="modal-row">
+          <div class="modal-label">Notes for Riley/Nova</div>
+          <textarea class="modal-textarea" id="modal-notes" placeholder="e.g. perfect for new drop announcement, women's-cut focus..."></textarea>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-ghost btn" id="modal-copy-url">Copy URL</button>
+        <button class="btn-ghost btn" id="modal-delete" style="border-color: var(--red); color: var(--red);">Delete</button>
+        <button class="btn" id="modal-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <footer>INSPIRIT OS · v0.6 · BUILT BY CHRIS · GOLD COAST</footer>
 
   <script>
     // ============================================================
-    // 🔧 CONFIG — paste your Cloudflare Worker URL here after deploy
-    // Example: https://inspirit-os.breezusmoon.workers.dev
+    // 🔧 CONFIG
     // ============================================================
     const API = "https://inspirit-os.breezusmoon.workers.dev";
     // ============================================================
@@ -388,6 +488,32 @@
       return id;
     })();
 
+    // ============================================================
+    // TABS
+    // ============================================================
+    document.querySelectorAll(".tab").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".pane").forEach(p => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("pane-" + btn.dataset.pane).classList.add("active");
+        if (btn.dataset.pane === "library") loadLibrary();
+      };
+    });
+
+    // ============================================================
+    // TOAST
+    // ============================================================
+    function toast(msg, kind = "ok") {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.className = "toast show" + (kind === "error" ? " error" : "");
+      setTimeout(() => t.classList.remove("show"), 3500);
+    }
+
+    // ============================================================
+    // SAGE CHAT
+    // ============================================================
     const chat = document.getElementById("chat");
     const input = document.getElementById("chat-input");
     const sendBtn = document.getElementById("chat-send");
@@ -407,12 +533,12 @@
         const data = await r.json();
         chat.innerHTML = "";
         if (!data.history || !data.history.length) {
-          addMsg("sage", "Hey Chris. Sage here. I'm online and Nova's running with me. Ask me anything about Inspirit — or tell me what you want drafted and I'll hand it to her.");
+          addMsg("sage", "Hey Chris. Full crew online — Nova, Grace, Riley and me. Library tab is up too. Ask anything.");
         } else {
           data.history.forEach(m => addMsg(m.role === "user" ? "user" : "sage", m.content));
         }
       } catch (e) {
-        addMsg("sage", "Can't reach the worker yet. Check the API URL at the bottom of this file is set correctly, then hard-refresh.");
+        addMsg("sage", "Can't reach the worker. Check the API URL.");
       }
     }
 
@@ -432,7 +558,7 @@
         const data = await r.json();
         thinking.remove();
         addMsg("sage", data.reply || data.error || "Something went wrong.");
-        loadStats(); loadQueue();
+        loadAll();
       } catch (e) {
         thinking.remove();
         addMsg("sage", "Connection error: " + e.message);
@@ -444,53 +570,389 @@
     sendBtn.onclick = send;
     input.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
 
+    // ============================================================
+    // STATS + CHART
+    // ============================================================
+    let currentMetric = "visitors";
+    let currentDaily = [];
+
     async function loadStats() {
       try {
         const r = await fetch(`${API}/api/stats`);
         const s = await r.json();
+        currentDaily = s.daily || [];
+        const attn = (s.pending_drafts || 0) + (s.pending_replies || 0) + (s.pending_plans || 0) + (s.escalations || 0);
         document.getElementById("stats").innerHTML = `
           <div class="stat"><div class="stat-label">Today's Revenue</div><div class="stat-value"><span class="currency">$</span>${(s.today_revenue || 0).toLocaleString('en-AU', { maximumFractionDigits: 0 })}</div><div class="stat-sub">today</div></div>
           <div class="stat"><div class="stat-label">Orders</div><div class="stat-value">${s.today_orders || 0}</div><div class="stat-sub">today</div></div>
           <div class="stat"><div class="stat-label">Visitors</div><div class="stat-value">${s.today_visitors || 0}</div><div class="stat-sub">${s.today_pageviews || 0} pageviews</div></div>
-          <div class="stat"><div class="stat-label">Drafts Pending</div><div class="stat-value">${s.pending_drafts || 0}</div><div class="stat-sub">awaiting review</div></div>
-          <div class="stat"><div class="stat-label">Crew Online</div><div class="stat-value">${s.crew_online || 2}<span style="opacity:.4;font-size:18px;"> / ${s.crew_total || 8}</span></div><div class="stat-sub">phase 2</div></div>
+          <div class="stat"><div class="stat-label">7d Revenue</div><div class="stat-value"><span class="currency">$</span>${(s.week_revenue || 0).toLocaleString('en-AU', { maximumFractionDigits: 0 })}</div><div class="stat-sub">${s.week_visitors || 0} visitors</div></div>
+          <div class="stat"><div class="stat-label">Needs Attention</div><div class="stat-value ${attn > 0 ? 'stat-attn' : ''}">${attn}</div><div class="stat-sub">pending review</div></div>
+          <div class="stat"><div class="stat-label">Crew Online</div><div class="stat-value">${s.crew_online || 4}<span style="opacity:.4;font-size:18px;"> / ${s.crew_total || 8}</span></div><div class="stat-sub">phase 3</div></div>
         `;
-      } catch (e) { /* keep defaults */ }
+        drawChart();
+      } catch (e) {}
     }
 
-    async function loadQueue() {
-      const q = document.getElementById("queue");
+    function drawChart() {
+      const svg = document.getElementById("chart");
+      const data = currentDaily.map(d => ({ ...d, val: d[currentMetric] || 0 }));
+      const max = Math.max(...data.map(d => d.val), 1);
+      const w = 700, h = 140, pad = 20;
+      const innerW = w - pad * 2, innerH = h - pad * 2;
+      const stepX = innerW / Math.max(data.length - 1, 1);
+      const points = data.map((d, i) => ({
+        x: pad + i * stepX,
+        y: pad + innerH - (d.val / max) * innerH
+      }));
+      const path = points.map((p, i) => (i === 0 ? `M ${p.x},${p.y}` : `L ${p.x},${p.y}`)).join(" ");
+      const fillPath = `${path} L ${points[points.length-1].x},${pad + innerH} L ${points[0].x},${pad + innerH} Z`;
+      let gridLines = "";
+      for (let i = 1; i < 4; i++) {
+        const y = pad + (innerH / 4) * i;
+        gridLines += `<line x1="${pad}" y1="${y}" x2="${w - pad}" y2="${y}" stroke="#2a2622" stroke-width="0.5" stroke-dasharray="2,3"/>`;
+      }
+      const labels = data.map((d, i) => `<text x="${points[i].x}" y="${h - 4}" font-family="JetBrains Mono" font-size="9" fill="#d6cfbe" opacity="0.5" text-anchor="middle">${d.label}</text>`).join("");
+      const dots = points.map((p, i) => `<circle cx="${p.x}" cy="${p.y}" r="3" fill="#c9b87a"><title>${data[i].label}: ${currentMetric === 'revenue' ? '$' : ''}${data[i].val}</title></circle>`).join("");
+      svg.innerHTML = `${gridLines}<path d="${fillPath}" fill="rgba(201, 184, 122, 0.1)"/><path d="${path}" stroke="#c9b87a" stroke-width="1.5" fill="none"/>${dots}${labels}<text x="${pad}" y="14" font-family="JetBrains Mono" font-size="9" fill="#d6cfbe" opacity="0.5">${currentMetric === 'revenue' ? '$' : ''}${max}</text>`;
+    }
+
+    document.querySelectorAll(".chart-tab").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll(".chart-tab").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentMetric = btn.dataset.metric;
+        drawChart();
+      };
+    });
+
+    // ============================================================
+    // ATTENTION + QUEUES + ACTIVITY (unchanged from v0.4)
+    // ============================================================
+    async function loadAttention() {
       try {
-        const r = await fetch(`${API}/api/nova/queue`);
+        const r = await fetch(`${API}/api/attention`);
         const data = await r.json();
-        if (!data.queue || !data.queue.length) {
-          q.innerHTML = '<div class="empty">No drafts yet · ask Sage to write something</div>';
+        const box = document.getElementById("attention");
+        if (!data.items || !data.items.length) {
+          box.innerHTML = '<div class="attn-empty">All clear · no pending items</div>';
           return;
         }
-        q.innerHTML = data.queue.map(item => `
+        box.innerHTML = data.items.map(item => `
+          <div class="attn-item" onclick="scrollToQueue('${item.crew}')">
+            <div class="attn-row">
+              <span class="attn-tag ${item.crew} ${item.status === 'escalated' ? 'escalated' : ''}">${item.status === 'escalated' ? 'ESCALATED' : item.crew}</span>
+              <span class="attn-time">${timeAgo(item.ts)}</span>
+            </div>
+            <div class="attn-brief">${escapeHtml((item.brief || '').slice(0, 120))}${(item.brief || '').length > 120 ? '…' : ''}</div>
+          </div>
+        `).join("");
+      } catch (e) {}
+    }
+    window.scrollToQueue = (crew) => {
+      const el = document.getElementById(crew + "-queue");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    };
+
+    async function loadQueue(crew) {
+      try {
+        const r = await fetch(`${API}/api/${crew}/queue`);
+        const data = await r.json();
+        const box = document.getElementById(crew + "-queue");
+        if (!data.queue || !data.queue.length) {
+          box.innerHTML = `<div class="empty">No items yet</div>`;
+          return;
+        }
+        box.innerHTML = data.queue.map(item => `
           <div class="q-item ${item.status}">
             <div class="q-time">${timeAgo(item.ts)}${item.status !== 'pending' ? `<span class="q-status ${item.status}">${item.status}</span>` : ''}</div>
+            ${item.customer_email ? `<div class="q-customer">From: ${escapeHtml(item.customer_email)}</div>` : ''}
             <div class="q-brief">${escapeHtml(item.brief)}</div>
             <div class="q-output" onclick="this.classList.toggle('expanded')">${escapeHtml(item.output)}</div>
             <div class="q-actions">
               ${item.status === 'pending' ? `
-                <button class="q-btn approve" onclick="updateItem('${item.id}','approved')">✓ Approve</button>
-                <button class="q-btn reject" onclick="updateItem('${item.id}','rejected')">✗ Reject</button>
+                <button class="q-btn approve" onclick="updateItem('${crew}','${item.id}','${crew === 'grace' ? 'sent' : 'approved'}')">✓ ${crew === 'grace' ? 'Mark Sent' : 'Approve'}</button>
+                <button class="q-btn reject" onclick="updateItem('${crew}','${item.id}','rejected')">✗ Reject</button>
               ` : ''}
-              <button class="q-btn" onclick="copyItem('${item.id}')">📋 Copy</button>
+              ${item.status === 'escalated' ? `<button class="q-btn approve" onclick="updateItem('${crew}','${item.id}','sent')">✓ Resolved</button>` : ''}
+              <button class="q-btn" onclick="copyItem('${crew}','${item.id}')">Copy</button>
             </div>
           </div>
         `).join("");
-        window._queueItems = data.queue;
+        window['_' + crew + 'Items'] = data.queue;
+      } catch (e) {}
+    }
+    window.updateItem = async (crew, id, status) => {
+      await fetch(`${API}/api/${crew}/queue/update`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status })
+      });
+      loadAll();
+    };
+    window.copyItem = (crew, id) => {
+      const items = window['_' + crew + 'Items'] || [];
+      const item = items.find(i => i.id === id);
+      if (item) {
+        navigator.clipboard.writeText(item.output);
+        toast("Copied to clipboard");
+      }
+    };
+
+    async function loadActivity() {
+      try {
+        const r = await fetch(`${API}/api/activity?limit=30`);
+        const data = await r.json();
+        const box = document.getElementById("activity");
+        if (!data.activity || !data.activity.length) {
+          box.innerHTML = '<div style="font-family: var(--mono); font-size: 11px; opacity: 0.5; padding: 20px; text-align: center;">No activity yet</div>';
+          return;
+        }
+        box.innerHTML = data.activity.map(a => {
+          let txt = "";
+          if (a.crew === "sage" && a.action === "chat") txt = `Chat — "${(a.meta && a.meta.preview || '').slice(0, 60)}"`;
+          else if (a.crew === "nova" && a.action === "draft") txt = `Drafted — ${(a.meta && a.meta.brief || '').slice(0, 60)}`;
+          else if (a.crew === "grace" && a.action === "draft") txt = `Replied to ${a.meta && a.meta.from || 'customer'} — "${(a.meta && a.meta.preview || '').slice(0, 50)}"`;
+          else if (a.crew === "grace" && a.action === "escalation") txt = `ESCALATED from ${a.meta && a.meta.from || 'customer'}`;
+          else if (a.crew === "riley" && a.action === "plan") txt = `Plan — ${(a.meta && a.meta.brief || '').slice(0, 60)}`;
+          else if (a.crew === "library") txt = `${a.action} ${a.meta && a.meta.type || ''} — ${a.meta && a.meta.id || ''}`;
+          else txt = a.action;
+          return `<div class="activity-row"><span class="activity-time">${timeAgo(a.ts)}</span><span class="activity-crew ${a.crew}">${a.crew}</span><span class="activity-text">${escapeHtml(txt)}</span></div>`;
+        }).join("");
+      } catch (e) {}
+    }
+
+    // ============================================================
+    // LIBRARY
+    // ============================================================
+    let library = { photos: [], videos: [] };
+    let libFilter = "all";
+    let editingItem = null;
+
+    // Product list (mirror of KB) for tagging
+    const PRODUCTS = [
+      "Feeding 5000 Tee", "Jesus Fish Tee — White", "Jesus Fish Tee — Black",
+      "Spiritual Badass Tee — Black", "Spiritual Badass Tee — White",
+      "Heart Tee — Black", "Heart Tee — White",
+      "Inspirit Hoodie", "Spiritual Badass Hoodie", "Jesus Fish Jumper",
+      "Inspirit Bucket Hat", "Spiritual Badass Bucket Hat", "Inspirit Beanie"
+    ];
+
+    async function loadLibrary() {
+      try {
+        const r = await fetch(`${API}/api/library`);
+        library = await r.json();
+        renderLibrary();
+        const total = (library.photos?.length || 0) + (library.videos?.length || 0);
+        const pill = document.getElementById("lib-count");
+        if (total > 0) {
+          pill.textContent = total;
+          pill.style.display = "inline-block";
+        } else {
+          pill.style.display = "none";
+        }
       } catch (e) {
-        q.innerHTML = '<div class="empty">Queue unavailable</div>';
+        toast("Failed to load library", "error");
       }
     }
 
+    function renderLibrary() {
+      const grid = document.getElementById("library-grid");
+      let items = [];
+      if (libFilter === "all" || libFilter === "photos") items.push(...(library.photos || []).map(x => ({...x, type: "photo"})));
+      if (libFilter === "all" || libFilter === "videos") items.push(...(library.videos || []).map(x => ({...x, type: "video"})));
+      items.sort((a, b) => (b.uploadedAt || 0) - (a.uploadedAt || 0));
+
+      if (!items.length) {
+        grid.innerHTML = `<div class="empty" style="grid-column: 1/-1;">No ${libFilter === "all" ? "assets" : libFilter} yet — drop some files above to get started</div>`;
+        return;
+      }
+
+      grid.innerHTML = items.map(item => `
+        <div class="lib-card">
+          <div class="lib-thumb">
+            ${item.type === "photo"
+              ? `<img src="${item.url}" alt="${item.id}" loading="lazy" onerror="this.style.display='none'"/>`
+              : `<video src="${item.url}" muted preload="metadata"></video>`}
+            <span class="lib-type-badge">${item.type}</span>
+          </div>
+          <div class="lib-meta">
+            <div class="lib-id">${item.id}</div>
+            <div class="lib-tags">
+              ${(item.products || []).map(p => `<span class="lib-pill product">${escapeHtml(p)}</span>`).join("")}
+              ${(item.tags || []).map(t => `<span class="lib-pill">${escapeHtml(t)}</span>`).join("")}
+            </div>
+          </div>
+          <div class="lib-actions">
+            <button class="lib-btn" onclick='openTagModal(${JSON.stringify(item).replace(/'/g, "&#39;")})'>Tag</button>
+            <button class="lib-btn" onclick="copyAssetUrl('${item.url}')">URL</button>
+            <a class="lib-btn" href="${item.url}" target="_blank" style="text-decoration:none; text-align:center;">Open</a>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    document.querySelectorAll(".lib-filter-tab").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll(".lib-filter-tab").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        libFilter = btn.dataset.filter;
+        renderLibrary();
+      };
+    });
+
+    window.copyAssetUrl = (url) => {
+      navigator.clipboard.writeText(url);
+      toast("URL copied — paste into IG/TikTok");
+    };
+
+    // Upload
+    const uploadZone = document.getElementById("upload-zone");
+    const fileInput = document.getElementById("file-input");
+    uploadZone.onclick = () => fileInput.click();
+    fileInput.onchange = (e) => handleFiles(e.target.files);
+    uploadZone.addEventListener("dragover", e => { e.preventDefault(); uploadZone.classList.add("dragover"); });
+    uploadZone.addEventListener("dragleave", () => uploadZone.classList.remove("dragover"));
+    uploadZone.addEventListener("drop", e => {
+      e.preventDefault();
+      uploadZone.classList.remove("dragover");
+      handleFiles(e.dataTransfer.files);
+    });
+
+    async function handleFiles(files) {
+      const arr = Array.from(files);
+      if (!arr.length) return;
+      const progBox = document.getElementById("upload-progress");
+      const progStatus = document.getElementById("upload-status");
+      const progFill = document.getElementById("upload-bar-fill");
+      progBox.classList.remove("hidden");
+
+      for (let i = 0; i < arr.length; i++) {
+        const file = arr[i];
+        progStatus.textContent = `Uploading ${i+1}/${arr.length}: ${file.name}`;
+        progFill.style.width = `${((i) / arr.length) * 100}%`;
+
+        if (file.size > 5 * 1024 * 1024) {
+          toast(`${file.name} is over 5 MB — skipped`, "error");
+          continue;
+        }
+
+        try {
+          const base64 = await fileToBase64(file);
+          const type = file.type.startsWith("video/") ? "video" : "photo";
+          const r = await fetch(`${API}/api/library/upload`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              type, filename: file.name, mime: file.type, base64,
+              products: [], tags: [], notes: ""
+            })
+          });
+          const data = await r.json();
+          if (!r.ok) throw new Error(data.error || "upload failed");
+        } catch (err) {
+          toast(`Upload failed: ${err.message}`, "error");
+        }
+      }
+
+      progFill.style.width = `100%`;
+      progStatus.textContent = `Done`;
+      setTimeout(() => progBox.classList.add("hidden"), 1500);
+      fileInput.value = "";
+      loadLibrary();
+    }
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => {
+          const result = r.result;
+          const base64 = result.split(",")[1];
+          resolve(base64);
+        };
+        r.onerror = reject;
+        r.readAsDataURL(file);
+      });
+    }
+
+    // Tag modal
+    window.openTagModal = (item) => {
+      editingItem = item;
+      document.getElementById("modal-title").textContent = `Edit ${item.type}`;
+      document.getElementById("modal-id").value = item.id;
+      const img = document.getElementById("modal-preview-img");
+      const vid = document.getElementById("modal-preview-video");
+      if (item.type === "photo") {
+        img.src = item.url; img.style.display = "block";
+        vid.style.display = "none";
+      } else {
+        vid.src = item.url; vid.style.display = "block";
+        img.style.display = "none";
+      }
+      const checks = document.getElementById("product-checks");
+      checks.innerHTML = PRODUCTS.map(p => `
+        <label class="product-check">
+          <input type="checkbox" value="${escapeHtml(p)}" ${(item.products || []).includes(p) ? "checked" : ""}/>
+          ${escapeHtml(p)}
+        </label>
+      `).join("");
+      document.getElementById("modal-tags").value = (item.tags || []).join(", ");
+      document.getElementById("modal-notes").value = item.notes || "";
+      document.getElementById("tag-modal").classList.add("show");
+    };
+
+    document.getElementById("modal-close").onclick = () => document.getElementById("tag-modal").classList.remove("show");
+    document.getElementById("tag-modal").onclick = (e) => {
+      if (e.target.id === "tag-modal") e.target.classList.remove("show");
+    };
+
+    document.getElementById("modal-copy-url").onclick = () => {
+      if (editingItem) copyAssetUrl(editingItem.url);
+    };
+
+    document.getElementById("modal-save").onclick = async () => {
+      if (!editingItem) return;
+      const products = Array.from(document.querySelectorAll("#product-checks input:checked")).map(i => i.value);
+      const tags = document.getElementById("modal-tags").value.split(",").map(s => s.trim()).filter(Boolean);
+      const notes = document.getElementById("modal-notes").value.trim();
+      try {
+        const r = await fetch(`${API}/api/library/update`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type: editingItem.type, id: editingItem.id, products, tags, notes })
+        });
+        if (!r.ok) throw new Error("update failed");
+        toast("Saved");
+        document.getElementById("tag-modal").classList.remove("show");
+        loadLibrary();
+      } catch (err) {
+        toast(`Save failed: ${err.message}`, "error");
+      }
+    };
+
+    document.getElementById("modal-delete").onclick = async () => {
+      if (!editingItem) return;
+      if (!confirm(`Delete ${editingItem.id}? This removes it from GitHub permanently.`)) return;
+      try {
+        const r = await fetch(`${API}/api/library/delete`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type: editingItem.type, id: editingItem.id })
+        });
+        if (!r.ok) throw new Error("delete failed");
+        toast("Deleted");
+        document.getElementById("tag-modal").classList.remove("show");
+        loadLibrary();
+      } catch (err) {
+        toast(`Delete failed: ${err.message}`, "error");
+      }
+    };
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
     function escapeHtml(s) {
       return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" })[c]);
     }
-
     function timeAgo(ts) {
       const sec = Math.floor((Date.now() - ts) / 1000);
       if (sec < 60) return sec + "s ago";
@@ -498,24 +960,6 @@
       if (sec < 86400) return Math.floor(sec / 3600) + "h ago";
       return Math.floor(sec / 86400) + "d ago";
     }
-
-    window.updateItem = async (id, status) => {
-      await fetch(`${API}/api/nova/queue/update`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, status })
-      });
-      loadQueue(); loadStats();
-    };
-
-    window.copyItem = (id) => {
-      const item = (window._queueItems || []).find(i => i.id === id);
-      if (item) {
-        navigator.clipboard.writeText(item.output);
-        alert("Copied to clipboard");
-      }
-    };
-
     function updateClock() {
       const now = new Date();
       const t = now.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit", hour12: false });
@@ -523,9 +967,20 @@
       document.getElementById("clock").textContent = `${d.toUpperCase()} · ${t}`;
     }
 
+    function loadAll() {
+      loadStats();
+      loadAttention();
+      loadActivity();
+      loadQueue("nova");
+      loadQueue("grace");
+      loadQueue("riley");
+      loadLibrary(); // for the count pill
+    }
+
     updateClock(); setInterval(updateClock, 1000 * 30);
-    loadHistory(); loadStats(); loadQueue();
-    setInterval(() => { loadStats(); loadQueue(); }, 30000);
+    loadHistory();
+    loadAll();
+    setInterval(loadAll, 30000);
   </script>
 </body>
 </html>
