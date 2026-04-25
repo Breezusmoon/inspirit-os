@@ -1,8 +1,13 @@
 // ============================================================
-// INSPIRIT OS — Foundation Worker  v0.2
+// INSPIRIT OS — Foundation Worker  v0.3
 // Sage (Chief of Staff) + Nova (Creative Director)
 // Cloudflare Workers + KV + Workers AI
-// HARDENED: Sage never invents numbers
+//
+// v0.3 fixes:
+//  - Hardened ROUTE_TO_NOVA detection (markdown-safe)
+//  - Strips ALL routing tokens from user-facing reply
+//  - Sage knows tracking IS installed (no more "wire up GA")
+//  - Better fallback when Llama goes off-script
 // ============================================================
 
 const MODEL = "@cf/meta/llama-3.1-8b-instruct";
@@ -30,35 +35,51 @@ CRITICAL TRUTH RULE — DO NOT VIOLATE
 You have ZERO ability to invent numbers, stats, sales figures, follower counts, traffic data, or any business metrics.
 - The ONLY source of business data is the LIVE STATS block at the bottom of this prompt.
 - If LIVE STATS shows zeros, the answer is "we have no data yet" — DO NOT make up plausible-sounding numbers.
-- If Chris asks "how was today" or "what are the numbers" and stats are zero, tell him: tracking isnt wired up yet, and what he can do to fix it.
 - NEVER invent: visitor counts, follower counts, order counts, revenue, social media numbers, bounce rates, conversion rates, or any other metric.
 - If asked about something not in LIVE STATS (e.g. social media followers), say "I dont have that connected yet" — never guess.
-- Hallucinating numbers is the single worst thing you can do. Chris will lose trust in the whole system. Dont do it. Ever.
+- Hallucinating numbers is the worst thing you can do. Chris will lose trust in the whole system.
 
-WHAT YOU CAN DO RIGHT NOW
-- Chat with Chris about anything Inspirit
-- Hand off content tasks to Nova (captions, emails, descriptions, ad copy, post copy)
-- Reference past conversations (you have memory)
-- Report on stats from the LIVE STATS block — but only what's actually in it
+WHAT TRACKING IS ALREADY INSTALLED — IMPORTANT
+Inspirit OS has its OWN tracking system, already live on inspiritclothingco.io. Two events fire automatically:
+- 'pageview' on every page load (script in theme.liquid)
+- 'order' on every successful checkout (Shopify Customer Event pixel)
+Data flows directly to your KV store and shows up in LIVE STATS within seconds.
+- DO NOT recommend Google Analytics. Inspirit OS replaces it.
+- DO NOT recommend Google Tag Manager. Not needed.
+- DO NOT recommend Meta Pixel, Hotjar, etc. unless Chris specifically asks.
+- If LIVE STATS shows zeros, the tracking exists but no one has visited TODAY yet — say that, don't say "tracking isn't installed".
 
-DELEGATION RULE — CRITICAL
-When Chris asks for any written content (caption, post, email, description, ad copy, tagline, headline, bio), DO NOT write it yourself. Output exactly this on its own line:
-ROUTE_TO_NOVA: <a clear brief for Nova including product, tone, platform, length>
+DELEGATION RULE — ABSOLUTELY CRITICAL
+When Chris asks for any written content (caption, post, email, description, ad copy, tagline, headline, bio), you MUST delegate to Nova.
 
-Examples that route to Nova:
-- "draft a caption for the Heart Tee drop" -> ROUTE_TO_NOVA: IG caption for Heart Tee launch, faith-streetwear tone, 1-2 short paragraphs
-- "write a welcome email" -> ROUTE_TO_NOVA: Welcome email for first-time Inspirit subscribers, bold faith voice, ~150 words
+To delegate, output a SINGLE LINE in this EXACT format, with NOTHING else around it — no markdown, no numbering, no "Option" prefix, no quotes:
 
-Examples you handle yourself:
-- "how was today" -> answer from LIVE STATS only
-- "what should I drop next" -> strategic chat, no writing
-- "is the site getting traffic" -> answer from LIVE STATS only
+ROUTE_TO_NOVA: <plain-text brief for Nova>
+
+That line is consumed by the system and replaced with Nova's actual draft. Do not show it to Chris in any decorated form.
+
+CORRECT example (this is what you output):
+ROUTE_TO_NOVA: IG caption for Heart Tee launch, faith-streetwear tone, 1-2 short paragraphs
+
+WRONG examples (NEVER output these):
+- **Option 1:** ROUTE_TO_NOVA: ...
+- 1. ROUTE_TO_NOVA: ...
+- "ROUTE_TO_NOVA: ..."
+- Listing multiple ROUTE_TO_NOVA lines
+
+If Chris's request is unclear, just ASK ONE clarifying question — do not generate options.
+
+TASKS YOU HANDLE YOURSELF (no delegation)
+- "how was today" / "any sales" / "is the site getting traffic" -> answer from LIVE STATS only
+- "what should I drop next" / strategic chats -> chat normally, no writing
+- "what's pending" / "what's the queue" -> reference Pending Nova drafts count
+- General questions about Inspirit, the OS, the crew
 
 BRAND CONTEXT
 - Inspirit Clothing Co — Christian urban streetwear, handprinted in Australia
 - Tagline: "Wear your faith. Walk in purpose."
 - Positioning: Spiritual Badass — bold faith with urban edge
-- Site: inspiritclothingco.io (currently being set up)
+- Site: inspiritclothingco.io
 - Audience: Young Christians who want streetwear that reflects their faith without being cringe`;
 
 // ------------------------------------------------------------
@@ -126,12 +147,14 @@ async function callAI(env, messages, max_tokens = 1024) {
 // Build the LIVE STATS block injected into Sage's prompt every turn
 function buildLiveStatsBlock(stats) {
   const hasData = (stats.today_orders > 0 || stats.today_visitors > 0 || stats.today_pageviews > 0);
-  const tracker = hasData ? "ACTIVE" : "NOT YET WIRED — no data has been received";
+  const tracker = hasData
+    ? "ACTIVE — receiving live data"
+    : "INSTALLED but no events fired today yet (no one has visited the site today, OR tracker just installed minutes ago)";
 
   return `
 
 --- LIVE STATS (THE ONLY DATA YOU CAN REFERENCE) ---
-Tracking status: ${tracker}
+Tracker status: ${tracker}
 Today's revenue: $${stats.today_revenue || 0}
 Today's orders: ${stats.today_orders || 0}
 Today's unique visitors: ${stats.today_visitors || 0}
@@ -146,6 +169,34 @@ DATA YOU DO NOT HAVE (do NOT invent these — say "not connected yet" if asked):
 - Shopify order details
 - Inventory levels
 ---------------------------------------------------`;
+}
+
+// ------------------------------------------------------------
+// ROUTING DETECTION — robust, markdown-safe
+// ------------------------------------------------------------
+function extractRouteToNova(reply) {
+  // Match ROUTE_TO_NOVA: anywhere in the reply, regardless of leading markdown
+  // Captures everything until end of line OR end of string
+  const re = /ROUTE_TO_NOVA\s*:\s*([^\n]+)/i;
+  const match = reply.match(re);
+  if (!match) return null;
+  // Clean trailing markdown junk
+  let brief = match[1].trim();
+  brief = brief.replace(/^[*_"'`]+|[*_"'`]+$/g, "").trim();
+  if (brief.length < 5) return null;
+  return brief;
+}
+
+function stripAllRoutingTokens(reply) {
+  // Strip every line that contains ROUTE_TO_NOVA (we already extracted it)
+  return reply
+    .split("\n")
+    .filter(line => !/ROUTE_TO_NOVA/i.test(line))
+    // Also remove now-empty markdown like "**Option 2:**" left behind
+    .filter(line => !/^\s*\**\s*Option\s+[A-Z0-9]+\s*:?\s*\**\s*$/i.test(line))
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 // ------------------------------------------------------------
@@ -169,14 +220,18 @@ async function sageChat(env, message, sessionId) {
   let reply = await callAI(env, messages, 800);
   let routedDraft = null;
 
-  // Check if Sage delegated to Nova
-  const routeMatch = reply.match(/ROUTE_TO_NOVA:\s*(.+?)(?:\n|$)/);
-  if (routeMatch) {
-    const brief = routeMatch[1].trim();
+  // Detect delegation
+  const brief = extractRouteToNova(reply);
+  if (brief) {
     routedDraft = await novaDraft(env, brief);
-    reply = reply.replace(/ROUTE_TO_NOVA:\s*.+?(?:\n|$)/, "").trim();
-    if (!reply) reply = "On it — Nova's got this.";
+    reply = stripAllRoutingTokens(reply);
+    if (!reply || reply.length < 20) {
+      reply = "On it — Nova's drafting now.";
+    }
     reply += `\n\n— Nova drafted ${routedDraft.options} options. Check the queue.`;
+  } else {
+    // Even without delegation, strip any stray routing tokens just in case
+    reply = stripAllRoutingTokens(reply);
   }
 
   // Save history (keep last 40 messages)
@@ -257,7 +312,7 @@ async function getStats(env) {
   const pending = queue.filter(q => q.status === "pending").length;
 
   return {
-    today_revenue: orders.reduce((a, e) => a + (e.amount || 0), 0),
+    today_revenue: orders.reduce((a, e) => a + (Number(e.amount) || 0), 0),
     today_orders: orders.length,
     today_visitors: sessions.size,
     today_pageviews: pageviews.length,
@@ -289,7 +344,7 @@ export default {
       if (path === "/" || path === "/api" || path === "/api/health") {
         return json({
           service: "Inspirit OS",
-          version: "0.2.0",
+          version: "0.3.0",
           crew_online: ["sage", "nova"],
           time: new Date().toISOString()
         });
