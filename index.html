@@ -413,7 +413,7 @@
       <h1 class="brand-title">The <em>Bridge</em></h1>
     </div>
     <div class="header-meta">
-      <div class="live"><span class="live-dot"></span>ALL SYSTEMS ONLINE · v0.7.1</div>
+      <div class="live"><span class="live-dot"></span>ALL SYSTEMS ONLINE · v0.7.2</div>
       <div id="clock"></div>
     </div>
   </header>
@@ -1011,7 +1011,7 @@
     // Delete a photo/video from product
     window.deletePhoto = async (type, id) => {
       if (!openProduct) return;
-      if (!confirm(`Remove this ${type}? It'll also be deleted from GitHub.`)) return;
+      if (!confirm(`Remove this ${type} from the Showroom? (file stays safe in GitHub)`)) return;
       try {
         const r = await fetch(`${API}/api/library/delete`, {
           method: "POST", headers: { "Content-Type": "application/json" },
@@ -1355,7 +1355,7 @@
 
     document.getElementById("modal-delete").onclick = async () => {
       if (!editingItem) return;
-      if (!confirm(`Delete ${editingItem.id}? This removes it from GitHub permanently.`)) return;
+      if (!confirm(`Remove ${editingItem.id} from the Library? (file stays safe in GitHub)`)) return;
       try {
         const r = await fetch(`${API}/api/library/delete`, {
           method: "POST",
