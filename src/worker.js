@@ -905,7 +905,7 @@ export default {
       if (path === "/" || path === "/api" || path === "/api/health") {
         return json({
           service: "Inspirit OS",
-          version: "0.7.0",
+          version: "0.7.2",
           crew_online: ["sage", "nova", "grace", "riley"],
           knowledge_base: "loaded",
           library: "ready",
@@ -1116,6 +1116,7 @@ export default {
 
       if (path === "/api/library/delete" && request.method === "POST") {
         // body: { type, id }
+        // Note: ONLY removes from manifest. File stays in GitHub repo (safe).
         const body = await request.json();
         const lib = await getLibrary(env);
         const arr = body.type === "photo" ? lib.photos : lib.videos;
@@ -1123,19 +1124,14 @@ export default {
         if (idx < 0) return json({ error: "not found" }, 404);
         const item = arr[idx];
 
-        // Delete from GitHub
-        try {
-          await ghDeleteFile(env, item.path, `[Inspirit OS] delete ${body.type}: ${item.id}`);
-        } catch (err) {
-          // Continue even if GH delete fails — at least clear from manifest
-          console.error("GH delete failed:", err.message);
-        }
-
         arr.splice(idx, 1);
         await saveLibrary(env, lib);
-        await logActivity(env, "library", "delete", { type: body.type, id: item.id });
-        return json({ ok: true });
+        await logActivity(env, "library", "remove", { type: body.type, id: item.id });
+        return json({ ok: true, note: "removed from showroom; file kept in repo" });
       }
+
+      // ANALYTICS endpoints below
+      // ----- (file is preserved on GitHub even after manifest removal) -----
 
       // ANALYTICS
       if (path === "/api/track" && request.method === "POST") {
