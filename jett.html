@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jett · TikTok Studio · Inspirit OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --void: #0a0908; --ink: #14110f; --whisper: #1f1c19; --line: #2a2622; --bone: #d6cfbe; --paper: #f5f1e8; --pulse: #c9b87a; --green: #7cc174; --red: #c47373; --jett: #ff3b6b; --mono: 'JetBrains Mono', ui-monospace, monospace; --serif: 'Fraunces', Georgia, serif; --sans: 'Manrope', -apple-system, sans-serif; }
+    html, body { height: 100%; }
+    body { font-family: var(--sans); background: var(--void); color: var(--paper); font-size: 15px; line-height: 1.5; min-height: 100vh; padding: 24px; background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255,59,107,0.06), transparent); }
+    .header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--line); flex-wrap: wrap; gap: 16px; }
+    .brand { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+    .brand-mark { font-family: var(--mono); font-weight: 700; letter-spacing: 0.18em; font-size: 13px; color: var(--bone); }
+    .brand-title { font-family: var(--serif); font-weight: 500; font-size: 28px; letter-spacing: -0.01em; }
+    .brand-title em { font-style: italic; color: var(--jett); font-weight: 400; }
+    .header-meta { font-family: var(--mono); font-size: 11px; color: var(--bone); opacity: 0.7; }
+    .header-meta .live { color: var(--green); }
+    .live-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--jett); margin-right: 6px; animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: 0.4; } }
+    .nav-link { font-family: var(--mono); font-size: 11px; color: var(--bone); text-decoration: none; opacity: 0.7; padding: 6px 12px; border: 1px solid var(--line); border-radius: 4px; }
+    .nav-link:hover { color: var(--paper); border-color: var(--pulse); }
+
+    .hero { background: linear-gradient(135deg, rgba(255,59,107,0.08), rgba(255,59,107,0.02)); border: 1px solid var(--jett); border-radius: 8px; padding: 24px; margin-bottom: 20px; display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
+    .hero-mark { width: 56px; height: 56px; border-radius: 50%; background: var(--jett); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-weight: 700; font-size: 26px; color: var(--paper); flex-shrink: 0; }
+    .hero-meta { flex: 1; min-width: 220px; }
+    .hero-title { font-family: var(--serif); font-size: 26px; font-weight: 500; margin-bottom: 6px; }
+    .hero-title em { color: var(--jett); font-style: italic; }
+    .hero-sub { font-family: var(--mono); font-size: 11px; color: var(--bone); opacity: 0.7; line-height: 1.6; }
+
+    .modes { display: grid; gap: 6px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); margin-bottom: 16px; }
+    .mode { background: var(--ink); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; cursor: pointer; transition: all 0.15s; }
+    .mode:hover { border-color: var(--jett); }
+    .mode.active { background: linear-gradient(135deg, rgba(255,59,107,0.12), rgba(255,59,107,0.04)); border-color: var(--jett); }
+    .mode-name { font-family: var(--serif); font-size: 14px; font-weight: 500; color: var(--paper); margin-bottom: 2px; }
+    .mode.active .mode-name { color: var(--jett); }
+    .mode-desc { font-family: var(--mono); font-size: 9px; color: var(--bone); opacity: 0.6; }
+
+    .input-panel { background: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 18px; margin-bottom: 20px; }
+    .input-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bone); opacity: 0.7; margin-bottom: 8px; }
+    textarea { width: 100%; background: var(--whisper); border: 1px solid var(--line); color: var(--paper); padding: 14px; border-radius: 6px; font-family: var(--sans); font-size: 14px; min-height: 80px; resize: vertical; }
+    textarea:focus { outline: none; border-color: var(--jett); }
+    textarea::placeholder { color: var(--bone); opacity: 0.4; }
+    .input-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .btn { background: var(--paper); color: var(--void); border: none; padding: 10px 18px; border-radius: 8px; font-family: var(--sans); font-weight: 700; font-size: 13px; cursor: pointer; }
+    .btn:hover { opacity: 0.85; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-jett { background: var(--jett); color: var(--paper); }
+    .btn-ghost { background: transparent; color: var(--paper); border: 1px solid var(--line); }
+    .btn-ghost:hover { border-color: var(--jett); background: var(--whisper); }
+
+    .result { background: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 18px; margin-bottom: 20px; }
+    .result.empty { padding: 60px 24px; text-align: center; color: var(--bone); opacity: 0.5; font-family: var(--mono); font-size: 11px; }
+    .result-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+    .result-mode { font-family: var(--mono); font-size: 9px; padding: 3px 8px; border-radius: 3px; background: var(--jett); color: var(--paper); text-transform: uppercase; letter-spacing: 0.08em; }
+    .result-status { font-family: var(--mono); font-size: 9px; padding: 3px 8px; border-radius: 3px; background: var(--whisper); color: var(--bone); border: 1px solid var(--line); text-transform: uppercase; }
+    .result-status.filmed { background: var(--jett); color: var(--paper); border-color: var(--jett); }
+    .result-status.posted { background: var(--green); color: var(--void); border-color: var(--green); }
+    .result-status.logged { background: var(--pulse); color: var(--void); border-color: var(--pulse); }
+    .result-time { margin-left: auto; font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.6; }
+    .result-output { white-space: pre-wrap; font-size: 13.5px; line-height: 1.65; color: var(--paper); margin-bottom: 14px; max-height: 600px; overflow-y: auto; }
+    .result-actions { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--line); }
+
+    .recent-head { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bone); opacity: 0.7; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: baseline; }
+    .recent-list { display: flex; flex-direction: column; gap: 8px; }
+    .recent-item { background: var(--ink); border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px; cursor: pointer; transition: all 0.15s; }
+    .recent-item:hover { border-color: var(--jett); }
+    .recent-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .recent-brief { font-family: var(--mono); font-size: 11px; color: var(--bone); opacity: 0.85; margin-top: 4px; }
+    .empty { padding: 30px; text-align: center; color: var(--bone); opacity: 0.5; font-family: var(--mono); font-size: 11px; }
+
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); border: 1px solid var(--jett); color: var(--paper); padding: 12px 20px; border-radius: 6px; font-family: var(--mono); font-size: 12px; z-index: 200; opacity: 0; transition: opacity 0.3s; }
+    .toast.show { opacity: 1; }
+    .toast.error { border-color: var(--red); color: var(--red); }
+    footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); text-align: center; font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.4; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="brand">
+      <span class="brand-mark">INSPIRIT // OS</span>
+      <h1 class="brand-title"><em>Jett</em> · TikTok Studio</h1>
+    </div>
+    <div class="header-meta">
+      <div class="live"><span class="live-dot"></span>JETT ONLINE · v1.0.0</div>
+      <div style="margin-top:6px;"><a class="nav-link" href="./index.html">← Back to Bridge</a></div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-mark">J</div>
+    <div class="hero-meta">
+      <div class="hero-title"><em>Jett</em> · TikTok Studio Lead</div>
+      <div class="hero-sub">World-class TikTok producer. MrBeast retention obsession + Hormozi hooks + 2026 algorithm baked in. She turns your truck-driver-with-a-phone setup into FYP-ready videos. Solo founder pace, agency-grade quality.</div>
+    </div>
+  </div>
+
+  <div class="modes">
+    <div class="mode active" data-mode="daily"><div class="mode-name">Daily Drop</div><div class="mode-desc">One video for today, shoot-ready</div></div>
+    <div class="mode" data-mode="week"><div class="mode-name">Week Sprint</div><div class="mode-desc">7 videos, 5 pillars</div></div>
+    <div class="mode" data-mode="hook-lab"><div class="mode-name">Hook Lab</div><div class="mode-desc">5 hook variations</div></div>
+    <div class="mode" data-mode="audit"><div class="mode-name">Audit</div><div class="mode-desc">Paste stats → diagnosis</div></div>
+    <div class="mode" data-mode="trend-steal"><div class="mode-name">Trend Steal</div><div class="mode-desc">Adapt a viral video</div></div>
+  </div>
+
+  <div class="input-panel">
+    <div class="input-label" id="input-label">Daily Drop · what's the angle?</div>
+    <textarea id="input" placeholder="e.g. 'Spiritual Badass back-print reveal — going for the curiosity hook' OR just 'pick something for me'"></textarea>
+    <div class="input-actions">
+      <button class="btn btn-jett" id="generate">🎬 Brief Jett</button>
+      <button class="btn btn-ghost" id="clear">Clear</button>
+    </div>
+  </div>
+
+  <div class="result empty" id="result">Brief Jett above to get a video plan. She'll output a shoot-ready brief: hook, shot list, captions, hashtags, post time, and FYP probability.</div>
+
+  <div class="recent-head">
+    <span>RECENT BRIEFS</span>
+    <button class="btn btn-ghost" id="refresh-recent" style="font-size:10px;padding:4px 10px;">Refresh</button>
+  </div>
+  <div class="recent-list" id="recent"></div>
+
+  <div id="toast" class="toast"></div>
+  <footer>JETT · TikTok Studio · Inspirit OS v1.0.0</footer>
+
+  <script>
+    const API = "https://inspirit-os.breezusmoon.workers.dev";
+    let mode = "daily";
+    let currentItem = null;
+    let allItems = [];
+
+    const MODE_CONFIG = {
+      "daily": { label: "Daily Drop · what's the angle?", placeholder: "e.g. 'Spiritual Badass back-print reveal — curiosity hook' OR 'pick something for me'" },
+      "week": { label: "Week Sprint · context for 7 videos", placeholder: "e.g. 'Drop 02 launches Friday — build hype across the week, mix in faith moments and founder POV'" },
+      "hook-lab": { label: "Hook Lab · topic to riff on", placeholder: "e.g. 'Why Christian streetwear in 2026 is different from 2010' OR 'the back-print reveal moment'" },
+      "audit": { label: "Audit · paste your video stats", placeholder: "Paste recent video performance:\nVideo 1: 'Hook: Day in my life' — 234 views, 18% completion, 2 saves, 0 shares\nVideo 2: ..." },
+      "trend-steal": { label: "Trend Steal · paste viral video info", placeholder: "Describe or paste the transcript of a viral video you want to adapt for Inspirit" }
+    };
+
+    function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" })[c]); }
+    function timeAgo(ts) { const sec = Math.floor((Date.now() - ts) / 1000); if (sec < 60) return sec + "s ago"; if (sec < 3600) return Math.floor(sec / 60) + "m ago"; if (sec < 86400) return Math.floor(sec / 3600) + "h ago"; return Math.floor(sec / 86400) + "d ago"; }
+    function toast(msg, kind = "ok") { const t = document.getElementById("toast"); t.textContent = msg; t.className = "toast show" + (kind === "error" ? " error" : ""); setTimeout(() => t.classList.remove("show"), 3500); }
+
+    document.querySelectorAll(".mode").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll(".mode").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        mode = btn.dataset.mode;
+        const cfg = MODE_CONFIG[mode];
+        document.getElementById("input-label").textContent = cfg.label;
+        document.getElementById("input").placeholder = cfg.placeholder;
+      };
+    });
+
+    document.getElementById("clear").onclick = () => { document.getElementById("input").value = ""; };
+
+    document.getElementById("generate").onclick = async () => {
+      const brief = document.getElementById("input").value.trim();
+      if (!brief) { toast("Give Jett something to work with", "error"); return; }
+      const btn = document.getElementById("generate");
+      btn.disabled = true; btn.textContent = "🎬 Jett's cooking...";
+      const result = document.getElementById("result");
+      result.className = "result";
+      result.innerHTML = `<div style="text-align:center;padding:40px;font-family:var(--mono);font-size:11px;color:var(--bone);">Jett's engineering hooks · save triggers · shot list...</div>`;
+      try {
+        const r = await fetch(`${API}/api/jett/brief`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ brief, mode }) });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || "Jett failed");
+        const item = { id: data.id, mode: data.mode, brief, output: data.output, status: "planned", ts: Date.now() };
+        currentItem = item;
+        renderResult(item);
+        loadRecent();
+        toast("Brief ready 🎬");
+      } catch (err) {
+        result.innerHTML = `<div style="color:var(--red);font-family:var(--mono);font-size:12px;padding:20px;text-align:center;">Jett hit an error: ${escapeHtml(err.message)}</div>`;
+        toast("Failed: " + err.message, "error");
+      }
+      btn.disabled = false; btn.textContent = "🎬 Brief Jett";
+    };
+
+    function renderResult(item) {
+      currentItem = item;
+      const result = document.getElementById("result");
+      result.className = "result";
+      const statusClass = item.status === "filmed" ? "filmed" : item.status === "posted" ? "posted" : item.status === "logged" ? "logged" : "";
+      result.innerHTML = `
+        <div class="result-head">
+          <span class="result-mode">${item.mode || "daily"}</span>
+          <span class="result-status ${statusClass}">${item.status || "planned"}</span>
+          <span class="result-time">${timeAgo(item.ts)}</span>
+        </div>
+        <div class="result-output">${escapeHtml(item.output)}</div>
+        <div class="result-actions">
+          <button class="btn btn-jett" onclick="copySection('full')">Copy Full Brief</button>
+          <button class="btn btn-ghost" onclick="copySection('hook')">Copy Hook</button>
+          <button class="btn btn-ghost" onclick="copySection('captions')">Copy Captions</button>
+          <button class="btn btn-ghost" onclick="copySection('hashtags')">Copy Hashtags</button>
+          ${item.status === "planned" ? `<button class="btn btn-ghost" onclick="updateStatus('filmed')" style="border-color:var(--jett);color:var(--jett);">🎥 Mark Filmed</button>` : ""}
+          ${item.status === "filmed" ? `<button class="btn btn-ghost" onclick="updateStatus('posted')" style="border-color:var(--green);color:var(--green);">📤 Mark Posted</button>` : ""}
+          ${item.status === "posted" ? `<button class="btn btn-ghost" onclick="updateStatus('logged')" style="border-color:var(--pulse);color:var(--pulse);">📊 Logged</button>` : ""}
+        </div>
+      `;
+    }
+
+    window.copySection = (section) => {
+      if (!currentItem) return;
+      let text = currentItem.output;
+      if (section === "hook") {
+        const m = currentItem.output.match(/HOOK[^:]*:\s*([\s\S]*?)(?=\n[A-Z🎥📸✍️#⏰🧠🎯]|\n\n)/);
+        if (m) text = m[1].trim();
+      } else if (section === "captions") {
+        const m = currentItem.output.match(/CAPTION OPTIONS[\s\S]*?(?=#️⃣|HASHTAGS|⏰|POST TIME|$)/i);
+        if (m) text = m[0].trim();
+      } else if (section === "hashtags") {
+        const m = currentItem.output.match(/HASHTAGS[^:]*:\s*([\s\S]*?)(?=\n[A-Z⏰🧠🎯]|\n\n|$)/i);
+        if (m) text = m[1].trim();
+      }
+      navigator.clipboard.writeText(text);
+      toast(`Copied ${section}`);
+    };
+
+    window.updateStatus = async (status) => {
+      if (!currentItem) return;
+      try {
+        await fetch(`${API}/api/jett/queue/update`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: currentItem.id, status }) });
+        currentItem.status = status;
+        renderResult(currentItem);
+        loadRecent();
+        toast(`Marked ${status} 🤙`);
+      } catch (err) { toast("Update failed", "error"); }
+    };
+
+    async function loadRecent() {
+      try {
+        const r = await fetch(`${API}/api/jett/queue`);
+        const data = await r.json();
+        allItems = data.queue || [];
+        const box = document.getElementById("recent");
+        if (!allItems.length) { box.innerHTML = `<div class="empty">No briefs yet — Jett's ready when you are.</div>`; return; }
+        box.innerHTML = allItems.map(item => `
+          <div class="recent-item" onclick="openBrief('${item.id}')">
+            <div class="recent-row">
+              <span class="result-mode">${item.mode || "daily"}</span>
+              <span class="result-status ${item.status === 'filmed' ? 'filmed' : item.status === 'posted' ? 'posted' : item.status === 'logged' ? 'logged' : ''}">${item.status || "planned"}</span>
+              <span class="result-time">${timeAgo(item.ts)}</span>
+            </div>
+            <div class="recent-brief">${escapeHtml((item.brief || "").slice(0, 120))}${(item.brief || "").length > 120 ? "…" : ""}</div>
+          </div>
+        `).join("");
+      } catch (e) { document.getElementById("recent").innerHTML = `<div class="empty" style="color:var(--red);">Can't reach Jett — check the worker is deployed</div>`; }
+    }
+
+    window.openBrief = (id) => {
+      const item = allItems.find(x => x.id === id);
+      if (item) { renderResult(item); window.scrollTo({ top: document.getElementById("result").offsetTop - 80, behavior: "smooth" }); }
+    };
+
+    document.getElementById("refresh-recent").onclick = loadRecent;
+    loadRecent();
+  </script>
+</body>
+</html>
