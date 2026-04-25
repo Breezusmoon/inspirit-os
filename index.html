@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Inspirit OS · The Bridge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --void: #0a0908;
+      --ink: #14110f;
+      --whisper: #1f1c19;
+      --line: #2a2622;
+      --bone: #d6cfbe;
+      --paper: #f5f1e8;
+      --pulse: #c9b87a;
+      --green: #7cc174;
+      --amber: #d4a544;
+      --red: #c47373;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+      --serif: 'Fraunces', Georgia, serif;
+      --sans: 'Manrope', -apple-system, sans-serif;
+    }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--sans);
+      background: var(--void);
+      color: var(--paper);
+      font-size: 15px;
+      line-height: 1.5;
+      min-height: 100vh;
+      padding: 24px;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201, 184, 122, 0.04), transparent),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' /></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.04'/></svg>");
+    }
+
+    /* ---- HEADER ---- */
+    .header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      padding-bottom: 18px; margin-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+    .brand-mark {
+      font-family: var(--mono); font-weight: 700; letter-spacing: 0.18em;
+      font-size: 13px; color: var(--bone);
+    }
+    .brand-title {
+      font-family: var(--serif); font-weight: 500;
+      font-size: 28px; letter-spacing: -0.01em;
+    }
+    .brand-title em { font-style: italic; color: var(--pulse); font-weight: 400; }
+    .header-meta { font-family: var(--mono); font-size: 11px; color: var(--bone); opacity: 0.7; text-align: right; }
+    .header-meta .live { color: var(--green); }
+    .live-dot {
+      display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green); margin-right: 6px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 50% { opacity: 0.4; } }
+
+    /* ---- STATS ROW ---- */
+    .stats {
+      display: grid; gap: 1px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .stat { padding: 18px 20px; background: var(--ink); }
+    .stat-label {
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--bone); opacity: 0.7;
+    }
+    .stat-value {
+      font-family: var(--serif); font-weight: 500; font-size: 28px;
+      margin-top: 6px; letter-spacing: -0.02em;
+    }
+    .stat-value .currency { font-size: 16px; opacity: 0.6; margin-right: 2px; }
+    .stat-sub { font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.5; margin-top: 2px; }
+
+    /* ---- MAIN GRID ---- */
+    .grid {
+      display: grid; gap: 16px;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      margin-bottom: 24px;
+    }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      display: flex; flex-direction: column;
+      min-height: 540px;
+    }
+    .panel-head {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .crew-mark {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--whisper);
+      border: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--serif); font-weight: 600; font-size: 16px;
+      color: var(--pulse);
+    }
+    .crew-meta { flex: 1; min-width: 0; }
+    .crew-name { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.01em; }
+    .crew-role { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bone); opacity: 0.7; }
+    .crew-status {
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--green);
+    }
+
+    /* ---- SAGE CHAT ---- */
+    #chat {
+      flex: 1; overflow-y: auto;
+      padding: 20px; display: flex; flex-direction: column; gap: 14px;
+    }
+    #chat::-webkit-scrollbar { width: 6px; }
+    #chat::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+    .msg { max-width: 85%; padding: 12px 16px; border-radius: 14px; font-size: 14px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+    .msg.user {
+      align-self: flex-end;
+      background: var(--paper); color: var(--void);
+      font-family: var(--sans); font-weight: 500;
+    }
+    .msg.sage {
+      align-self: flex-start;
+      background: var(--whisper); color: var(--paper);
+      border: 1px solid var(--line);
+      font-family: var(--serif); font-size: 15px;
+    }
+    .msg.thinking {
+      align-self: flex-start;
+      font-family: var(--mono); font-size: 11px; color: var(--bone); opacity: 0.6;
+      letter-spacing: 0.08em; padding: 4px 8px;
+    }
+    .msg.thinking::after {
+      content: '...'; display: inline-block; width: 18px; text-align: left;
+      animation: dots 1.4s steps(4, end) infinite;
+    }
+    @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75%, 100% { content: '...'; } }
+
+    .chat-input {
+      display: flex; gap: 8px; padding: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .chat-input input {
+      flex: 1; background: var(--whisper);
+      border: 1px solid var(--line);
+      color: var(--paper);
+      padding: 12px 16px; border-radius: 8px;
+      font-family: var(--sans); font-size: 14px;
+    }
+    .chat-input input:focus { outline: none; border-color: var(--pulse); }
+    .chat-input input::placeholder { color: var(--bone); opacity: 0.4; }
+    .btn {
+      background: var(--paper); color: var(--void);
+      border: none; padding: 10px 18px; border-radius: 8px;
+      font-family: var(--sans); font-weight: 700; font-size: 13px;
+      letter-spacing: 0.02em; cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-ghost {
+      background: transparent; color: var(--bone);
+      border: 1px solid var(--line);
+    }
+
+    /* ---- NOVA QUEUE ---- */
+    #queue {
+      flex: 1; overflow-y: auto;
+    }
+    #queue::-webkit-scrollbar { width: 6px; }
+    #queue::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+    .q-item {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .q-item:last-child { border-bottom: none; }
+    .q-item.approved { opacity: 0.5; background: rgba(124, 193, 116, 0.04); }
+    .q-item.rejected { opacity: 0.4; background: rgba(196, 115, 115, 0.04); }
+    .q-time { font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.5; letter-spacing: 0.06em; }
+    .q-brief {
+      font-family: var(--mono); font-size: 11px; color: var(--pulse);
+      margin: 4px 0 10px; letter-spacing: 0.02em;
+    }
+    .q-brief::before { content: 'BRIEF · '; opacity: 0.6; }
+    .q-output {
+      font-size: 13px; line-height: 1.6; white-space: pre-wrap;
+      max-height: 140px; overflow: hidden; position: relative;
+      color: var(--paper); opacity: 0.92;
+    }
+    .q-output.expanded { max-height: none; }
+    .q-output:not(.expanded)::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 30px;
+      background: linear-gradient(transparent, var(--ink));
+    }
+    .q-actions { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+    .q-btn {
+      padding: 5px 10px; font-size: 11px; border-radius: 4px;
+      font-family: var(--mono); letter-spacing: 0.05em;
+      border: 1px solid var(--line); background: transparent;
+      color: var(--bone); cursor: pointer; transition: all 0.15s;
+    }
+    .q-btn:hover { background: var(--whisper); color: var(--paper); }
+    .q-btn.approve { border-color: var(--green); color: var(--green); }
+    .q-btn.approve:hover { background: var(--green); color: var(--void); }
+    .q-btn.reject { border-color: var(--red); color: var(--red); }
+    .q-btn.reject:hover { background: var(--red); color: var(--void); }
+    .q-status {
+      display: inline-block; font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.1em; padding: 2px 6px; border-radius: 3px;
+      margin-left: 6px;
+    }
+    .q-status.approved { background: var(--green); color: var(--void); }
+    .q-status.rejected { background: var(--red); color: var(--void); }
+
+    .empty {
+      padding: 60px 24px; text-align: center;
+      color: var(--bone); opacity: 0.5;
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
+    }
+
+    /* ---- CREW ROSTER ---- */
+    .roster-head {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 12px;
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--bone); opacity: 0.7;
+    }
+    .roster-head::before, .roster-head::after {
+      content: ''; flex: 1; height: 1px; background: var(--line);
+    }
+    .crew-grid {
+      display: grid; gap: 8px;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    .crew-tile {
+      background: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 14px 12px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .crew-tile.online { border-color: var(--pulse); background: linear-gradient(180deg, var(--ink), rgba(201, 184, 122, 0.04)); }
+    .crew-tile.online:hover { transform: translateY(-2px); }
+    .crew-tile.offline { opacity: 0.5; }
+    .crew-tile-mark {
+      width: 38px; height: 38px; margin: 0 auto 8px; border-radius: 50%;
+      background: var(--whisper); border: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--serif); font-weight: 600; font-size: 16px; color: var(--bone);
+    }
+    .crew-tile.online .crew-tile-mark { color: var(--pulse); border-color: var(--pulse); }
+    .crew-tile-name { font-family: var(--serif); font-weight: 500; font-size: 14px; }
+    .crew-tile-role { font-family: var(--mono); font-size: 9px; color: var(--bone); opacity: 0.6; letter-spacing: 0.08em; margin-top: 2px; text-transform: uppercase; }
+    .crew-tile-pill {
+      display: inline-block; margin-top: 6px;
+      font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 2px 6px; border-radius: 3px;
+      background: var(--whisper); color: var(--bone);
+    }
+    .crew-tile.online .crew-tile-pill { background: var(--pulse); color: var(--void); }
+
+    /* ---- FOOTER ---- */
+    footer {
+      margin-top: 32px; padding-top: 16px;
+      border-top: 1px solid var(--line);
+      text-align: center;
+      font-family: var(--mono); font-size: 10px;
+      color: var(--bone); opacity: 0.4; letter-spacing: 0.12em;
+    }
+
+    /* ---- CONFIG WARNING ---- */
+    .config-warn {
+      background: rgba(212, 165, 68, 0.08);
+      border: 1px solid var(--amber);
+      color: var(--amber);
+      padding: 12px 16px; border-radius: 4px;
+      font-family: var(--mono); font-size: 12px;
+      margin-bottom: 16px;
+    }
+    .config-warn code { background: var(--ink); padding: 2px 6px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="brand">
+      <span class="brand-mark">INSPIRIT // OS</span>
+      <h1 class="brand-title">The <em>Bridge</em></h1>
+    </div>
+    <div class="header-meta">
+      <div class="live"><span class="live-dot"></span>ALL SYSTEMS ONLINE</div>
+      <div id="clock"></div>
+    </div>
+  </header>
+
+  <div id="config-warn" class="config-warn" style="display:none;">
+    ⚠ Worker URL not set. Edit <code>API</code> at the bottom of this file once you've deployed your worker.
+  </div>
+
+  <section class="stats" id="stats">
+    <div class="stat"><div class="stat-label">Today's Revenue</div><div class="stat-value"><span class="currency">$</span>0</div><div class="stat-sub">— pending data</div></div>
+    <div class="stat"><div class="stat-label">Orders</div><div class="stat-value">0</div><div class="stat-sub">today</div></div>
+    <div class="stat"><div class="stat-label">Visitors</div><div class="stat-value">0</div><div class="stat-sub">today</div></div>
+    <div class="stat"><div class="stat-label">Drafts Pending</div><div class="stat-value">0</div><div class="stat-sub">awaiting review</div></div>
+    <div class="stat"><div class="stat-label">Crew Online</div><div class="stat-value">2<span style="opacity:.4;font-size:18px;"> / 8</span></div><div class="stat-sub">phase 2</div></div>
+  </section>
+
+  <section class="grid">
+    <!-- SAGE -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="crew-mark">S</div>
+        <div class="crew-meta">
+          <div class="crew-name">Sage</div>
+          <div class="crew-role">Chief of Staff</div>
+        </div>
+        <div class="crew-status">● ONLINE</div>
+      </div>
+      <div id="chat"></div>
+      <div class="chat-input">
+        <input id="chat-input" placeholder="Talk to Sage…" autocomplete="off" />
+        <button id="chat-send" class="btn">Send</button>
+      </div>
+    </div>
+
+    <!-- NOVA -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="crew-mark">N</div>
+        <div class="crew-meta">
+          <div class="crew-name">Nova</div>
+          <div class="crew-role">Creative Director · Queue</div>
+        </div>
+        <div class="crew-status">● ONLINE</div>
+      </div>
+      <div id="queue"></div>
+    </div>
+  </section>
+
+  <div class="roster-head">CREW ROSTER · 8</div>
+  <section class="crew-grid">
+    <div class="crew-tile online"><div class="crew-tile-mark">S</div><div class="crew-tile-name">Sage</div><div class="crew-tile-role">Chief of Staff</div><div class="crew-tile-pill">Online</div></div>
+    <div class="crew-tile online"><div class="crew-tile-mark">N</div><div class="crew-tile-name">Nova</div><div class="crew-tile-role">Creative</div><div class="crew-tile-pill">Online</div></div>
+    <div class="crew-tile offline"><div class="crew-tile-mark">G</div><div class="crew-tile-name">Grace</div><div class="crew-tile-role">CX</div><div class="crew-tile-pill">Phase 3</div></div>
+    <div class="crew-tile offline"><div class="crew-tile-mark">R</div><div class="crew-tile-name">Riley</div><div class="crew-tile-role">Social</div><div class="crew-tile-pill">Phase 3</div></div>
+    <div class="crew-tile offline"><div class="crew-tile-mark">M</div><div class="crew-tile-name">Marcus</div><div class="crew-tile-role">CFO</div><div class="crew-tile-pill">Phase 4</div></div>
+    <div class="crew-tile offline"><div class="crew-tile-mark">A</div><div class="crew-tile-name">Atlas</div><div class="crew-tile-role">Growth</div><div class="crew-tile-pill">Phase 4</div></div>
+    <div class="crew-tile offline"><div class="crew-tile-mark">P</div><div class="crew-tile-name">Pax</div><div class="crew-tile-role">Ops</div><div class="crew-tile-pill">Phase 4</div></div>
+    <div class="crew-tile offline"><div class="crew-tile-mark">E</div><div class="crew-tile-name">Echo</div><div class="crew-tile-role">Night Shift</div><div class="crew-tile-pill">Phase 5</div></div>
+  </section>
+
+  <footer>INSPIRIT OS · v0.1 · BUILT BY CHRIS · GOLD COAST</footer>
+
+  <script>
+    // ============================================================
+    // 🔧 CONFIG — paste your Cloudflare Worker URL here after deploy
+    // Example: https://inspirit-os.breezusmoon.workers.dev
+    // ============================================================
+    const API = "https://inspirit-os.YOUR-SUBDOMAIN.workers.dev";
+    // ============================================================
+
+    if (API.includes("YOUR-SUBDOMAIN")) {
+      document.getElementById("config-warn").style.display = "block";
+    }
+
+    const sessionId = (() => {
+      let id = localStorage.getItem("inspirit-session");
+      if (!id) {
+        id = "s_" + Math.random().toString(36).slice(2, 12);
+        localStorage.setItem("inspirit-session", id);
+      }
+      return id;
+    })();
+
+    const chat = document.getElementById("chat");
+    const input = document.getElementById("chat-input");
+    const sendBtn = document.getElementById("chat-send");
+
+    function addMsg(role, text) {
+      const div = document.createElement("div");
+      div.className = "msg " + role;
+      div.textContent = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+      return div;
+    }
+
+    async function loadHistory() {
+      try {
+        const r = await fetch(`${API}/api/sage/history?sessionId=${sessionId}`);
+        const data = await r.json();
+        chat.innerHTML = "";
+        if (!data.history || !data.history.length) {
+          addMsg("sage", "Hey Chris. Sage here. I'm online and Nova's running with me. Ask me anything about Inspirit — or tell me what you want drafted and I'll hand it to her.");
+        } else {
+          data.history.forEach(m => addMsg(m.role === "user" ? "user" : "sage", m.content));
+        }
+      } catch (e) {
+        addMsg("sage", "Can't reach the worker yet. Check the API URL at the bottom of this file is set correctly, then hard-refresh.");
+      }
+    }
+
+    async function send() {
+      const text = input.value.trim();
+      if (!text) return;
+      addMsg("user", text);
+      input.value = "";
+      sendBtn.disabled = true;
+      const thinking = addMsg("thinking", "Sage is thinking");
+      try {
+        const r = await fetch(`${API}/api/sage/chat`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text, sessionId })
+        });
+        const data = await r.json();
+        thinking.remove();
+        addMsg("sage", data.reply || data.error || "Something went wrong.");
+        loadStats(); loadQueue();
+      } catch (e) {
+        thinking.remove();
+        addMsg("sage", "Connection error: " + e.message);
+      }
+      sendBtn.disabled = false;
+      input.focus();
+    }
+
+    sendBtn.onclick = send;
+    input.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
+
+    async function loadStats() {
+      try {
+        const r = await fetch(`${API}/api/stats`);
+        const s = await r.json();
+        document.getElementById("stats").innerHTML = `
+          <div class="stat"><div class="stat-label">Today's Revenue</div><div class="stat-value"><span class="currency">$</span>${(s.today_revenue || 0).toLocaleString('en-AU', { maximumFractionDigits: 0 })}</div><div class="stat-sub">today</div></div>
+          <div class="stat"><div class="stat-label">Orders</div><div class="stat-value">${s.today_orders || 0}</div><div class="stat-sub">today</div></div>
+          <div class="stat"><div class="stat-label">Visitors</div><div class="stat-value">${s.today_visitors || 0}</div><div class="stat-sub">${s.today_pageviews || 0} pageviews</div></div>
+          <div class="stat"><div class="stat-label">Drafts Pending</div><div class="stat-value">${s.pending_drafts || 0}</div><div class="stat-sub">awaiting review</div></div>
+          <div class="stat"><div class="stat-label">Crew Online</div><div class="stat-value">${s.crew_online || 2}<span style="opacity:.4;font-size:18px;"> / ${s.crew_total || 8}</span></div><div class="stat-sub">phase 2</div></div>
+        `;
+      } catch (e) { /* keep defaults */ }
+    }
+
+    async function loadQueue() {
+      const q = document.getElementById("queue");
+      try {
+        const r = await fetch(`${API}/api/nova/queue`);
+        const data = await r.json();
+        if (!data.queue || !data.queue.length) {
+          q.innerHTML = '<div class="empty">No drafts yet · ask Sage to write something</div>';
+          return;
+        }
+        q.innerHTML = data.queue.map(item => `
+          <div class="q-item ${item.status}">
+            <div class="q-time">${timeAgo(item.ts)}${item.status !== 'pending' ? `<span class="q-status ${item.status}">${item.status}</span>` : ''}</div>
+            <div class="q-brief">${escapeHtml(item.brief)}</div>
+            <div class="q-output" onclick="this.classList.toggle('expanded')">${escapeHtml(item.output)}</div>
+            <div class="q-actions">
+              ${item.status === 'pending' ? `
+                <button class="q-btn approve" onclick="updateItem('${item.id}','approved')">✓ Approve</button>
+                <button class="q-btn reject" onclick="updateItem('${item.id}','rejected')">✗ Reject</button>
+              ` : ''}
+              <button class="q-btn" onclick="copyItem('${item.id}')">📋 Copy</button>
+            </div>
+          </div>
+        `).join("");
+        window._queueItems = data.queue;
+      } catch (e) {
+        q.innerHTML = '<div class="empty">Queue unavailable</div>';
+      }
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" })[c]);
+    }
+
+    function timeAgo(ts) {
+      const sec = Math.floor((Date.now() - ts) / 1000);
+      if (sec < 60) return sec + "s ago";
+      if (sec < 3600) return Math.floor(sec / 60) + "m ago";
+      if (sec < 86400) return Math.floor(sec / 3600) + "h ago";
+      return Math.floor(sec / 86400) + "d ago";
+    }
+
+    window.updateItem = async (id, status) => {
+      await fetch(`${API}/api/nova/queue/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status })
+      });
+      loadQueue(); loadStats();
+    };
+
+    window.copyItem = (id) => {
+      const item = (window._queueItems || []).find(i => i.id === id);
+      if (item) {
+        navigator.clipboard.writeText(item.output);
+        alert("Copied to clipboard");
+      }
+    };
+
+    function updateClock() {
+      const now = new Date();
+      const t = now.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit", hour12: false });
+      const d = now.toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" });
+      document.getElementById("clock").textContent = `${d.toUpperCase()} · ${t}`;
+    }
+
+    updateClock(); setInterval(updateClock, 1000 * 30);
+    loadHistory(); loadStats(); loadQueue();
+    setInterval(() => { loadStats(); loadQueue(); }, 30000);
+  </script>
+</body>
+</html>

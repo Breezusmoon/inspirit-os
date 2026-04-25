@@ -1,0 +1,13 @@
+name = "inspirit-os"
+main = "src/worker.js"
+compatibility_date = "2025-04-01"
+
+# Workers AI binding (free tier)
+[ai]
+binding = "AI"
+
+# KV namespace — replace the id below with the one you create
+# Run: wrangler kv namespace create INSPIRIT_KV
+[[kv_namespaces]]
+binding = "INSPIRIT_KV"
+id = "REPLACE_WITH_YOUR_KV_ID"

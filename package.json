@@ -1,0 +1,14 @@
+{
+  "name": "inspirit-os",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "kv:create": "wrangler kv namespace create INSPIRIT_KV"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}
