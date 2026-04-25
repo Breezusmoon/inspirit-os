@@ -1,5 +1,5 @@
 // ============================================================
-// INSPIRIT OS — Foundation Worker  v0.6.1 (Phase 3 + KB + Library + Truth Rules)
+// INSPIRIT OS — Foundation Worker  v0.7 (Phase 3 + KB + Library + Showroom + Truth)
 // Sage + Nova + Grace + Riley
 // + Knowledge Base
 // + Photo/Video Library (GitHub Contents API)
@@ -271,6 +271,99 @@ async function ghDeleteFile(env, path, message) {
 // Slug helper for filenames
 function slugify(s) {
   return String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "file";
+}
+
+// ============================================================
+// SHOWROOM — products with hero + extras + captions per platform
+// ============================================================
+
+// Best-guess hero URLs from inspiritclothingco.io site repo.
+// User can override per-product via /api/showroom/hero
+const SITE_PAGES_BASE = "https://breezusmoon.github.io/inspirit-site/images-clean";
+const DEFAULT_HEROES = {
+  "Feeding 5000 Tee":           `${SITE_PAGES_BASE}/model-feeding5000.jpg`,
+  "Jesus Fish Tee — White":     `${SITE_PAGES_BASE}/model-fishjesus.jpg`,
+  "Jesus Fish Tee — Black":     `${SITE_PAGES_BASE}/model-fishjesus-black.jpg`,
+  "Spiritual Badass Tee — Black": `${SITE_PAGES_BASE}/model-sb.jpg`,
+  "Spiritual Badass Tee — White": `${SITE_PAGES_BASE}/model-sb-white.jpg`,
+  "Heart Tee — Black":          `${SITE_PAGES_BASE}/model-womensheart.jpg`,
+  "Heart Tee — White":          `${SITE_PAGES_BASE}/model-womensheart-white.jpg`,
+  "Inspirit Hoodie":            `${SITE_PAGES_BASE}/model-hoodie.jpg`,
+  "Spiritual Badass Hoodie":    `${SITE_PAGES_BASE}/model-womenshoodie.jpg`,
+  "Jesus Fish Jumper":          `${SITE_PAGES_BASE}/jumper-fishjesus-model-front.jpg`,
+  "Inspirit Bucket Hat":        `${SITE_PAGES_BASE}/bucket-hat-inspirit.jpg`,
+  "Spiritual Badass Bucket Hat":`${SITE_PAGES_BASE}/bucket-hat-sb.jpg`,
+  "Inspirit Beanie":            `${SITE_PAGES_BASE}/inspirit-beanie.jpg`,
+};
+
+async function getShowroom(env) {
+  const raw = await env.INSPIRIT_KV.get("showroom:main");
+  if (raw) {
+    try { return JSON.parse(raw); } catch {}
+  }
+  // Initialize from KB
+  const kb = await getKB(env);
+  const showroom = { products: {} };
+  for (const p of kb.products.list) {
+    showroom.products[p.name] = {
+      name: p.name,
+      price: p.price,
+      fit: p.fit,
+      desc: p.desc,
+      hero_url: DEFAULT_HEROES[p.name] || "",
+      captions: { instagram: null, tiktok: null, facebook: null }
+    };
+  }
+  await env.INSPIRIT_KV.put("showroom:main", JSON.stringify(showroom));
+  return showroom;
+}
+
+async function saveShowroom(env, showroom) {
+  await env.INSPIRIT_KV.put("showroom:main", JSON.stringify(showroom));
+}
+
+// Generate a caption for a product + platform
+async function generateCaption(env, product, platform) {
+  const kb = await getKB(env);
+  const platformInstructions = {
+    instagram: `INSTAGRAM caption — bold, identity-driven, faith-forward, 1-2 short paragraphs. End with 5-8 hashtags (mix niche faith/streetwear + 1-2 broad). Under 2000 chars. Light emojis OK.`,
+    tiktok: `TIKTOK caption — short, punchy, hook in first 5 words, raw and authentic. 1-2 sentences max. End with 3-5 trending-feel hashtags. Under 200 chars total.`,
+    facebook: `FACEBOOK caption — slightly longer, more story/personal-feel, can include direct shop link mention. 2-3 short paragraphs. 2-4 hashtags max. Warmer tone than IG.`
+  };
+
+  const messages = [
+    {
+      role: "system",
+      content: `You are Nova, Creative Director for Inspirit Clothing Co.
+
+VOICE
+- Bold, confident, faith-forward but never preachy
+- Aussie streetwear cadence — short sentences, rhythm, a bit cocky
+- Never cringy churchcore. Never empty hype. Never corporate.
+- For social/Stories: explicit faith OK ("Jesus", "cross", "faith")
+
+PRODUCT YOU'RE WRITING ABOUT:
+${product.name} ($${product.price} AUD, ${product.fit})
+${product.desc}
+
+BRAND CONTEXT:
+${kb.brand.tagline}. Spiritual Badass — bold faith with urban edge.
+${kb.audience.profile}
+
+OUTPUT: One single caption only. No "OPTION A/B/C". No preamble. Just the caption text ready to copy-paste into ${platform}.
+
+${platformInstructions[platform]}`
+    },
+    {
+      role: "user",
+      content: `Write me a ${platform} caption for the ${product.name}.`
+    }
+  ];
+
+  let caption = await callAI(env, messages, 600);
+  // Strip any "OPTION A —" or quotes wrappers
+  caption = caption.replace(/^OPTION\s*[A-Z]\s*[—\-:]\s*[^\n]*\n+/i, "").replace(/^["']|["']$/g, "").trim();
+  return caption;
 }
 
 // ============================================================
@@ -812,7 +905,7 @@ export default {
       if (path === "/" || path === "/api" || path === "/api/health") {
         return json({
           service: "Inspirit OS",
-          version: "0.6.1",
+          version: "0.7.0",
           crew_online: ["sage", "nova", "grace", "riley"],
           knowledge_base: "loaded",
           library: "ready",
@@ -891,6 +984,76 @@ export default {
       }
       if (path === "/api/kb/reset" && request.method === "POST") {
         await setKB(env, DEFAULT_KB);
+        return json({ ok: true, reset: true });
+      }
+
+      // ===== SHOWROOM =====
+      if (path === "/api/showroom" && request.method === "GET") {
+        const [showroom, lib] = await Promise.all([getShowroom(env), getLibrary(env)]);
+        // Attach uploaded extras per product
+        const result = { products: {} };
+        for (const [name, prod] of Object.entries(showroom.products)) {
+          const extras = (lib.photos || []).filter(p => (p.products || []).includes(name));
+          const videos = (lib.videos || []).filter(v => (v.products || []).includes(name));
+          result.products[name] = { ...prod, extras, videos };
+        }
+        return json(result);
+      }
+
+      if (path === "/api/showroom/hero" && request.method === "POST") {
+        // body: { name, hero_url }
+        const { name, hero_url } = await request.json();
+        if (!name) return json({ error: "name required" }, 400);
+        const showroom = await getShowroom(env);
+        if (!showroom.products[name]) return json({ error: "unknown product" }, 404);
+        showroom.products[name].hero_url = hero_url || "";
+        await saveShowroom(env, showroom);
+        return json({ ok: true });
+      }
+
+      if (path === "/api/showroom/caption" && request.method === "POST") {
+        // body: { name, platform, regenerate? }
+        const { name, platform, regenerate } = await request.json();
+        if (!name || !["instagram", "tiktok", "facebook"].includes(platform)) {
+          return json({ error: "name + valid platform required" }, 400);
+        }
+        const showroom = await getShowroom(env);
+        const prod = showroom.products[name];
+        if (!prod) return json({ error: "unknown product" }, 404);
+
+        // Return cached unless regenerate
+        if (!regenerate && prod.captions[platform]) {
+          return json({ caption: prod.captions[platform], cached: true });
+        }
+        const caption = await generateCaption(env, prod, platform);
+        prod.captions[platform] = caption;
+        await saveShowroom(env, showroom);
+        await logActivity(env, "nova", "caption", { product: name, platform });
+        return json({ caption, cached: false });
+      }
+
+      if (path === "/api/showroom/seed" && request.method === "POST") {
+        // Generate ALL captions for ALL products + platforms (one-shot bulk)
+        const showroom = await getShowroom(env);
+        let generated = 0;
+        for (const [name, prod] of Object.entries(showroom.products)) {
+          for (const platform of ["instagram", "tiktok", "facebook"]) {
+            if (!prod.captions[platform]) {
+              try {
+                prod.captions[platform] = await generateCaption(env, prod, platform);
+                generated++;
+              } catch (err) {
+                console.error(`Failed ${name}/${platform}:`, err.message);
+              }
+            }
+          }
+        }
+        await saveShowroom(env, showroom);
+        return json({ ok: true, generated });
+      }
+
+      if (path === "/api/showroom/reset" && request.method === "POST") {
+        await env.INSPIRIT_KV.delete("showroom:main");
         return json({ ok: true, reset: true });
       }
 
