@@ -413,7 +413,7 @@
       <h1 class="brand-title">The <em>Bridge</em></h1>
     </div>
     <div class="header-meta">
-      <div class="live"><span class="live-dot"></span>ALL SYSTEMS ONLINE · v0.7</div>
+      <div class="live"><span class="live-dot"></span>ALL SYSTEMS ONLINE · v0.7.1</div>
       <div id="clock"></div>
     </div>
   </header>
@@ -962,8 +962,10 @@
         <div class="show-photo">
           <img src="${escapeAttr(x.url)}" alt="${escapeAttr(x.id)}" loading="lazy" />
           <div class="show-photo-actions">
+            <button onclick="setAsHero('photo', '${escapeAttr(x.id)}', '${escapeAttr(x.url)}')" style="background:var(--pulse);color:var(--void);">★ Hero</button>
             <button onclick="copyAssetUrl('${escapeAttr(x.url)}')">Copy</button>
             <a href="${escapeAttr(x.url)}" target="_blank">Open</a>
+            <button onclick="deletePhoto('photo', '${escapeAttr(x.id)}')" style="background:rgba(196,115,115,0.2);color:var(--red);">✗</button>
           </div>
         </div>
       `).join("");
@@ -973,6 +975,7 @@
           <div class="show-photo-actions">
             <button onclick="copyAssetUrl('${escapeAttr(x.url)}')">Copy</button>
             <a href="${escapeAttr(x.url)}" target="_blank">Open</a>
+            <button onclick="deletePhoto('video', '${escapeAttr(x.id)}')" style="background:rgba(196,115,115,0.2);color:var(--red);">✗</button>
           </div>
         </div>
       `).join("");
@@ -984,6 +987,49 @@
       `;
       box.innerHTML = heroHtml + extrasHtml + videosHtml + addHtml;
     }
+
+    // Set an extra photo as the hero
+    window.setAsHero = async (type, id, url) => {
+      if (!openProduct) return;
+      try {
+        const r = await fetch(`${API}/api/showroom/hero`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: openProduct.name, hero_url: url })
+        });
+        if (!r.ok) throw new Error("save failed");
+        openProduct.hero_url = url;
+        showroom.products[openProduct.name].hero_url = url;
+        document.getElementById("show-hero-input").value = url;
+        renderProductPhotos();
+        renderShowroom();
+        toast("Set as hero");
+      } catch (err) {
+        toast("Failed: " + err.message, "error");
+      }
+    };
+
+    // Delete a photo/video from product
+    window.deletePhoto = async (type, id) => {
+      if (!openProduct) return;
+      if (!confirm(`Remove this ${type}? It'll also be deleted from GitHub.`)) return;
+      try {
+        const r = await fetch(`${API}/api/library/delete`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type, id })
+        });
+        if (!r.ok) throw new Error("delete failed");
+        // Remove from local state
+        if (type === "photo") {
+          openProduct.extras = (openProduct.extras || []).filter(x => x.id !== id);
+        } else {
+          openProduct.videos = (openProduct.videos || []).filter(x => x.id !== id);
+        }
+        renderProductPhotos();
+        toast("Deleted");
+      } catch (err) {
+        toast("Delete failed: " + err.message, "error");
+      }
+    };
 
     document.getElementById("show-modal-close").onclick = () => document.getElementById("show-modal-bg").classList.remove("show");
     document.getElementById("show-modal-bg").onclick = (e) => {
@@ -1074,6 +1120,16 @@
           if (type === "photo") {
             openProduct.extras = openProduct.extras || [];
             openProduct.extras.unshift(data.item);
+            // Auto-promote first uploaded photo to hero if none set
+            if (!openProduct.hero_url || openProduct.hero_url.includes("model-fishjesus-black") || openProduct.hero_url.includes("model-feeding5000") || openProduct.hero_url.includes("hoodie-inspirit-model-front") || openProduct.hero_url.includes("hoodie-pink-model-front")) {
+              await fetch(`${API}/api/showroom/hero`, {
+                method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: openProduct.name, hero_url: data.item.url })
+              });
+              openProduct.hero_url = data.item.url;
+              showroom.products[openProduct.name].hero_url = data.item.url;
+              document.getElementById("show-hero-input").value = data.item.url;
+            }
           } else {
             openProduct.videos = openProduct.videos || [];
             openProduct.videos.unshift(data.item);
