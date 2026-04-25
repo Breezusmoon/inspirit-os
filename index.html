@@ -1,737 +1,569 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Inspirit OS · The Bridge</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --void: #0a0908; --ink: #14110f; --whisper: #1f1c19; --line: #2a2622; --bone: #d6cfbe; --paper: #f5f1e8; --pulse: #c9b87a; --green: #7cc174; --amber: #d4a544; --red: #c47373; --blue: #7a9cc9; --pink: #c97abf; --mono: 'JetBrains Mono', ui-monospace, monospace; --serif: 'Fraunces', Georgia, serif; --sans: 'Manrope', -apple-system, sans-serif; }
-    html, body { height: 100%; }
-    body { font-family: var(--sans); background: var(--void); color: var(--paper); font-size: 15px; line-height: 1.5; min-height: 100vh; padding: 24px; background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,184,122,0.04), transparent), url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' /></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.04'/></svg>"); }
-    .header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--line); }
-    .brand { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
-    .brand-mark { font-family: var(--mono); font-weight: 700; letter-spacing: 0.18em; font-size: 13px; color: var(--bone); }
-    .brand-title { font-family: var(--serif); font-weight: 500; font-size: 28px; letter-spacing: -0.01em; }
-    .brand-title em { font-style: italic; color: var(--pulse); font-weight: 400; }
-    .header-meta { font-family: var(--mono); font-size: 11px; color: var(--bone); opacity: 0.7; text-align: right; }
-    .header-meta .live { color: var(--green); }
-    .live-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-right: 6px; animation: pulse 2s ease-in-out infinite; }
-    @keyframes pulse { 50% { opacity: 0.4; } }
-    .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 24px; }
-    .tab { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 18px; background: transparent; border: none; color: var(--bone); cursor: pointer; opacity: 0.6; border-bottom: 2px solid transparent; margin-bottom: -1px; }
-    .tab:hover { opacity: 1; }
-    .tab.active { opacity: 1; color: var(--pulse); border-bottom-color: var(--pulse); }
-    .tab-pill { display: inline-block; min-width: 18px; padding: 1px 6px; border-radius: 9px; background: var(--amber); color: var(--void); font-size: 9px; margin-left: 6px; vertical-align: middle; }
-    .pane { display: none; }
-    .pane.active { display: block; }
-
-    .stats { display: grid; gap: 1px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); background: var(--line); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
-    .stat { padding: 16px 18px; background: var(--ink); }
-    .stat-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bone); opacity: 0.7; }
-    .stat-value { font-family: var(--serif); font-weight: 500; font-size: 26px; margin-top: 6px; letter-spacing: -0.02em; }
-    .stat-value .currency { font-size: 14px; opacity: 0.6; margin-right: 2px; }
-    .stat-sub { font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.5; margin-top: 2px; }
-    .stat-attn { color: var(--pulse); }
-    .grid { display: grid; gap: 16px; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); margin-bottom: 16px; }
-    @media (max-width: 1100px) { .grid { grid-template-columns: 1fr; } }
-    .panel { background: var(--ink); border: 1px solid var(--line); border-radius: 4px; display: flex; flex-direction: column; }
-    .panel.tall { min-height: 580px; }
-    .panel-head { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
-    .crew-mark { width: 36px; height: 36px; border-radius: 50%; background: var(--whisper); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-weight: 600; font-size: 16px; color: var(--pulse); }
-    .crew-mark.grace { color: var(--green); border-color: var(--green); }
-    .crew-mark.riley { color: var(--blue); border-color: var(--blue); }
-    .crew-mark.nova { color: var(--pink); border-color: var(--pink); }
-    .crew-meta { flex: 1; min-width: 0; }
-    .crew-name { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.01em; }
-    .crew-role { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bone); opacity: 0.7; }
-    .crew-status { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); }
-
-    #chat { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; min-height: 380px; }
-    #chat::-webkit-scrollbar { width: 6px; } #chat::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
-    .msg { max-width: 85%; padding: 12px 16px; border-radius: 14px; font-size: 14px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
-    .msg.user { align-self: flex-end; background: var(--paper); color: var(--void); font-family: var(--sans); font-weight: 500; }
-    .msg.sage { align-self: flex-start; background: var(--whisper); color: var(--paper); border: 1px solid var(--line); font-family: var(--serif); font-size: 15px; }
-    .msg.thinking { align-self: flex-start; font-family: var(--mono); font-size: 11px; color: var(--bone); opacity: 0.6; letter-spacing: 0.08em; padding: 4px 8px; }
-    .msg.thinking::after { content: '...'; display: inline-block; width: 18px; text-align: left; animation: dots 1.4s steps(4, end) infinite; }
-    @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75%, 100% { content: '...'; } }
-    .chat-input { display: flex; gap: 8px; padding: 14px; border-top: 1px solid var(--line); }
-    .chat-input input { flex: 1; background: var(--whisper); border: 1px solid var(--line); color: var(--paper); padding: 12px 16px; border-radius: 8px; font-family: var(--sans); font-size: 14px; }
-    .chat-input input:focus { outline: none; border-color: var(--pulse); }
-    .chat-input input::placeholder { color: var(--bone); opacity: 0.4; }
-    .btn { background: var(--paper); color: var(--void); border: none; padding: 10px 18px; border-radius: 8px; font-family: var(--sans); font-weight: 700; font-size: 13px; cursor: pointer; transition: opacity 0.15s; }
-    .btn:hover { opacity: 0.85; }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-ghost { background: transparent; color: var(--paper); border: 1px solid var(--line); }
-    .btn-ghost:hover { border-color: var(--pulse); background: var(--whisper); }
-
-    #attention { flex: 1; overflow-y: auto; max-height: 580px; }
-    #attention::-webkit-scrollbar { width: 6px; } #attention::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
-    .attn-empty { padding: 60px 24px; text-align: center; color: var(--bone); opacity: 0.5; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; }
-    .attn-item { padding: 14px 18px; border-bottom: 1px solid var(--line); cursor: pointer; }
-    .attn-item:hover { background: var(--whisper); }
-    .attn-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-    .attn-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; }
-    .attn-tag.nova { background: rgba(201,122,191,0.15); color: var(--pink); }
-    .attn-tag.grace { background: rgba(124,193,116,0.15); color: var(--green); }
-    .attn-tag.riley { background: rgba(122,156,201,0.15); color: var(--blue); }
-    .attn-tag.escalated { background: var(--red); color: var(--void); }
-    .attn-time { font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.5; margin-left: auto; }
-    .attn-brief { font-family: var(--mono); font-size: 11px; color: var(--bone); opacity: 0.85; margin-top: 4px; line-height: 1.4; }
-
-    .chart-panel { background: var(--ink); border: 1px solid var(--line); border-radius: 4px; padding: 18px; margin-bottom: 16px; }
-    .chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
-    .chart-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bone); opacity: 0.7; }
-    .chart-tabs { display: flex; gap: 4px; }
-    .chart-tab { font-family: var(--mono); font-size: 10px; padding: 4px 10px; border-radius: 3px; background: transparent; border: 1px solid var(--line); color: var(--bone); cursor: pointer; text-transform: uppercase; }
-    .chart-tab.active { background: var(--pulse); color: var(--void); border-color: var(--pulse); }
-    #chart { width: 100%; height: 140px; }
-
-    .queues { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); margin-bottom: 24px; }
-    .qpanel { background: var(--ink); border: 1px solid var(--line); border-radius: 4px; display: flex; flex-direction: column; min-height: 320px; max-height: 480px; }
-    .q-list { flex: 1; overflow-y: auto; }
-    .q-item { padding: 14px 16px; border-bottom: 1px solid var(--line); }
-    .q-item.approved { opacity: 0.5; } .q-item.rejected, .q-item.sent { opacity: 0.4; }
-    .q-time { font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.5; }
-    .q-brief { font-family: var(--mono); font-size: 11px; color: var(--pulse); margin: 4px 0 8px; }
-    .q-brief::before { content: 'BRIEF · '; opacity: 0.6; }
-    .q-output { font-size: 12.5px; line-height: 1.55; white-space: pre-wrap; max-height: 110px; overflow: hidden; position: relative; color: var(--paper); opacity: 0.92; }
-    .q-output.expanded { max-height: none; }
-    .q-output:not(.expanded)::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 30px; background: linear-gradient(transparent, var(--ink)); }
-    .q-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
-    .q-btn { padding: 5px 10px; font-size: 10px; border-radius: 4px; font-family: var(--mono); border: 1px solid var(--line); background: transparent; color: var(--bone); cursor: pointer; }
-    .q-btn:hover { background: var(--whisper); color: var(--paper); }
-    .q-btn.approve { border-color: var(--green); color: var(--green); }
-    .q-btn.approve:hover { background: var(--green); color: var(--void); }
-    .q-btn.reject { border-color: var(--red); color: var(--red); }
-    .q-btn.reject:hover { background: var(--red); color: var(--void); }
-    .q-status { display: inline-block; font-family: var(--mono); font-size: 9px; padding: 2px 6px; border-radius: 3px; margin-left: 6px; }
-    .q-status.approved, .q-status.sent { background: var(--green); color: var(--void); }
-    .q-status.rejected { background: var(--red); color: var(--void); }
-    .q-status.escalated { background: var(--amber); color: var(--void); }
-    .q-customer { font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.6; margin-bottom: 4px; }
-    .empty { padding: 60px 24px; text-align: center; color: var(--bone); opacity: 0.5; font-family: var(--mono); font-size: 11px; }
-
-    .activity-panel { background: var(--ink); border: 1px solid var(--line); border-radius: 4px; padding: 18px; margin-bottom: 24px; }
-    .activity-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
-    .activity-feed { max-height: 260px; overflow-y: auto; }
-    .activity-row { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 11px; }
-    .activity-time { color: var(--bone); opacity: 0.5; min-width: 60px; }
-    .activity-crew { letter-spacing: 0.08em; text-transform: uppercase; min-width: 60px; font-weight: 700; }
-    .activity-crew.sage { color: var(--pulse); }
-    .activity-crew.nova { color: var(--pink); }
-    .activity-crew.grace { color: var(--green); }
-    .activity-crew.riley { color: var(--blue); }
-    .activity-crew.library { color: var(--amber); }
-    .activity-text { flex: 1; color: var(--bone); opacity: 0.85; }
-
-    .roster-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bone); opacity: 0.7; }
-    .roster-head::before, .roster-head::after { content: ''; flex: 1; height: 1px; background: var(--line); }
-    .crew-grid { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
-    .crew-tile { background: var(--ink); border: 1px solid var(--line); border-radius: 4px; padding: 14px 12px; text-align: center; }
-    .crew-tile.online { border-color: var(--pulse); background: linear-gradient(180deg, var(--ink), rgba(201,184,122,0.04)); }
-    .crew-tile.offline { opacity: 0.5; }
-    .crew-tile-mark { width: 38px; height: 38px; margin: 0 auto 8px; border-radius: 50%; background: var(--whisper); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-weight: 600; font-size: 16px; color: var(--bone); }
-    .crew-tile.online .crew-tile-mark { color: var(--pulse); border-color: var(--pulse); }
-    .crew-tile-name { font-family: var(--serif); font-weight: 500; font-size: 14px; }
-    .crew-tile-role { font-family: var(--mono); font-size: 9px; color: var(--bone); opacity: 0.6; margin-top: 2px; text-transform: uppercase; }
-    .crew-tile-pill { display: inline-block; margin-top: 6px; font-family: var(--mono); font-size: 9px; padding: 2px 6px; border-radius: 3px; background: var(--whisper); color: var(--bone); }
-    .crew-tile.online .crew-tile-pill { background: var(--pulse); color: var(--void); }
-
-    /* SHOWROOM */
-    .show-intro { font-family: var(--mono); font-size: 12px; color: var(--bone); opacity: 0.7; margin-bottom: 20px; line-height: 1.6; }
-    .show-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); margin-bottom: 24px; }
-    .show-card { background: var(--ink); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s; }
-    .show-card:hover { border-color: var(--pulse); transform: translateY(-2px); }
-    .show-hero { width: 100%; aspect-ratio: 4/5; background: var(--whisper); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-    .show-hero img { width: 100%; height: 100%; object-fit: cover; }
-    .show-hero-fallback { font-family: var(--serif); font-size: 14px; color: var(--bone); opacity: 0.4; padding: 20px; text-align: center; }
-    .show-extras-badge { position: absolute; bottom: 8px; right: 8px; background: rgba(10,9,8,0.9); color: var(--pulse); font-family: var(--mono); font-size: 9px; padding: 3px 7px; border-radius: 3px; }
-    .show-meta { padding: 14px; }
-    .show-name { font-family: var(--serif); font-size: 15px; font-weight: 500; }
-    .show-price { font-family: var(--mono); font-size: 12px; color: var(--pulse); margin-top: 4px; }
-    .show-fit { font-family: var(--mono); font-size: 9px; color: var(--bone); opacity: 0.5; text-transform: uppercase; margin-top: 4px; }
-
-    .show-modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: flex-start; justify-content: center; z-index: 100; padding: 20px; overflow-y: auto; }
-    .show-modal-bg.show { display: flex; }
-    .show-modal { background: var(--ink); border: 1px solid var(--line); border-radius: 8px; max-width: 760px; width: 100%; margin: auto; }
-    .show-modal-head { padding: 18px 22px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-    .show-modal-title { font-family: var(--serif); font-size: 22px; font-weight: 500; }
-    .show-modal-sub { font-family: var(--mono); font-size: 11px; color: var(--bone); opacity: 0.6; margin-top: 4px; }
-    .show-modal-close { background: transparent; border: none; color: var(--bone); cursor: pointer; font-size: 24px; }
-    .show-modal-body { padding: 20px 22px; }
-    .show-photos { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px; scroll-snap-type: x mandatory; }
-    .show-photos::-webkit-scrollbar { height: 6px; } .show-photos::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
-    .show-photo { flex: 0 0 auto; width: 200px; aspect-ratio: 4/5; background: var(--whisper); border-radius: 4px; overflow: hidden; position: relative; scroll-snap-align: start; cursor: pointer; transition: all 0.15s; }
-    .show-photo:hover { transform: translateY(-2px); }
-    .show-photo img, .show-photo video { width: 100%; height: 100%; object-fit: cover; }
-    .show-photo-actions { position: absolute; bottom: 4px; left: 4px; right: 4px; display: flex; gap: 4px; }
-    .show-photo-actions button, .show-photo-actions a { flex: 1; background: rgba(10,9,8,0.85); color: var(--paper); border: none; padding: 4px; font-size: 9px; font-family: var(--mono); border-radius: 3px; cursor: pointer; text-align: center; text-decoration: none; }
-    .show-photo-actions button:hover, .show-photo-actions a:hover { background: var(--pulse); color: var(--void); }
-    .show-photo-hero { border: 2px solid var(--pulse); }
-    .show-photo-hero::before { content: 'HERO'; position: absolute; top: 4px; left: 4px; background: var(--pulse); color: var(--void); font-family: var(--mono); font-size: 8px; padding: 2px 5px; border-radius: 2px; z-index: 2; }
-    .show-photo-saved::before { content: 'SAVED'; position: absolute; top: 4px; left: 4px; background: var(--blue); color: var(--void); font-family: var(--mono); font-size: 8px; padding: 2px 5px; border-radius: 2px; z-index: 2; }
-    .show-photo-selected { outline: 3px solid var(--green); outline-offset: -3px; box-shadow: 0 0 16px rgba(124,193,116,0.4); }
-    .show-photo-selected::after { content: '● CAPTIONING'; position: absolute; top: 4px; right: 4px; background: var(--green); color: var(--void); font-family: var(--mono); font-size: 8px; padding: 2px 5px; border-radius: 2px; z-index: 2; font-weight: 700; }
-    .show-add-photo { flex: 0 0 auto; width: 200px; aspect-ratio: 4/5; background: var(--whisper); border: 2px dashed var(--line); border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; scroll-snap-align: start; }
-    .show-add-photo:hover { border-color: var(--pulse); background: var(--ink); }
-    .show-add-photo-mark { font-family: var(--serif); font-size: 36px; color: var(--pulse); }
-    .show-add-photo-text { font-family: var(--mono); font-size: 10px; color: var(--bone); text-align: center; padding: 0 8px; margin-top: 6px; }
-    .show-hero-edit { display: flex; gap: 8px; margin-bottom: 16px; padding: 10px 12px; background: var(--whisper); border: 1px solid var(--line); border-radius: 4px; }
-    .show-hero-edit input { flex: 1; background: transparent; border: none; color: var(--paper); font-family: var(--mono); font-size: 11px; outline: none; }
-    .show-hero-edit button { background: var(--pulse); color: var(--void); border: none; padding: 4px 10px; font-size: 10px; font-family: var(--mono); border-radius: 3px; cursor: pointer; }
-    .show-caption-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green); margin-bottom: 8px; padding: 8px 12px; background: rgba(124,193,116,0.08); border-left: 2px solid var(--green); border-radius: 2px; display: flex; align-items: center; gap: 8px; }
-    .show-caption-label img { width: 24px; height: 24px; border-radius: 2px; object-fit: cover; }
-    .show-platforms { display: flex; gap: 4px; margin-bottom: 12px; }
-    .show-plat-tab { flex: 1; font-family: var(--mono); font-size: 11px; padding: 8px 12px; border-radius: 4px; background: transparent; border: 1px solid var(--line); color: var(--bone); cursor: pointer; text-transform: uppercase; }
-    .show-plat-tab.active { background: var(--pulse); color: var(--void); border-color: var(--pulse); }
-    .show-caption { background: var(--whisper); border: 1px solid var(--line); border-radius: 6px; padding: 14px; font-size: 13px; line-height: 1.6; white-space: pre-wrap; min-height: 100px; max-height: 300px; overflow-y: auto; color: var(--paper); }
-    .show-caption.loading { color: var(--bone); opacity: 0.5; font-family: var(--mono); font-size: 11px; }
-    .show-caption-actions { display: flex; gap: 8px; margin-top: 12px; }
-
-    /* LIBRARY */
-    .lib-toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
-    .lib-toolbar h2 { font-family: var(--serif); font-weight: 500; font-size: 22px; flex: 1; min-width: 200px; }
-    .lib-tabs { display: flex; gap: 4px; flex-wrap: wrap; }
-    .lib-filter-tab { font-family: var(--mono); font-size: 10px; padding: 6px 12px; border-radius: 3px; background: transparent; border: 1px solid var(--line); color: var(--bone); cursor: pointer; text-transform: uppercase; }
-    .lib-filter-tab.active { background: var(--pulse); color: var(--void); border-color: var(--pulse); }
-    .lib-search { display: flex; gap: 8px; margin-bottom: 16px; }
-    .lib-search input { flex: 1; background: var(--whisper); border: 1px solid var(--line); color: var(--paper); padding: 10px 14px; border-radius: 6px; font-family: var(--mono); font-size: 12px; }
-    .lib-search input:focus { outline: none; border-color: var(--pulse); }
-    .lib-search input::placeholder { color: var(--bone); opacity: 0.4; }
-    .lib-search-clear { background: var(--whisper); border: 1px solid var(--line); color: var(--bone); padding: 8px 14px; border-radius: 6px; font-family: var(--mono); font-size: 11px; cursor: pointer; }
-    .lib-search-clear:hover { background: var(--ink); color: var(--paper); }
-
-    .lib-bulk-bar { background: var(--whisper); border: 1px solid var(--pulse); border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; display: none; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .lib-bulk-bar.show { display: flex; }
-    .lib-bulk-count { font-family: var(--mono); font-size: 12px; color: var(--pulse); flex: 1; min-width: 120px; }
-    .lib-bulk-btn { font-family: var(--mono); font-size: 11px; padding: 6px 12px; border-radius: 4px; background: var(--pulse); color: var(--void); border: none; cursor: pointer; font-weight: 700; }
-    .lib-bulk-btn-ghost { background: transparent; color: var(--bone); border: 1px solid var(--line); }
-    .lib-bulk-btn-ghost:hover { color: var(--paper); border-color: var(--pulse); }
-
-    .upload-zone { background: var(--ink); border: 2px dashed var(--line); border-radius: 6px; padding: 40px 20px; text-align: center; margin-bottom: 24px; cursor: pointer; transition: all 0.2s; }
-    .upload-zone:hover, .upload-zone.dragover { border-color: var(--pulse); background: var(--whisper); }
-    .upload-zone-mark { font-family: var(--serif); font-size: 32px; color: var(--pulse); margin-bottom: 8px; }
-    .upload-zone-text { font-family: var(--mono); font-size: 12px; color: var(--bone); }
-    .upload-zone-sub { font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.5; margin-top: 6px; }
-    .upload-progress { background: var(--whisper); border: 1px solid var(--line); padding: 12px 16px; border-radius: 4px; margin-bottom: 16px; font-family: var(--mono); font-size: 12px; }
-    .upload-progress.hidden { display: none; }
-    .upload-bar { height: 4px; background: var(--line); border-radius: 2px; margin-top: 8px; overflow: hidden; }
-    .upload-bar-fill { height: 100%; background: var(--pulse); width: 0; transition: width 0.3s; }
-
-    .lib-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
-    .lib-card { background: var(--ink); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; transition: all 0.2s; position: relative; }
-    .lib-card:hover { border-color: var(--pulse); transform: translateY(-2px); }
-    .lib-card.selected { border-color: var(--green); box-shadow: 0 0 12px rgba(124,193,116,0.3); }
-    .lib-card-checkbox { position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; background: rgba(10,9,8,0.85); border: 2px solid var(--paper); border-radius: 3px; cursor: pointer; z-index: 5; display: none; align-items: center; justify-content: center; font-size: 14px; color: var(--paper); }
-    .lib-card.bulk-mode .lib-card-checkbox { display: flex; }
-    .lib-card.selected .lib-card-checkbox { background: var(--green); border-color: var(--green); color: var(--void); font-weight: 700; }
-    .lib-thumb { width: 100%; aspect-ratio: 1; background: var(--whisper); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .lib-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .lib-thumb video { width: 100%; height: 100%; object-fit: cover; }
-    .lib-type-badge { position: absolute; top: 8px; left: 8px; background: rgba(10,9,8,0.85); color: var(--paper); font-family: var(--mono); font-size: 9px; padding: 3px 7px; border-radius: 3px; text-transform: uppercase; }
-    .lib-untagged-badge { position: absolute; bottom: 8px; left: 8px; background: var(--amber); color: var(--void); font-family: var(--mono); font-size: 9px; padding: 3px 7px; border-radius: 3px; font-weight: 700; }
-    .lib-meta { padding: 12px; }
-    .lib-id { font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.6; word-break: break-all; }
-    .lib-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
-    .lib-pill { font-family: var(--mono); font-size: 9px; padding: 2px 6px; border-radius: 3px; background: var(--whisper); color: var(--bone); }
-    .lib-pill.product { background: rgba(201,184,122,0.15); color: var(--pulse); }
-    .lib-actions { display: flex; gap: 4px; padding: 0 12px 12px; flex-wrap: wrap; }
-    .lib-btn { flex: 1; min-width: 60px; padding: 5px 8px; font-size: 10px; border-radius: 3px; font-family: var(--mono); border: 1px solid var(--line); background: transparent; color: var(--bone); cursor: pointer; }
-    .lib-btn:hover { background: var(--whisper); color: var(--paper); }
-
-    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
-    .modal-bg.show { display: flex; }
-    .modal { background: var(--ink); border: 1px solid var(--line); border-radius: 8px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; }
-    .modal-head { padding: 18px 22px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
-    .modal-title { font-family: var(--serif); font-size: 20px; font-weight: 500; }
-    .modal-close { background: transparent; border: none; color: var(--bone); cursor: pointer; font-size: 22px; }
-    .modal-body { padding: 20px 22px; }
-    .modal-row { margin-bottom: 16px; }
-    .modal-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bone); opacity: 0.7; margin-bottom: 6px; }
-    .modal-input, .modal-textarea { width: 100%; background: var(--whisper); border: 1px solid var(--line); color: var(--paper); padding: 10px 14px; border-radius: 6px; font-family: var(--sans); font-size: 14px; }
-    .modal-textarea { font-family: var(--mono); font-size: 12px; min-height: 60px; resize: vertical; }
-    .modal-input:focus, .modal-textarea:focus { outline: none; border-color: var(--pulse); }
-    .modal-foot { padding: 16px 22px; border-top: 1px solid var(--line); display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
-    .modal-preview { width: 100%; max-height: 250px; object-fit: contain; background: var(--void); border-radius: 4px; margin-bottom: 12px; }
-    .product-checkbox-grid { display: grid; gap: 6px; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-    .product-check { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--whisper); border-radius: 4px; cursor: pointer; font-size: 12px; font-family: var(--mono); }
-
-    footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); text-align: center; font-family: var(--mono); font-size: 10px; color: var(--bone); opacity: 0.4; }
-    .config-warn { background: rgba(212,165,68,0.08); border: 1px solid var(--amber); color: var(--amber); padding: 12px 16px; border-radius: 4px; font-family: var(--mono); font-size: 12px; margin-bottom: 16px; }
-    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); border: 1px solid var(--pulse); color: var(--paper); padding: 12px 20px; border-radius: 6px; font-family: var(--mono); font-size: 12px; z-index: 200; opacity: 0; transition: opacity 0.3s; }
-    .toast.show { opacity: 1; }
-    .toast.error { border-color: var(--red); color: var(--red); }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Inspirit OS · The Bridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--void:#0a0908;--ink:#14110f;--whisper:#1f1c19;--line:#2a2622;--bone:#d6cfbe;--paper:#f5f1e8;--pulse:#c9b87a;--green:#7cc174;--amber:#d4a544;--red:#c47373;--blue:#7a9cc9;--pink:#c97abf;--jett:#ff3b6b;--mono:'JetBrains Mono',ui-monospace,monospace;--serif:'Fraunces',Georgia,serif;--sans:'Manrope',-apple-system,sans-serif}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--void);color:var(--paper);font-size:15px;line-height:1.5;min-height:100vh;padding:24px;background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(201,184,122,0.04),transparent)}
+.header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:18px;margin-bottom:24px;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:16px}
+.brand{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.brand-mark{font-family:var(--mono);font-weight:700;letter-spacing:0.18em;font-size:13px;color:var(--bone)}
+.brand-title{font-family:var(--serif);font-weight:500;font-size:28px;letter-spacing:-0.01em}
+.brand-title em{font-style:italic;color:var(--pulse);font-weight:400}
+.header-meta{font-family:var(--mono);font-size:11px;color:var(--bone);opacity:0.7;text-align:right}
+.header-meta .live{color:var(--green)}
+.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:6px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:0.4}}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:24px;flex-wrap:wrap}
+.tab{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;padding:10px 18px;background:transparent;border:none;color:var(--bone);cursor:pointer;opacity:0.6;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab:hover{opacity:1}
+.tab.active{opacity:1;color:var(--pulse);border-bottom-color:var(--pulse)}
+.tab.tiktok.active{color:var(--jett);border-bottom-color:var(--jett)}
+.tab-pill{display:inline-block;min-width:18px;padding:1px 6px;border-radius:9px;background:var(--amber);color:var(--void);font-size:9px;margin-left:6px;vertical-align:middle}
+.pane{display:none}
+.pane.active{display:block}
+.btn{background:var(--paper);color:var(--void);border:none;padding:10px 18px;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:13px;cursor:pointer}
+.btn:hover{opacity:0.85}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--paper);border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--pulse);background:var(--whisper)}
+.btn-jett{background:var(--jett);color:var(--paper);border:none;padding:10px 18px;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:13px;cursor:pointer}
+.btn-jett:hover{opacity:0.85}
+.btn-jett:disabled{opacity:0.4;cursor:not-allowed}
+.stats{display:grid;gap:1px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-bottom:24px}
+.stat{padding:16px 18px;background:var(--ink)}
+.stat-label{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--bone);opacity:0.7}
+.stat-value{font-family:var(--serif);font-weight:500;font-size:26px;margin-top:6px;letter-spacing:-0.02em}
+.stat-value .currency{font-size:14px;opacity:0.6;margin-right:2px}
+.stat-sub{font-family:var(--mono);font-size:10px;color:var(--bone);opacity:0.5;margin-top:2px}
+.stat-attn{color:var(--pulse)}
+.grid{display:grid;gap:16px;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);margin-bottom:16px}
+@media (max-width:1100px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--ink);border:1px solid var(--line);border-radius:4px;display:flex;flex-direction:column}
+.panel.tall{min-height:580px}
+.panel-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.crew-mark{width:36px;height:36px;border-radius:50%;background:var(--whisper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;font-size:16px;color:var(--pulse)}
+.crew-mark.grace{color:var(--green);border-color:var(--green)}
+.crew-mark.riley{color:var(--blue);border-color:var(--blue)}
+.crew-mark.nova{color:var(--pink);border-color:var(--pink)}
+.crew-mark.jett{color:var(--jett);border-color:var(--jett);background:linear-gradient(135deg,rgba(255,59,107,0.15),rgba(255,59,107,0.05))}
+.crew-meta{flex:1;min-width:0}
+.crew-name{font-family:var(--serif);font-weight:500;font-size:18px}
+.crew-role{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--bone);opacity:0.7}
+.crew-status{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green)}
+#chat{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;min-height:380px}
+#chat::-webkit-scrollbar{width:6px}#chat::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.msg{max-width:85%;padding:12px 16px;border-radius:14px;font-size:14px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.msg.user{align-self:flex-end;background:var(--paper);color:var(--void);font-weight:500}
+.msg.sage{align-self:flex-start;background:var(--whisper);color:var(--paper);border:1px solid var(--line);font-family:var(--serif);font-size:15px}
+.msg.thinking{align-self:flex-start;font-family:var(--mono);font-size:11px;color:var(--bone);opacity:0.6;letter-spacing:0.08em;padding:4px 8px}
+.msg.thinking::after{content:'...';display:inline-block;width:18px;text-align:left;animation:dots 1.4s steps(4,end) infinite}
+@keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%,100%{content:'...'}}
+.chat-input{display:flex;gap:8px;padding:14px;border-top:1px solid var(--line)}
+.chat-input input{flex:1;background:var(--whisper);border:1px solid var(--line);color:var(--paper);padding:12px 16px;border-radius:8px;font-family:var(--sans);font-size:14px}
+.chat-input input:focus{outline:none;border-color:var(--pulse)}
+#attention{flex:1;overflow-y:auto;max-height:580px}
+.attn-empty{padding:60px 24px;text-align:center;color:var(--bone);opacity:0.5;font-family:var(--mono);font-size:11px;letter-spacing:0.08em}
+.attn-item{padding:14px 18px;border-bottom:1px solid var(--line);cursor:pointer}
+.attn-item:hover{background:var(--whisper)}
+.attn-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.attn-tag{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;padding:2px 6px;border-radius:3px;text-transform:uppercase}
+.attn-tag.nova{background:rgba(201,122,191,0.15);color:var(--pink)}
+.attn-tag.grace{background:rgba(124,193,116,0.15);color:var(--green)}
+.attn-tag.riley{background:rgba(122,156,201,0.15);color:var(--blue)}
+.attn-tag.jett{background:rgba(255,59,107,0.15);color:var(--jett)}
+.attn-tag.escalated{background:var(--red);color:var(--void)}
+.attn-time{font-family:var(--mono);font-size:10px;color:var(--bone);opacity:0.5;margin-left:auto}
+.attn-brief{font-family:var(--mono);font-size:11px;color:var(--bone);opacity:0.85;margin-top:4px;line-height:1.4}
+.chart-panel{background:var(--ink);border:1px solid var(--line);border-radius:4px;padding:18px;margin-bottom:16px}
+.chart-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.chart-title{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--bone);opacity:0.7}
+.chart-tabs{display:flex;gap:4px}
+.chart-tab{font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:3px;background:transparent;border:1px solid var(--line);color:var(--bone);cursor:pointer;text-transform:uppercase}
+.chart-tab.active{background:var(--pulse);color:var(--void);border-color:var(--pulse)}
+#chart{width:100%;height:140px}
+.queues{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));margin-bottom:24px}
+.qpanel{background:var(--ink);border:1px solid var(--line);border-radius:4px;display:flex;flex-direction:column;min-height:320px;max-height:480px}
+.q-list{flex:1;overflow-y:auto}
+.q-item{padding:14px 16px;border-bottom:1px solid var(--line)}
+.q-item.approved,.q-item.posted,.q-item.logged{opacity:0.5}
+.q-item.rejected,.q-item.sent{opacity:0.4}
+.q-time{font-family:var(--mono);font-size:10px;color:var(--bone);opacity:0.5}
+.q-brief{font-family:var(--mono);font-size:11px;color:var(--pulse);margin:4px 0 8px}
+.q-brief::before{content:'BRIEF · ';opacity:0.6}
+.q-output{font-size:12.5px;line-height:1.55;white-space:pre-wrap;max-height:110px;overflow:hidden;position:relative;color:var(--paper);opacity:0.92}
+.q-output.expanded{max-height:none}
+.q-output:not(.expanded)::after{content:'';position:absolute;bottom:0;left:0;right:0;height:30px;background:linear-gradient(transparent,var(--ink))}
+.q-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.q-btn{padding:5px 10px;font-size:10px;border-radius:4px;font-family:var(--mono);border:1px solid var(--line);background:transparent;color:var(--bone);cursor:pointer}
+.q-btn:hover{background:var(--whisper);color:var(--paper)}
+.q-btn.approve{border-color:var(--green);color:var(--green)}
+.q-btn.approve:hover{background:var(--green);color:var(--void)}
+.q-btn.reject{border-color:var(--red);color:var(--red)}
+.q-btn.reject:hover{background:var(--red);color:var(--void)}
+.q-btn.jett{border-color:var(--jett);color:var(--jett)}
+.q-btn.jett:hover{background:var(--jett);color:var(--paper)}
+.q-status{display:inline-block;font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:3px;margin-left:6px}
+.q-status.approved,.q-status.sent,.q-status.posted,.q-status.logged{background:var(--green);color:var(--void)}
+.q-status.rejected{background:var(--red);color:var(--void)}
+.q-status.escalated{background:var(--amber);color:var(--void)}
+.q-status.filmed{background:var(--jett);color:var(--paper)}
+.q-status.planned{background:var(--whisper);color:var(--bone);border:1px solid var(--line)}
+.q-customer{font-family:var(--mono);font-size:10px;color:var(--bone);opacity:0.6;margin-bottom:4px}
+.q-mode{display:inline-block;font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:3px;background:rgba(255,59,107,0.15);color:var(--jett);margin-right:4px;text-transform:uppercase}
+.empty{padding:60px 24px;text-align:center;color:var(--bone);opacity:0.5;font-family:var(--mono);font-size:11px}
+.activity-panel{background:var(--ink);border:1px solid var(--line);border-radius:4px;padding:18px;margin-bottom:24px}
+.activity-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.activity-feed{max-height:260px;overflow-y:auto}
+.activity-row{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px}
+.activity-time{color:var(--bone);opacity:0.5;min-width:60px}
+.activity-crew{letter-spacing:0.08em;text-transform:uppercase;min-width:60px;font-weight:700}
+.activity-crew.sage{color:var(--pulse)}
+.activity-crew.nova{color:var(--pink)}
+.activity-crew.grace{color:var(--green)}
+.activity-crew.riley{color:var(--blue)}
+.activity-crew.jett{color:var(--jett)}
+.activity-crew.library{color:var(--amber)}
+.activity-text{flex:1;color:var(--bone);opacity:0.85}
+.roster-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--bone);opacity:0.7}
+.roster-head::before,.roster-head::after{content:'';flex:1;height:1px;background:var(--line)}
+.crew-grid{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+.crew-tile{background:var(--ink);border:1px solid var(--line);border-radius:4px;padding:14px 12px;text-align:center}
+.crew-tile.online{border-color:var(--pulse);background:linear-gradient(180deg,var(--ink),rgba(201,184,122,0.04))}
+.crew-tile.online.jett{border-color:var(--jett);background:linear-gradient(180deg,var(--ink),rgba(255,59,107,0.06))}
+.crew-tile.offline{opacity:0.5}
+.crew-tile-mark{width:38px;height:38px;margin:0 auto 8px;border-radius:50%;background:var(--whisper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;font-size:16px;color:var(--bone)}
+.crew-tile.online .crew-tile-mark{color:var(--pulse);border-color:var(--pulse)}
+.crew-tile.online.jett .crew-tile-mark{color:var(--jett);border-color:var(--jett)}
+.crew-tile-name{font-family:var(--serif);font-weight:500;font-size:14px}
+.crew-tile-role{font-family:var(--mono);font-size:9px;color:var(--bone);opacity:0.6;margin-top:2px;text-transform:uppercase}
+.crew-tile-pill{display:inline-block;margin-top:6px;font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:3px;background:var(--whisper);color:var(--bone)}
+.crew-tile.online .crew-tile-pill{background:var(--pulse);color:var(--void)}
+.crew-tile.online.jett .crew-tile-pill{background:var(--jett);color:var(--paper)}
+.show-intro{font-family:var(--mono);font-size:12px;color:var(--bone);opacity:0.7;margin-bottom:20px;line-height:1.6}
+.show-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-bottom:24px}
+.show-card{background:var(--ink);border:1px solid var(--line);border-radius:6px;overflow:hidden;cursor:pointer;transition:all 0.2s}
+.show-card:hover{border-color:var(--pulse);transform:translateY(-2px)}
+.show-hero{width:100%;aspect-ratio:4/5;background:var(--whisper);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.show-hero img{width:100%;height:100%;object-fit:cover}
+.show-hero-fallback{font-family:var(--serif);font-size:14px;color:var(--bone);opacity:0.4;padding:20px;text-align:center}
+.show-extras-badge{position:absolute;bottom:8px;right:8px;background:rgba(10,9,8,0.9);color:var(--pulse);font-family:var(--mono);font-size:9px;padding:3px 7px;border-radius:3px}
+.show-meta{padding:14px}
+.show-name{font-family:var(--serif);font-size:15px;font-weight:500}
+.show-price{font-family:var(--mono);font-size:12px;color:var(--pulse);margin-top:4px}
+.show-fit{font-family:var(--mono);font-size:9px;color:var(--bone);opacity:0.5;text-transform:uppercase;margin-top:4px}
+.show-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:flex-start;justify-content:center;z-index:100;padding:20px;overflow-y:auto}
+.show-modal-bg.show{display:flex}
+.show-modal{background:var(--ink);border:1px solid var(--line);border-radius:8px;max-width:760px;width:100%;margin:auto}
+.show-modal-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.show-modal-title{font-family:var(--serif);font-size:22px;font-weight:500}
+.show-modal-sub{font-family:var(--mono);font-size:11px;color:var(--bone);opacity:0.6;margin-top:4px}
+.show-modal-close{background:transparent;border:none;color:var(--bone);cursor:pointer;font-size:24px}
+.show-modal-body{padding:20px 22px}
+.show-photos{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px;scroll-snap-type:x mandatory}
+.show-photo{flex:0 0 auto;width:200px;aspect-ratio:4/5;background:var(--whisper);border-radius:4px;overflow:hidden;position:relative;scroll-snap-align:start;cursor:pointer;transition:all 0.15s}
+.show-photo:hover{transform:translateY(-2px)}
+.show-photo img,.show-photo video{width:100%;height:100%;object-fit:cover}
+.show-photo-actions{position:absolute;bottom:4px;left:4px;right:4px;display:flex;gap:4px}
+.show-photo-actions button,.show-photo-actions a{flex:1;background:rgba(10,9,8,0.85);color:var(--paper);border:none;padding:4px;font-size:9px;font-family:var(--mono);border-radius:3px;cursor:pointer;text-align:center;text-decoration:none}
+.show-photo-actions button:hover,.show-photo-actions a:hover{background:var(--pulse);color:var(--void)}
+.show-photo-hero{border:2px solid var(--pulse)}
+.show-photo-hero::before{content:'HERO';position:absolute;top:4px;left:4px;background:var(--pulse);color:var(--void);font-family:var(--mono);font-size:8px;padding:2px 5px;border-radius:2px;z-index:2}
+.show-photo-saved::before{content:'SAVED';position:absolute;top:4px;left:4px;background:var(--blue);color:var(--void);font-family:var(--mono);font-size:8px;padding:2px 5px;border-radius:2px;z-index:2}
+.show-photo-selected{outline:3px solid var(--green);outline-offset:-3px;box-shadow:0 0 16px rgba(124,193,116,0.4)}
+.show-photo-selected::after{content:'● CAPTIONING';position:absolute;top:4px;right:4px;background:var(--green);color:var(--void);font-family:var(--mono);font-size:8px;padding:2px 5px;border-radius:2px;z-index:2;font-weight:700}
+.show-add-photo{flex:0 0 auto;width:200px;aspect-ratio:4/5;background:var(--whisper);border:2px dashed var(--line);border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;scroll-snap-align:start}
+.show-add-photo:hover{border-color:var(--pulse);background:var(--ink)}
+.show-add-photo-mark{font-family:var(--serif);font-size:36px;color:var(--pulse)}
+.show-add-photo-text{font-family:var(--mono);font-size:10px;color:var(--bone);text-align:center;padding:0 8px;margin-top:6px}
+.show-hero-edit{display:flex;gap:8px;margin-bottom:16px;padding:10px 12px;background:var(--whisper);border:1px solid var(--line);border-radius:4px}
+.show-hero-edit input{flex:1;background:transparent;border:none;color:var(--paper);font-family:var(--mono);font-size:11px;outline:none}
+.show-hero-edit button{background:var(--pulse);color:var(--void);border:none;padding:4px 10px;font-size:10px;font-family:var(--mono);border-radius:3px;cursor:pointer}
+.show-caption-label{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:8px;padding:8px 12px;background:rgba(124,193,116,0.08);border-left:2px solid var(--green);border-radius:2px;display:flex;align-items:center;gap:8px}
+.show-caption-label img{width:24px;height:24px;border-radius:2px;object-fit:cover}
+.show-platforms{display:flex;gap:4px;margin-bottom:12px}
+.show-plat-tab{flex:1;font-family:var(--mono);font-size:11px;padding:8px 12px;border-radius:4px;background:transparent;border:1px solid var(--line);color:var(--bone);cursor:pointer;text-transform:uppercase}
+.show-plat-tab.active{background:var(--pulse);color:var(--void);border-color:var(--pulse)}
+.show-caption{background:var(--whisper);border:1px solid var(--line);border-radius:6px;padding:14px;font-size:13px;line-height:1.6;white-space:pre-wrap;min-height:100px;max-height:300px;overflow-y:auto;color:var(--paper)}
+.show-caption.loading{color:var(--bone);opacity:0.5;font-family:var(--mono);font-size:11px}
+.show-caption-actions{display:flex;gap:8px;margin-top:12px}
+.tt-hero{background:linear-gradient(135deg,rgba(255,59,107,0.08),rgba(255,59,107,0.02));border:1px solid var(--jett);border-radius:8px;padding:24px;margin-bottom:20px;display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.tt-hero-mark{width:56px;height:56px;border-radius:50%;background:var(--jett);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:26px;color:var(--paper);flex-shrink:0}
+.tt-hero-meta{flex:1;min-width:220px}
+.tt-hero-title{font-family:var(--serif);font-size:26px;font-weight:500;margin-bottom:6px}
+.tt-hero-title em{color:var(--jett);font-style:italic}
+.tt-hero-sub{font-family:var(--mono);font-size:11px;color:var(--bone);opacity:0.7;line-height:1.6}
+.tt-modes{display:grid;gap:6px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:16px}
+.tt-mode{background:var(--ink);border:1px solid var(--line);border-radius:4px;padding:10px 12px;cursor:pointer;transition:all 0.15s}
+.tt-mode:hover{border-color:var(--jett)}
+.tt-mode.active{background:linear-gradient(135deg,rgba(255,59,107,0.12),rgba(255,59,107,0.04));border-color:var(--jett)}
+.tt-mode-name{font-family:var(--serif);font-size:14px;font-weight:500;color:var(--paper);margin-bottom:2px}
+.tt-mode.active .tt-mode-name{color:var(--jett)}
+.tt-mode-desc{font-family:var(--mono);font-size:9px;color:var(--bone);opacity:0.6}
+.tt-input-panel{background:var(--ink);border:1px solid var(--line);border-radius:6px;padding:18px;margin-bottom:20px}
+.tt-input-label{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--bone);opacity:0.7;margin-bottom:8px}
+.tt-textarea{width:100%;background:var(--whisper);border:1px solid var(--line);color:var(--paper);padding:14px;border-radius:6px;font-family:var(--sans);font-size:14px;min-height:80px;resize:vertical}
+.tt-textarea:focus{outline:none;border-color:var(--jett)}
+.tt-input-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.tt-result{background:var(--ink);border:1px solid var(--line);border-radius:6px;padding:18px;margin-bottom:20px}
+.tt-result.empty{padding:60px 24px;text-align:center;color:var(--bone);opacity:0.5;font-family:var(--mono);font-size:11px}
+.tt-result-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tt-result-mode{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:3px;background:var(--jett);color:var(--paper);text-transform:uppercase;letter-spacing:0.08em}
+.tt-result-status{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:3px;background:var(--whisper);color:var(--bone);border:1px solid var(--line);text-transform:uppercase}
+.tt-result-status.filmed{background:var(--jett);color:var(--paper);border-color:var(--jett)}
+.tt-result-status.posted{background:var(--green);color:var(--void);border-color:var(--green)}
+.tt-result-status.logged{background:var(--pulse);color:var(--void);border-color:var(--pulse)}
+.tt-result-time{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--bone);opacity:0.6}
+.tt-result-output{white-space:pre-wrap;font-size:13.5px;line-height:1.65;color:var(--paper);margin-bottom:14px;max-height:600px;overflow-y:auto}
+.tt-result-actions{display:flex;gap:8px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--line)}
+.tt-recent{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--bone);opacity:0.7;margin-bottom:10px}
+.tt-recent-list{display:flex;flex-direction:column;gap:8px}
+.tt-recent-item{background:var(--ink);border:1px solid var(--line);border-radius:4px;padding:12px 14px;cursor:pointer}
+.tt-recent-item:hover{border-color:var(--jett)}
+.tt-recent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tt-recent-brief{font-family:var(--mono);font-size:11px;color:var(--bone);opacity:0.85;margin-top:4px}
+.lib-toolbar{display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.lib-toolbar h2{font-family:var(--serif);font-weight:500;font-size:22px;flex:1;min-width:200px}
+.lib-tabs{display:flex;gap:4px;flex-wrap:wrap}
+.lib-filter-tab{font-family:var(--mono);font-size:10px;padding:6px 12px;border-radius:3px;background:transparent;border:1px solid var(--line);color:var(--bone);cursor:pointer;text-transform:uppercase}
+.lib-filter-tab.active{background:var(--pulse);color:var(--void);border-color:var(--pulse)}
+.lib-search{display:flex;gap:8px;margin-bottom:16px}
+.lib-search input{flex:1;background:var(--whisper);border:1px solid var(--line);color:var(--paper);padding:10px 14px;border-radius:6px;font-family:var(--mono);font-size:12px}
+.lib-search-clear{background:var(--whisper);border:1px solid var(--line);color:var(--bone);padding:8px 14px;border-radius:6px;font-family:var(--mono);font-size:11px;cursor:pointer}
+.lib-bulk-bar{background:var(--whisper);border:1px solid var(--pulse);border-radius:6px;padding:10px 14px;margin-bottom:16px;display:none;align-items:center;gap:10px;flex-wrap:wrap}
+.lib-bulk-bar.show{display:flex}
+.lib-bulk-count{font-family:var(--mono);font-size:12px;color:var(--pulse);flex:1;min-width:120px}
+.lib-bulk-btn{font-family:var(--mono);font-size:11px;padding:6px 12px;border-radius:4px;background:var(--pulse);color:var(--void);border:none;cursor:pointer;font-weight:700}
+.lib-bulk-btn-ghost{background:transparent;color:var(--bone);border:1px solid var(--line)}
+.upload-zone{background:var(--ink);border:2px dashed var(--line);border-radius:6px;padding:40px 20px;text-align:center;margin-bottom:24px;cursor:pointer;transition:all 0.2s}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--pulse);background:var(--whisper)}
+.upload-zone-mark{font-family:var(--serif);font-size:32px;color:var(--pulse);margin-bottom:8px}
+.upload-zone-text{font-family:var(--mono);font-size:12px;color:var(--bone)}
+.upload-zone-sub{font-family:var(--mono);font-size:10px;color:var(--bone);opacity:0.5;margin-top:6px}
+.upload-progress{background:var(--whisper);border:1px solid var(--line);padding:12px 16px;border-radius:4px;margin-bottom:16px;font-family:var(--mono);font-size:12px}
+.upload-progress.hidden{display:none}
+.upload-bar{height:4px;background:var(--line);border-radius:2px;margin-top:8px;overflow:hidden}
+.upload-bar-fill{height:100%;background:var(--pulse);width:0;transition:width 0.3s}
+.lib-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.lib-card{background:var(--ink);border:1px solid var(--line);border-radius:6px;overflow:hidden;transition:all 0.2s;position:relative}
+.lib-card:hover{border-color:var(--pulse);transform:translateY(-2px)}
+.lib-card.selected{border-color:var(--green);box-shadow:0 0 12px rgba(124,193,116,0.3)}
+.lib-card-checkbox{position:absolute;top:8px;right:8px;width:22px;height:22px;background:rgba(10,9,8,0.85);border:2px solid var(--paper);border-radius:3px;cursor:pointer;z-index:5;display:none;align-items:center;justify-content:center;font-size:14px;color:var(--paper)}
+.lib-card.bulk-mode .lib-card-checkbox{display:flex}
+.lib-card.selected .lib-card-checkbox{background:var(--green);border-color:var(--green);color:var(--void);font-weight:700}
+.lib-thumb{width:100%;aspect-ratio:1;background:var(--whisper);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.lib-thumb img,.lib-thumb video{width:100%;height:100%;object-fit:cover}
+.lib-type-badge{position:absolute;top:8px;left:8px;background:rgba(10,9,8,0.85);color:var(--paper);font-family:var(--mono);font-size:9px;padding:3px 7px;border-radius:3px;text-transform:uppercase}
+.lib-untagged-badge{position:absolute;bottom:8px;left:8px;background:var(--amber);color:var(--void);font-family:var(--mono);font-size:9px;padding:3px 7px;border-radius:3px;font-weight:700}
+.lib-meta{padding:12px}
+.lib-id{font-family:var(--mono);font-size:10px;color:var(--bone);opacity:0.6;word-break:break-all}
+.lib-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.lib-pill{font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:3px;background:var(--whisper);color:var(--bone)}
+.lib-pill.product{background:rgba(201,184,122,0.15);color:var(--pulse)}
+.lib-actions{display:flex;gap:4px;padding:0 12px 12px;flex-wrap:wrap}
+.lib-btn{flex:1;min-width:60px;padding:5px 8px;font-size:10px;border-radius:3px;font-family:var(--mono);border:1px solid var(--line);background:transparent;color:var(--bone);cursor:pointer;text-align:center;text-decoration:none}
+.lib-btn:hover{background:var(--whisper);color:var(--paper)}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal-bg.show{display:flex}
+.modal{background:var(--ink);border:1px solid var(--line);border-radius:8px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.modal-title{font-family:var(--serif);font-size:20px;font-weight:500}
+.modal-close{background:transparent;border:none;color:var(--bone);cursor:pointer;font-size:22px}
+.modal-body{padding:20px 22px}
+.modal-row{margin-bottom:16px}
+.modal-label{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--bone);opacity:0.7;margin-bottom:6px}
+.modal-input,.modal-textarea{width:100%;background:var(--whisper);border:1px solid var(--line);color:var(--paper);padding:10px 14px;border-radius:6px;font-family:var(--sans);font-size:14px}
+.modal-textarea{font-family:var(--mono);font-size:12px;min-height:60px;resize:vertical}
+.modal-foot{padding:16px 22px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.modal-preview{width:100%;max-height:250px;object-fit:contain;background:var(--void);border-radius:4px;margin-bottom:12px}
+.product-checkbox-grid{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+.product-check{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--whisper);border-radius:4px;cursor:pointer;font-size:12px;font-family:var(--mono)}
+footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);text-align:center;font-family:var(--mono);font-size:10px;color:var(--bone);opacity:0.4}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);border:1px solid var(--pulse);color:var(--paper);padding:12px 20px;border-radius:6px;font-family:var(--mono);font-size:12px;z-index:200;opacity:0;transition:opacity 0.3s}
+.toast.show{opacity:1}
+.toast.error{border-color:var(--red);color:var(--red)}
+</style>
 </head>
 <body>
-  <header class="header">
-    <div class="brand"><span class="brand-mark">INSPIRIT // OS</span><h1 class="brand-title">The <em>Bridge</em></h1></div>
-    <div class="header-meta"><div class="live"><span class="live-dot"></span>ALL SYSTEMS ONLINE · v0.9.0</div><div id="clock"></div></div>
-  </header>
-  <div id="config-warn" class="config-warn" style="display:none;">⚠ Worker URL not set.</div>
-  <nav class="tabs">
-    <button class="tab" data-pane="showroom">Showroom</button>
-    <button class="tab active" data-pane="ops">Ops</button>
-    <button class="tab" data-pane="library">Library <span id="lib-count" class="tab-pill" style="display:none;">0</span></button>
-  </nav>
+<header class="header">
+<div class="brand"><span class="brand-mark">INSPIRIT // OS</span><h1 class="brand-title">The <em>Bridge</em></h1></div>
+<div class="header-meta"><div class="live"><span class="live-dot"></span>5/8 CREW ONLINE · v1.0.0</div><div id="clock"></div></div>
+</header>
+<nav class="tabs">
+<button class="tab" data-pane="showroom">Showroom</button>
+<button class="tab active" data-pane="ops">Ops</button>
+<button class="tab tiktok" data-pane="tiktok">🎬 TikTok Studio</button>
+<button class="tab" data-pane="library">Library <span id="lib-count" class="tab-pill" style="display:none;">0</span></button>
+</nav>
 
-  <div id="pane-showroom" class="pane">
-    <div class="show-intro">Click a product → click any photo to pick it (turns green) → tap Regenerate to write a caption for that specific shot. Each photo keeps its own caption per platform.</div>
-    <div class="show-grid" id="show-grid"></div>
-  </div>
+<div id="pane-showroom" class="pane">
+<div class="show-intro">Click a product → click any photo to pick it (turns green) → tap Regenerate to write a caption for that specific shot.</div>
+<div class="show-grid" id="show-grid"></div>
+</div>
+<div class="show-modal-bg" id="show-modal-bg">
+<div class="show-modal">
+<div class="show-modal-head"><div><div class="show-modal-title" id="show-modal-title">Product</div><div class="show-modal-sub" id="show-modal-sub">$0 · unisex</div></div><button class="show-modal-close" id="show-modal-close">×</button></div>
+<div class="show-modal-body">
+<div class="show-hero-edit"><input id="show-hero-input" placeholder="Hero photo URL" /><button id="show-hero-save">Set Hero</button></div>
+<div class="show-photos" id="show-photos"></div>
+<input type="file" id="show-file-input" multiple accept="image/*,video/*" style="display:none;" />
+<div class="show-caption-label" id="show-caption-label"><span>Click any photo above to caption it</span></div>
+<div class="show-platforms"><button class="show-plat-tab active" data-platform="instagram">Instagram</button><button class="show-plat-tab" data-platform="tiktok">TikTok</button><button class="show-plat-tab" data-platform="facebook">Facebook</button></div>
+<div class="show-caption loading" id="show-caption">Pick a photo, then tap Regenerate.</div>
+<div class="show-caption-actions"><button class="btn" id="show-copy">Copy Caption</button><button class="btn-ghost btn" id="show-regen">Regenerate</button></div>
+</div>
+</div>
+</div>
 
-  <div class="show-modal-bg" id="show-modal-bg">
-    <div class="show-modal">
-      <div class="show-modal-head">
-        <div><div class="show-modal-title" id="show-modal-title">Product</div><div class="show-modal-sub" id="show-modal-sub">$0 · unisex</div></div>
-        <button class="show-modal-close" id="show-modal-close">×</button>
-      </div>
-      <div class="show-modal-body">
-        <div class="show-hero-edit"><input id="show-hero-input" placeholder="Hero photo URL" /><button id="show-hero-save">Set Hero</button></div>
-        <div class="show-photos" id="show-photos"></div>
-        <input type="file" id="show-file-input" multiple accept="image/*,video/*" style="display:none;" />
-        <div class="show-caption-label" id="show-caption-label"><span>Click any photo above to caption it</span></div>
-        <div class="show-platforms">
-          <button class="show-plat-tab active" data-platform="instagram">Instagram</button>
-          <button class="show-plat-tab" data-platform="tiktok">TikTok</button>
-          <button class="show-plat-tab" data-platform="facebook">Facebook</button>
-        </div>
-        <div class="show-caption loading" id="show-caption">Pick a photo, then tap Regenerate.</div>
-        <div class="show-caption-actions"><button class="btn" id="show-copy">Copy Caption</button><button class="btn-ghost btn" id="show-regen">Regenerate</button></div>
-      </div>
-    </div>
-  </div>
+<div id="pane-ops" class="pane active">
+<section class="stats" id="stats"></section>
+<section class="chart-panel">
+<div class="chart-head"><div class="chart-title">7-Day Trend</div><div class="chart-tabs"><button class="chart-tab active" data-metric="visitors">Visitors</button><button class="chart-tab" data-metric="pageviews">PV</button><button class="chart-tab" data-metric="revenue">Revenue</button><button class="chart-tab" data-metric="orders">Orders</button></div></div>
+<svg id="chart" viewBox="0 0 700 140" preserveAspectRatio="none"></svg>
+</section>
+<section class="grid">
+<div class="panel tall">
+<div class="panel-head"><div class="crew-mark">S</div><div class="crew-meta"><div class="crew-name">Sage</div><div class="crew-role">Chief of Staff</div></div><div class="crew-status">● ONLINE</div></div>
+<div id="chat"></div>
+<div class="chat-input"><input id="chat-input" placeholder="Talk to Sage…" autocomplete="off" /><button id="chat-send" class="btn">Send</button></div>
+</div>
+<div class="panel tall"><div class="panel-head"><div class="crew-mark" style="color:var(--amber);border-color:var(--amber);">!</div><div class="crew-meta"><div class="crew-name">Needs Attention</div><div class="crew-role">Pending across all crew</div></div></div><div id="attention"></div></div>
+</section>
+<section class="activity-panel"><div class="activity-head"><div class="chart-title">Live Activity Feed</div><span style="font-family:var(--mono);font-size:10px;color:var(--bone);opacity:0.5;">Last 30 events</span></div><div class="activity-feed" id="activity"></div></section>
+<section class="queues">
+<div class="qpanel"><div class="panel-head"><div class="crew-mark nova">N</div><div class="crew-meta"><div class="crew-name">Nova</div><div class="crew-role">Creative · Drafts</div></div></div><div class="q-list" id="nova-queue"></div></div>
+<div class="qpanel"><div class="panel-head"><div class="crew-mark grace">G</div><div class="crew-meta"><div class="crew-name">Grace</div><div class="crew-role">CX · Replies</div></div></div><div class="q-list" id="grace-queue"></div></div>
+<div class="qpanel"><div class="panel-head"><div class="crew-mark riley">R</div><div class="crew-meta"><div class="crew-name">Riley</div><div class="crew-role">Strategic Scout</div></div></div><div class="q-list" id="riley-queue"></div></div>
+<div class="qpanel"><div class="panel-head"><div class="crew-mark jett">J</div><div class="crew-meta"><div class="crew-name">Jett</div><div class="crew-role">TikTok Studio</div></div></div><div class="q-list" id="jett-queue"></div></div>
+</section>
+<div class="roster-head">CREW ROSTER · 8</div>
+<section class="crew-grid">
+<div class="crew-tile online"><div class="crew-tile-mark">S</div><div class="crew-tile-name">Sage</div><div class="crew-tile-role">Chief of Staff</div><div class="crew-tile-pill">Online</div></div>
+<div class="crew-tile online"><div class="crew-tile-mark">N</div><div class="crew-tile-name">Nova</div><div class="crew-tile-role">Creative</div><div class="crew-tile-pill">Online</div></div>
+<div class="crew-tile online"><div class="crew-tile-mark">G</div><div class="crew-tile-name">Grace</div><div class="crew-tile-role">CX</div><div class="crew-tile-pill">Online</div></div>
+<div class="crew-tile online"><div class="crew-tile-mark">R</div><div class="crew-tile-name">Riley</div><div class="crew-tile-role">Strategy</div><div class="crew-tile-pill">Online</div></div>
+<div class="crew-tile online jett"><div class="crew-tile-mark">J</div><div class="crew-tile-name">Jett</div><div class="crew-tile-role">TikTok</div><div class="crew-tile-pill">Online · NEW</div></div>
+<div class="crew-tile offline"><div class="crew-tile-mark">M</div><div class="crew-tile-name">Marcus</div><div class="crew-tile-role">CFO</div><div class="crew-tile-pill">Phase 4</div></div>
+<div class="crew-tile offline"><div class="crew-tile-mark">A</div><div class="crew-tile-name">Atlas</div><div class="crew-tile-role">Growth</div><div class="crew-tile-pill">Phase 4</div></div>
+<div class="crew-tile offline"><div class="crew-tile-mark">P</div><div class="crew-tile-name">Pax</div><div class="crew-tile-role">Ops</div><div class="crew-tile-pill">Phase 5</div></div>
+</section>
+</div>
 
-  <div id="pane-ops" class="pane active">
-    <section class="stats" id="stats">
-      <div class="stat"><div class="stat-label">Today's Revenue</div><div class="stat-value"><span class="currency">$</span>0</div><div class="stat-sub">today</div></div>
-      <div class="stat"><div class="stat-label">Orders</div><div class="stat-value">0</div><div class="stat-sub">today</div></div>
-      <div class="stat"><div class="stat-label">Visitors</div><div class="stat-value">0</div><div class="stat-sub">today</div></div>
-      <div class="stat"><div class="stat-label">7d Revenue</div><div class="stat-value"><span class="currency">$</span>0</div><div class="stat-sub">last 7 days</div></div>
-      <div class="stat"><div class="stat-label">Needs Attention</div><div class="stat-value stat-attn">0</div><div class="stat-sub">pending review</div></div>
-      <div class="stat"><div class="stat-label">Crew Online</div><div class="stat-value">4<span style="opacity:.4;font-size:18px;"> / 8</span></div><div class="stat-sub">phase 3</div></div>
-    </section>
-    <section class="chart-panel">
-      <div class="chart-head"><div class="chart-title">7-Day Trend</div><div class="chart-tabs"><button class="chart-tab active" data-metric="visitors">Visitors</button><button class="chart-tab" data-metric="pageviews">Pageviews</button><button class="chart-tab" data-metric="revenue">Revenue</button><button class="chart-tab" data-metric="orders">Orders</button></div></div>
-      <svg id="chart" viewBox="0 0 700 140" preserveAspectRatio="none"></svg>
-    </section>
-    <section class="grid">
-      <div class="panel tall">
-        <div class="panel-head"><div class="crew-mark">S</div><div class="crew-meta"><div class="crew-name">Sage</div><div class="crew-role">Chief of Staff</div></div><div class="crew-status">● ONLINE</div></div>
-        <div id="chat"></div>
-        <div class="chat-input"><input id="chat-input" placeholder="Talk to Sage…" autocomplete="off" /><button id="chat-send" class="btn">Send</button></div>
-      </div>
-      <div class="panel tall"><div class="panel-head"><div class="crew-mark" style="color:var(--amber);border-color:var(--amber);">!</div><div class="crew-meta"><div class="crew-name">Needs Attention</div><div class="crew-role">Pending across all crew</div></div></div><div id="attention"></div></div>
-    </section>
-    <section class="activity-panel"><div class="activity-head"><div class="chart-title">Live Activity Feed</div><span style="font-family:var(--mono);font-size:10px;color:var(--bone);opacity:0.5;">Last 30 events</span></div><div class="activity-feed" id="activity"></div></section>
-    <section class="queues">
-      <div class="qpanel"><div class="panel-head"><div class="crew-mark nova">N</div><div class="crew-meta"><div class="crew-name">Nova</div><div class="crew-role">Creative · Drafts</div></div></div><div class="q-list" id="nova-queue"></div></div>
-      <div class="qpanel"><div class="panel-head"><div class="crew-mark grace">G</div><div class="crew-meta"><div class="crew-name">Grace</div><div class="crew-role">CX · Replies</div></div></div><div class="q-list" id="grace-queue"></div></div>
-      <div class="qpanel"><div class="panel-head"><div class="crew-mark riley">R</div><div class="crew-meta"><div class="crew-name">Riley</div><div class="crew-role">Social · Plans</div></div></div><div class="q-list" id="riley-queue"></div></div>
-    </section>
-    <div class="roster-head">CREW ROSTER · 8</div>
-    <section class="crew-grid">
-      <div class="crew-tile online"><div class="crew-tile-mark">S</div><div class="crew-tile-name">Sage</div><div class="crew-tile-role">Chief of Staff</div><div class="crew-tile-pill">Online</div></div>
-      <div class="crew-tile online"><div class="crew-tile-mark">N</div><div class="crew-tile-name">Nova</div><div class="crew-tile-role">Creative</div><div class="crew-tile-pill">Online</div></div>
-      <div class="crew-tile online"><div class="crew-tile-mark">G</div><div class="crew-tile-name">Grace</div><div class="crew-tile-role">CX</div><div class="crew-tile-pill">Online</div></div>
-      <div class="crew-tile online"><div class="crew-tile-mark">R</div><div class="crew-tile-name">Riley</div><div class="crew-tile-role">Social</div><div class="crew-tile-pill">Online</div></div>
-      <div class="crew-tile offline"><div class="crew-tile-mark">M</div><div class="crew-tile-name">Marcus</div><div class="crew-tile-role">CFO</div><div class="crew-tile-pill">Phase 4</div></div>
-      <div class="crew-tile offline"><div class="crew-tile-mark">A</div><div class="crew-tile-name">Atlas</div><div class="crew-tile-role">Growth</div><div class="crew-tile-pill">Phase 4</div></div>
-      <div class="crew-tile offline"><div class="crew-tile-mark">P</div><div class="crew-tile-name">Pax</div><div class="crew-tile-role">Ops</div><div class="crew-tile-pill">Phase 4</div></div>
-      <div class="crew-tile offline"><div class="crew-tile-mark">E</div><div class="crew-tile-name">Echo</div><div class="crew-tile-role">Night Shift</div><div class="crew-tile-pill">Phase 5</div></div>
-    </section>
-  </div>
+<div id="pane-tiktok" class="pane">
+<div class="tt-hero">
+<div class="tt-hero-mark">J</div>
+<div class="tt-hero-meta">
+<div class="tt-hero-title"><em>Jett</em> · TikTok Studio Lead</div>
+<div class="tt-hero-sub">World-class TikTok producer. MrBeast retention obsession + Hormozi hooks + 2026 algorithm baked in. Solo founder pace, agency-grade quality.</div>
+</div>
+</div>
+<div class="tt-modes">
+<div class="tt-mode active" data-mode="daily"><div class="tt-mode-name">Daily Drop</div><div class="tt-mode-desc">One video for today, shoot-ready</div></div>
+<div class="tt-mode" data-mode="week"><div class="tt-mode-name">Week Sprint</div><div class="tt-mode-desc">7 videos, 5 pillars rotated</div></div>
+<div class="tt-mode" data-mode="hook-lab"><div class="tt-mode-name">Hook Lab</div><div class="tt-mode-desc">5 hook variations</div></div>
+<div class="tt-mode" data-mode="audit"><div class="tt-mode-name">Audit</div><div class="tt-mode-desc">Paste stats → diagnosis</div></div>
+<div class="tt-mode" data-mode="trend-steal"><div class="tt-mode-name">Trend Steal</div><div class="tt-mode-desc">Adapt a viral video</div></div>
+</div>
+<div class="tt-input-panel">
+<div class="tt-input-label" id="tt-input-label">Daily Drop · what's the angle?</div>
+<textarea class="tt-textarea" id="tt-input" placeholder="e.g. 'Spiritual Badass back-print reveal — curiosity hook' OR 'pick something for me'"></textarea>
+<div class="tt-input-actions">
+<button class="btn-jett" id="tt-generate">🎬 Brief Jett</button>
+<button class="btn-ghost btn" id="tt-clear">Clear</button>
+</div>
+</div>
+<div class="tt-result empty" id="tt-result">Brief Jett above to get a video plan. She'll output a shoot-ready brief: hook, shot list, captions, hashtags, post time, and FYP probability.</div>
+<div class="tt-recent">RECENT BRIEFS</div>
+<div class="tt-recent-list" id="tt-recent"></div>
+</div>
 
-  <div id="pane-library" class="pane">
-    <div class="lib-toolbar">
-      <h2>Photo &amp; Video Library</h2>
-      <div class="lib-tabs">
-        <button class="lib-filter-tab active" data-filter="all">All</button>
-        <button class="lib-filter-tab" data-filter="photos">Photos</button>
-        <button class="lib-filter-tab" data-filter="videos">Videos</button>
-        <button class="lib-filter-tab" data-filter="untagged">Untagged</button>
-        <button class="lib-filter-tab" id="lib-bulk-toggle">Bulk Select</button>
-      </div>
-    </div>
+<div id="pane-library" class="pane">
+<div class="lib-toolbar">
+<h2>Photo &amp; Video Library</h2>
+<div class="lib-tabs">
+<button class="lib-filter-tab active" data-filter="all">All</button>
+<button class="lib-filter-tab" data-filter="photos">Photos</button>
+<button class="lib-filter-tab" data-filter="videos">Videos</button>
+<button class="lib-filter-tab" data-filter="untagged">Untagged</button>
+<button class="lib-filter-tab" id="lib-bulk-toggle">Bulk Select</button>
+</div>
+</div>
+<div class="lib-search">
+<input type="text" id="lib-search-input" placeholder="Search by ID, product, or tag..." />
+<button class="lib-search-clear" id="lib-search-clear">Clear</button>
+</div>
+<div class="lib-bulk-bar" id="lib-bulk-bar">
+<span class="lib-bulk-count" id="lib-bulk-count">0 selected</span>
+<button class="lib-bulk-btn" id="lib-bulk-tag">Tag selected</button>
+<button class="lib-bulk-btn lib-bulk-btn-ghost" id="lib-bulk-selectall">Select all visible</button>
+<button class="lib-bulk-btn lib-bulk-btn-ghost" id="lib-bulk-clear">Clear</button>
+</div>
+<div class="upload-zone" id="upload-zone">
+<div class="upload-zone-mark">+</div>
+<div class="upload-zone-text">Drop files here, or click to upload</div>
+<div class="upload-zone-sub">Photos: jpg/png/webp · Videos: mp4/mov · Max 5 MB per file</div>
+<input type="file" id="file-input" multiple accept="image/*,video/*" style="display:none;" />
+</div>
+<div id="upload-progress" class="upload-progress hidden">
+<div id="upload-status">Uploading...</div>
+<div class="upload-bar"><div id="upload-bar-fill" class="upload-bar-fill"></div></div>
+</div>
+<div class="lib-grid" id="library-grid"></div>
+</div>
 
-    <div class="lib-search">
-      <input type="text" id="lib-search-input" placeholder="Search by ID, product, or tag..." />
-      <button class="lib-search-clear" id="lib-search-clear">Clear</button>
-    </div>
+<div class="modal-bg" id="tag-modal">
+<div class="modal">
+<div class="modal-head"><div class="modal-title" id="modal-title">Edit Asset</div><button class="modal-close" id="modal-close">×</button></div>
+<div class="modal-body">
+<img id="modal-preview-img" class="modal-preview" style="display:none;" />
+<video id="modal-preview-video" class="modal-preview" style="display:none;" controls></video>
+<div class="modal-row"><div class="modal-label">Asset ID</div><input class="modal-input" id="modal-id" readonly /></div>
+<div class="modal-row"><div class="modal-label">Tag products</div><div class="product-checkbox-grid" id="product-checks"></div></div>
+<div class="modal-row"><div class="modal-label">Tags (comma separated)</div><input class="modal-input" id="modal-tags" /></div>
+<div class="modal-row"><div class="modal-label">Notes for crew</div><textarea class="modal-textarea" id="modal-notes"></textarea></div>
+</div>
+<div class="modal-foot">
+<button class="btn-ghost btn" id="modal-copy-url">Copy URL</button>
+<button class="btn-ghost btn" id="modal-delete" style="border-color:var(--red);color:var(--red);">Delete</button>
+<button class="btn" id="modal-save">Save</button>
+</div>
+</div>
+</div>
+<div class="modal-bg" id="bulk-modal">
+<div class="modal">
+<div class="modal-head"><div class="modal-title">Bulk Tag <span id="bulk-count" style="font-size:13px;color:var(--pulse);font-family:var(--mono);"></span></div><button class="modal-close" id="bulk-modal-close">×</button></div>
+<div class="modal-body">
+<div class="modal-row" style="font-family:var(--mono);font-size:11px;color:var(--bone);opacity:0.7;">Apply to all selected. Existing tags/products are kept.</div>
+<div class="modal-row"><div class="modal-label">Add product tags</div><div class="product-checkbox-grid" id="bulk-product-checks"></div></div>
+<div class="modal-row"><div class="modal-label">Add tags (comma separated)</div><input class="modal-input" id="bulk-tags" /></div>
+<div class="modal-row"><div class="modal-label">Set notes (optional — replaces existing)</div><textarea class="modal-textarea" id="bulk-notes"></textarea></div>
+</div>
+<div class="modal-foot"><button class="btn-ghost btn" id="bulk-modal-cancel">Cancel</button><button class="btn" id="bulk-modal-apply">Apply</button></div>
+</div>
+</div>
 
-    <div class="lib-bulk-bar" id="lib-bulk-bar">
-      <span class="lib-bulk-count" id="lib-bulk-count">0 selected</span>
-      <button class="lib-bulk-btn" id="lib-bulk-tag">Tag selected</button>
-      <button class="lib-bulk-btn lib-bulk-btn-ghost" id="lib-bulk-selectall">Select all visible</button>
-      <button class="lib-bulk-btn lib-bulk-btn-ghost" id="lib-bulk-clear">Clear</button>
-    </div>
+<div id="toast" class="toast"></div>
+<footer>INSPIRIT OS · v1.0.0 · JETT ONLINE · BUILT BY CHRIS · GOLD COAST</footer>
 
-    <div class="upload-zone" id="upload-zone">
-      <div class="upload-zone-mark">+</div>
-      <div class="upload-zone-text">Drop files here, or click to upload</div>
-      <div class="upload-zone-sub">Photos: jpg/png/webp · Videos: mp4/mov · Max 5 MB per file</div>
-      <input type="file" id="file-input" multiple accept="image/*,video/*" style="display:none;" />
-    </div>
-    <div id="upload-progress" class="upload-progress hidden">
-      <div id="upload-status">Uploading...</div>
-      <div class="upload-bar"><div id="upload-bar-fill" class="upload-bar-fill"></div></div>
-    </div>
-    <div class="lib-grid" id="library-grid"></div>
-  </div>
+<script>
+const API = "https://inspirit-os.breezusmoon.workers.dev";
+const sessionId = (() => { let id = localStorage.getItem("inspirit-session"); if (!id) { id = "s_" + Math.random().toString(36).slice(2, 12); localStorage.setItem("inspirit-session", id); } return id; })();
+const PRODUCTS = ["Feeding 5000 Tee","Jesus Fish Tee — White","Jesus Fish Tee — Black","Spiritual Badass Tee — Black","Spiritual Badass Tee — White","Heart Tee — Black","Heart Tee — White","Inspirit Hoodie","Spiritual Badass Hoodie","Jesus Fish Jumper","Inspirit Bucket Hat","Spiritual Badass Bucket Hat","Inspirit Beanie"];
 
-  <div class="modal-bg" id="tag-modal">
-    <div class="modal">
-      <div class="modal-head"><div class="modal-title" id="modal-title">Edit Asset</div><button class="modal-close" id="modal-close">×</button></div>
-      <div class="modal-body">
-        <img id="modal-preview-img" class="modal-preview" style="display:none;" />
-        <video id="modal-preview-video" class="modal-preview" style="display:none;" controls></video>
-        <div class="modal-row"><div class="modal-label">Asset ID</div><input class="modal-input" id="modal-id" readonly /></div>
-        <div class="modal-row"><div class="modal-label">Tag products this asset features</div><div class="product-checkbox-grid" id="product-checks"></div></div>
-        <div class="modal-row"><div class="modal-label">Tags (comma separated)</div><input class="modal-input" id="modal-tags" placeholder="lifestyle, studio, model, drop, beach, sunset..." /></div>
-        <div class="modal-row"><div class="modal-label">Notes for Riley/Nova</div><textarea class="modal-textarea" id="modal-notes" placeholder="e.g. perfect for new drop announcement, women's-cut focus..."></textarea></div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn-ghost btn" id="modal-copy-url">Copy URL</button>
-        <button class="btn-ghost btn" id="modal-delete" style="border-color:var(--red);color:var(--red);">Delete</button>
-        <button class="btn" id="modal-save">Save</button>
-      </div>
-    </div>
-  </div>
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c])}
+function escapeAttr(s){return escapeHtml(s)}
+function timeAgo(ts){const sec=Math.floor((Date.now()-ts)/1000);if(sec<60)return sec+"s ago";if(sec<3600)return Math.floor(sec/60)+"m ago";if(sec<86400)return Math.floor(sec/3600)+"h ago";return Math.floor(sec/86400)+"d ago"}
+function toast(msg,kind="ok"){const t=document.getElementById("toast");t.textContent=msg;t.className="toast show"+(kind==="error"?" error":"");setTimeout(()=>t.classList.remove("show"),3500)}
+function fileToBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(",")[1]);r.onerror=rej;r.readAsDataURL(file)})}
 
-  <div class="modal-bg" id="bulk-modal">
-    <div class="modal">
-      <div class="modal-head"><div class="modal-title">Bulk Tag <span id="bulk-count" style="font-size:13px;color:var(--pulse);font-family:var(--mono);"></span></div><button class="modal-close" id="bulk-modal-close">×</button></div>
-      <div class="modal-body">
-        <div class="modal-row" style="font-family:var(--mono);font-size:11px;color:var(--bone);opacity:0.7;">Apply these to all selected items. Existing tags/products are kept (added to, not replaced).</div>
-        <div class="modal-row"><div class="modal-label">Add product tags</div><div class="product-checkbox-grid" id="bulk-product-checks"></div></div>
-        <div class="modal-row"><div class="modal-label">Add tags (comma separated)</div><input class="modal-input" id="bulk-tags" placeholder="lifestyle, studio, model..." /></div>
-        <div class="modal-row"><div class="modal-label">Set notes (optional — replaces existing)</div><textarea class="modal-textarea" id="bulk-notes" placeholder="Leave blank to keep existing notes"></textarea></div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn-ghost btn" id="bulk-modal-cancel">Cancel</button>
-        <button class="btn" id="bulk-modal-apply">Apply to selected</button>
-      </div>
-    </div>
-  </div>
+document.querySelectorAll(".tab").forEach(btn=>{btn.onclick=()=>{document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));document.querySelectorAll(".pane").forEach(p=>p.classList.remove("active"));btn.classList.add("active");document.getElementById("pane-"+btn.dataset.pane).classList.add("active");if(btn.dataset.pane==="library")loadLibrary();if(btn.dataset.pane==="showroom")loadShowroom();if(btn.dataset.pane==="tiktok")loadJettQueue()}});
 
-  <div id="toast" class="toast"></div>
-  <footer>INSPIRIT OS · v0.9.0 · BUILT BY CHRIS · GOLD COAST</footer>
+// SAGE
+const chat=document.getElementById("chat");const input=document.getElementById("chat-input");const sendBtn=document.getElementById("chat-send");
+function addMsg(role,text){const div=document.createElement("div");div.className="msg "+role;div.textContent=text;chat.appendChild(div);chat.scrollTop=chat.scrollHeight;return div}
+async function loadHistory(){try{const r=await fetch(`${API}/api/sage/history?sessionId=${sessionId}`);const data=await r.json();chat.innerHTML="";if(!data.history?.length)addMsg("sage","Hey Chris. v1.0 just shipped — Jett's online running TikTok Studio. Hit the 🎬 TikTok Studio tab. Or ask me anything.");else data.history.forEach(m=>addMsg(m.role==="user"?"user":"sage",m.content))}catch(e){addMsg("sage","Can't reach the worker.")}}
+async function send(){const text=input.value.trim();if(!text)return;addMsg("user",text);input.value="";sendBtn.disabled=true;const thinking=addMsg("thinking","Sage is thinking");try{const r=await fetch(`${API}/api/sage/chat`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text,sessionId})});const data=await r.json();thinking.remove();addMsg("sage",data.reply||data.error||"Something went wrong.");loadAll()}catch(e){thinking.remove();addMsg("sage","Connection error: "+e.message)}sendBtn.disabled=false;input.focus()}
+sendBtn.onclick=send;input.addEventListener("keydown",e=>{if(e.key==="Enter")send()});
 
-  <script>
-    const API = "https://inspirit-os.breezusmoon.workers.dev";
-    if (API.includes("YOUR-SUBDOMAIN")) document.getElementById("config-warn").style.display = "block";
-    const sessionId = (() => { let id = localStorage.getItem("inspirit-session"); if (!id) { id = "s_" + Math.random().toString(36).slice(2, 12); localStorage.setItem("inspirit-session", id); } return id; })();
+// STATS + CHART
+let currentMetric="visitors";let currentDaily=[];
+async function loadStats(){try{const r=await fetch(`${API}/api/stats`);const s=await r.json();currentDaily=s.daily||[];const attn=(s.pending_drafts||0)+(s.pending_replies||0)+(s.pending_plans||0)+(s.pending_videos||0)+(s.escalations||0);document.getElementById("stats").innerHTML=`<div class="stat"><div class="stat-label">Today's Revenue</div><div class="stat-value"><span class="currency">$</span>${(s.today_revenue||0).toLocaleString('en-AU',{maximumFractionDigits:0})}</div><div class="stat-sub">today</div></div><div class="stat"><div class="stat-label">Orders</div><div class="stat-value">${s.today_orders||0}</div><div class="stat-sub">today</div></div><div class="stat"><div class="stat-label">Visitors</div><div class="stat-value">${s.today_visitors||0}</div><div class="stat-sub">${s.today_pageviews||0} pv</div></div><div class="stat"><div class="stat-label">7d Revenue</div><div class="stat-value"><span class="currency">$</span>${(s.week_revenue||0).toLocaleString('en-AU',{maximumFractionDigits:0})}</div><div class="stat-sub">${s.week_visitors||0} visitors</div></div><div class="stat"><div class="stat-label">Needs Attention</div><div class="stat-value ${attn>0?'stat-attn':''}">${attn}</div><div class="stat-sub">pending</div></div><div class="stat"><div class="stat-label">Crew Online</div><div class="stat-value">${s.crew_online||5}<span style="opacity:.4;font-size:18px;"> / ${s.crew_total||8}</span></div><div class="stat-sub">phase 3+</div></div>`;drawChart()}catch(e){}}
+function drawChart(){const svg=document.getElementById("chart");const data=currentDaily.map(d=>({...d,val:d[currentMetric]||0}));const max=Math.max(...data.map(d=>d.val),1);const w=700,h=140,pad=20;const innerW=w-pad*2,innerH=h-pad*2;const stepX=innerW/Math.max(data.length-1,1);const points=data.map((d,i)=>({x:pad+i*stepX,y:pad+innerH-(d.val/max)*innerH}));const path=points.map((p,i)=>(i===0?`M ${p.x},${p.y}`:`L ${p.x},${p.y}`)).join(" ");const fillPath=`${path} L ${points[points.length-1].x},${pad+innerH} L ${points[0].x},${pad+innerH} Z`;let gridLines="";for(let i=1;i<4;i++){const y=pad+(innerH/4)*i;gridLines+=`<line x1="${pad}" y1="${y}" x2="${w-pad}" y2="${y}" stroke="#2a2622" stroke-width="0.5" stroke-dasharray="2,3"/>`}const labels=data.map((d,i)=>`<text x="${points[i].x}" y="${h-4}" font-family="JetBrains Mono" font-size="9" fill="#d6cfbe" opacity="0.5" text-anchor="middle">${d.label}</text>`).join("");const dots=points.map((p,i)=>`<circle cx="${p.x}" cy="${p.y}" r="3" fill="#c9b87a"><title>${data[i].label}: ${currentMetric==='revenue'?'$':''}${data[i].val}</title></circle>`).join("");svg.innerHTML=`${gridLines}<path d="${fillPath}" fill="rgba(201,184,122,0.1)"/><path d="${path}" stroke="#c9b87a" stroke-width="1.5" fill="none"/>${dots}${labels}<text x="${pad}" y="14" font-family="JetBrains Mono" font-size="9" fill="#d6cfbe" opacity="0.5">${currentMetric==='revenue'?'$':''}${max}</text>`}
+document.querySelectorAll(".chart-tab").forEach(btn=>{btn.onclick=()=>{document.querySelectorAll(".chart-tab").forEach(b=>b.classList.remove("active"));btn.classList.add("active");currentMetric=btn.dataset.metric;drawChart()}});
 
-    document.querySelectorAll(".tab").forEach(btn => { btn.onclick = () => { document.querySelectorAll(".tab").forEach(b => b.classList.remove("active")); document.querySelectorAll(".pane").forEach(p => p.classList.remove("active")); btn.classList.add("active"); document.getElementById("pane-" + btn.dataset.pane).classList.add("active"); if (btn.dataset.pane === "library") loadLibrary(); if (btn.dataset.pane === "showroom") loadShowroom(); }; });
+async function loadAttention(){try{const r=await fetch(`${API}/api/attention`);const data=await r.json();const box=document.getElementById("attention");if(!data.items?.length){box.innerHTML='<div class="attn-empty">All clear · no pending items</div>';return}box.innerHTML=data.items.map(item=>`<div class="attn-item" onclick="scrollToQueue('${item.crew}')"><div class="attn-row"><span class="attn-tag ${item.crew} ${item.status==='escalated'?'escalated':''}">${item.status==='escalated'?'ESCALATED':item.crew}</span><span class="attn-time">${timeAgo(item.ts)}</span></div><div class="attn-brief">${escapeHtml((item.brief||'').slice(0,120))}${(item.brief||'').length>120?'…':''}</div></div>`).join("")}catch(e){}}
+window.scrollToQueue=(crew)=>{const el=document.getElementById(crew+"-queue");if(el)el.scrollIntoView({behavior:"smooth",block:"center"})}
 
-    function toast(msg, kind = "ok") { const t = document.getElementById("toast"); t.textContent = msg; t.className = "toast show" + (kind === "error" ? " error" : ""); setTimeout(() => t.classList.remove("show"), 3500); }
+async function loadQueue(crew){try{const r=await fetch(`${API}/api/${crew}/queue`);const data=await r.json();const box=document.getElementById(crew+"-queue");if(!data.queue?.length){box.innerHTML=`<div class="empty">No items yet</div>`;return}box.innerHTML=data.queue.map(item=>{const isJett=crew==="jett";let actions="";if(isJett){if(item.status==="planned")actions=`<button class="q-btn jett" onclick="updateItem('jett','${item.id}','filmed')">🎥 Filmed</button>`;else if(item.status==="filmed")actions=`<button class="q-btn approve" onclick="updateItem('jett','${item.id}','posted')">📤 Posted</button>`;else if(item.status==="posted")actions=`<button class="q-btn" style="border-color:var(--pulse);color:var(--pulse);" onclick="updateItem('jett','${item.id}','logged')">📊 Logged</button>`}else{if(item.status==='pending')actions=`<button class="q-btn approve" onclick="updateItem('${crew}','${item.id}','${crew==='grace'?'sent':'approved'}')">✓ ${crew==='grace'?'Sent':'Approve'}</button><button class="q-btn reject" onclick="updateItem('${crew}','${item.id}','rejected')">✗ Reject</button>`;if(item.status==='escalated')actions=`<button class="q-btn approve" onclick="updateItem('${crew}','${item.id}','sent')">✓ Resolved</button>`}const modeBadge=isJett&&item.mode?`<span class="q-mode">${item.mode}</span>`:"";return`<div class="q-item ${item.status}"><div class="q-time">${modeBadge}${timeAgo(item.ts)}${item.status!=='pending'&&item.status!=='planned'?`<span class="q-status ${item.status}">${item.status}</span>`:''}${item.status==='planned'?`<span class="q-status planned">planned</span>`:''}</div>${item.customer_email?`<div class="q-customer">From: ${escapeHtml(item.customer_email)}</div>`:''}<div class="q-brief">${escapeHtml(item.brief)}</div><div class="q-output" onclick="this.classList.toggle('expanded')">${escapeHtml(item.output)}</div><div class="q-actions">${actions}<button class="q-btn" onclick="copyItem('${crew}','${item.id}')">Copy</button></div></div>`}).join("");window['_'+crew+'Items']=data.queue}catch(e){}}
+window.updateItem=async(crew,id,status)=>{await fetch(`${API}/api/${crew}/queue/update`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,status})});loadAll()}
+window.copyItem=(crew,id)=>{const items=window['_'+crew+'Items']||[];const item=items.find(i=>i.id===id);if(item){navigator.clipboard.writeText(item.output);toast("Copied")}}
 
-    // SAGE
-    const chat = document.getElementById("chat"); const input = document.getElementById("chat-input"); const sendBtn = document.getElementById("chat-send");
-    function addMsg(role, text) { const div = document.createElement("div"); div.className = "msg " + role; div.textContent = text; chat.appendChild(div); chat.scrollTop = chat.scrollHeight; return div; }
-    async function loadHistory() { try { const r = await fetch(`${API}/api/sage/history?sessionId=${sessionId}`); const data = await r.json(); chat.innerHTML = ""; if (!data.history?.length) addMsg("sage", "Hey Chris. Crew online. v0.9 just shipped — per-photo captions, library search, bulk tag. Ask anything."); else data.history.forEach(m => addMsg(m.role === "user" ? "user" : "sage", m.content)); } catch (e) { addMsg("sage", "Can't reach the worker."); } }
-    async function send() { const text = input.value.trim(); if (!text) return; addMsg("user", text); input.value = ""; sendBtn.disabled = true; const thinking = addMsg("thinking", "Sage is thinking"); try { const r = await fetch(`${API}/api/sage/chat`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text, sessionId }) }); const data = await r.json(); thinking.remove(); addMsg("sage", data.reply || data.error || "Something went wrong."); loadAll(); } catch (e) { thinking.remove(); addMsg("sage", "Connection error: " + e.message); } sendBtn.disabled = false; input.focus(); }
-    sendBtn.onclick = send; input.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
+async function loadActivity(){try{const r=await fetch(`${API}/api/activity?limit=30`);const data=await r.json();const box=document.getElementById("activity");if(!data.activity?.length){box.innerHTML='<div style="font-family:var(--mono);font-size:11px;opacity:0.5;padding:20px;text-align:center;">No activity yet</div>';return}box.innerHTML=data.activity.map(a=>{let txt="";if(a.crew==="sage"&&a.action==="chat")txt=`Chat — "${(a.meta?.preview||'').slice(0,60)}"`;else if(a.crew==="nova"&&a.action==="draft")txt=`Drafted — ${(a.meta?.brief||'').slice(0,60)}`;else if(a.crew==="nova"&&a.action==="caption")txt=`Caption — ${a.meta?.product||''} · ${a.meta?.platform||''}`;else if(a.crew==="grace"&&a.action==="draft")txt=`Replied to ${a.meta?.from||'customer'}`;else if(a.crew==="grace"&&a.action==="escalation")txt=`ESCALATED from ${a.meta?.from||'customer'}`;else if(a.crew==="riley"&&a.action==="plan")txt=`Plan — ${(a.meta?.brief||'').slice(0,60)}`;else if(a.crew==="jett")txt=`Video [${a.action.replace('video-','')}] — ${(a.meta?.brief||'').slice(0,50)}`;else if(a.crew==="library")txt=`${a.action} ${a.meta?.type||''}`;else txt=a.action;return`<div class="activity-row"><span class="activity-time">${timeAgo(a.ts)}</span><span class="activity-crew ${a.crew}">${a.crew}</span><span class="activity-text">${escapeHtml(txt)}</span></div>`}).join("")}catch(e){}}
 
-    // STATS + CHART
-    let currentMetric = "visitors"; let currentDaily = [];
-    async function loadStats() { try { const r = await fetch(`${API}/api/stats`); const s = await r.json(); currentDaily = s.daily || []; const attn = (s.pending_drafts || 0) + (s.pending_replies || 0) + (s.pending_plans || 0) + (s.escalations || 0); document.getElementById("stats").innerHTML = `<div class="stat"><div class="stat-label">Today's Revenue</div><div class="stat-value"><span class="currency">$</span>${(s.today_revenue || 0).toLocaleString('en-AU', { maximumFractionDigits: 0 })}</div><div class="stat-sub">today</div></div><div class="stat"><div class="stat-label">Orders</div><div class="stat-value">${s.today_orders || 0}</div><div class="stat-sub">today</div></div><div class="stat"><div class="stat-label">Visitors</div><div class="stat-value">${s.today_visitors || 0}</div><div class="stat-sub">${s.today_pageviews || 0} pageviews</div></div><div class="stat"><div class="stat-label">7d Revenue</div><div class="stat-value"><span class="currency">$</span>${(s.week_revenue || 0).toLocaleString('en-AU', { maximumFractionDigits: 0 })}</div><div class="stat-sub">${s.week_visitors || 0} visitors</div></div><div class="stat"><div class="stat-label">Needs Attention</div><div class="stat-value ${attn > 0 ? 'stat-attn' : ''}">${attn}</div><div class="stat-sub">pending review</div></div><div class="stat"><div class="stat-label">Crew Online</div><div class="stat-value">${s.crew_online || 4}<span style="opacity:.4;font-size:18px;"> / ${s.crew_total || 8}</span></div><div class="stat-sub">phase 3</div></div>`; drawChart(); } catch (e) {} }
-    function drawChart() { const svg = document.getElementById("chart"); const data = currentDaily.map(d => ({ ...d, val: d[currentMetric] || 0 })); const max = Math.max(...data.map(d => d.val), 1); const w = 700, h = 140, pad = 20; const innerW = w - pad * 2, innerH = h - pad * 2; const stepX = innerW / Math.max(data.length - 1, 1); const points = data.map((d, i) => ({ x: pad + i * stepX, y: pad + innerH - (d.val / max) * innerH })); const path = points.map((p, i) => (i === 0 ? `M ${p.x},${p.y}` : `L ${p.x},${p.y}`)).join(" "); const fillPath = `${path} L ${points[points.length-1].x},${pad + innerH} L ${points[0].x},${pad + innerH} Z`; let gridLines = ""; for (let i = 1; i < 4; i++) { const y = pad + (innerH / 4) * i; gridLines += `<line x1="${pad}" y1="${y}" x2="${w - pad}" y2="${y}" stroke="#2a2622" stroke-width="0.5" stroke-dasharray="2,3"/>`; } const labels = data.map((d, i) => `<text x="${points[i].x}" y="${h - 4}" font-family="JetBrains Mono" font-size="9" fill="#d6cfbe" opacity="0.5" text-anchor="middle">${d.label}</text>`).join(""); const dots = points.map((p, i) => `<circle cx="${p.x}" cy="${p.y}" r="3" fill="#c9b87a"><title>${data[i].label}: ${currentMetric === 'revenue' ? '$' : ''}${data[i].val}</title></circle>`).join(""); svg.innerHTML = `${gridLines}<path d="${fillPath}" fill="rgba(201,184,122,0.1)"/><path d="${path}" stroke="#c9b87a" stroke-width="1.5" fill="none"/>${dots}${labels}<text x="${pad}" y="14" font-family="JetBrains Mono" font-size="9" fill="#d6cfbe" opacity="0.5">${currentMetric === 'revenue' ? '$' : ''}${max}</text>`; }
-    document.querySelectorAll(".chart-tab").forEach(btn => { btn.onclick = () => { document.querySelectorAll(".chart-tab").forEach(b => b.classList.remove("active")); btn.classList.add("active"); currentMetric = btn.dataset.metric; drawChart(); }; });
+// ================== JETT — TIKTOK STUDIO ==================
+let jettMode="daily";let currentJett=null;let allJettItems=[];
+const JETT_MODES={"daily":{label:"Daily Drop · what's the angle?",placeholder:"e.g. 'Spiritual Badass back-print reveal — curiosity hook' OR 'pick something for me'"},"week":{label:"Week Sprint · context for 7 videos",placeholder:"e.g. 'Drop 02 launches Friday — build hype across the week'"},"hook-lab":{label:"Hook Lab · topic to riff on",placeholder:"e.g. 'Why Christian streetwear in 2026 is different from 2010'"},"audit":{label:"Audit · paste your video stats",placeholder:"Video 1: Day in my life — 234 views, 18% completion, 2 saves\nVideo 2: ..."},"trend-steal":{label:"Trend Steal · paste viral video info",placeholder:"Describe or paste the transcript of a viral video to adapt for Inspirit"}};
+document.querySelectorAll(".tt-mode").forEach(btn=>{btn.onclick=()=>{document.querySelectorAll(".tt-mode").forEach(b=>b.classList.remove("active"));btn.classList.add("active");jettMode=btn.dataset.mode;const cfg=JETT_MODES[jettMode];document.getElementById("tt-input-label").textContent=cfg.label;document.getElementById("tt-input").placeholder=cfg.placeholder}});
+document.getElementById("tt-clear").onclick=()=>{document.getElementById("tt-input").value=""}
+document.getElementById("tt-generate").onclick=async()=>{const brief=document.getElementById("tt-input").value.trim();if(!brief){toast("Give Jett something to work with","error");return}const btn=document.getElementById("tt-generate");btn.disabled=true;btn.textContent="🎬 Jett's cooking...";const result=document.getElementById("tt-result");result.className="tt-result";result.innerHTML=`<div style="text-align:center;padding:40px;font-family:var(--mono);font-size:11px;color:var(--bone);">Jett's engineering hooks · save triggers · shot list...</div>`;try{const r=await fetch(`${API}/api/jett/brief`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({brief,mode:jettMode})});const data=await r.json();if(!r.ok)throw new Error(data.error||"Jett failed");const item={id:data.id,mode:data.mode,brief,output:data.output,status:"planned",ts:Date.now()};currentJett=item;renderJettResult(item);loadJettQueue();loadAll();toast("Brief ready 🎬")}catch(err){result.innerHTML=`<div style="color:var(--red);font-family:var(--mono);font-size:12px;padding:20px;text-align:center;">Jett hit an error: ${escapeHtml(err.message)}</div>`;toast("Failed: "+err.message,"error")}btn.disabled=false;btn.textContent="🎬 Brief Jett"}
+function renderJettResult(item){currentJett=item;const result=document.getElementById("tt-result");result.className="tt-result";const sc=item.status==="filmed"?"filmed":item.status==="posted"?"posted":item.status==="logged"?"logged":"";result.innerHTML=`<div class="tt-result-head"><span class="tt-result-mode">${item.mode||"daily"}</span><span class="tt-result-status ${sc}">${item.status||"planned"}</span><span class="tt-result-time">${timeAgo(item.ts)}</span></div><div class="tt-result-output">${escapeHtml(item.output)}</div><div class="tt-result-actions"><button class="btn-jett" onclick="copyJett('full')">Copy Full</button><button class="btn-ghost btn" onclick="copyJett('hook')">Copy Hook</button><button class="btn-ghost btn" onclick="copyJett('captions')">Copy Captions</button><button class="btn-ghost btn" onclick="copyJett('hashtags')">Copy Hashtags</button>${item.status==="planned"?`<button class="btn-ghost btn" onclick="updateJett('filmed')" style="border-color:var(--jett);color:var(--jett);">🎥 Filmed</button>`:""}${item.status==="filmed"?`<button class="btn-ghost btn" onclick="updateJett('posted')" style="border-color:var(--green);color:var(--green);">📤 Posted</button>`:""}${item.status==="posted"?`<button class="btn-ghost btn" onclick="updateJett('logged')" style="border-color:var(--pulse);color:var(--pulse);">📊 Logged</button>`:""}</div>`}
+window.copyJett=(section)=>{if(!currentJett)return;let text=currentJett.output;if(section==="hook"){const m=currentJett.output.match(/HOOK[^:]*:\s*([\s\S]*?)(?=\n[A-Z🎥📸✍️#⏰🧠🎯]|\n\n)/);if(m)text=m[1].trim()}else if(section==="captions"){const m=currentJett.output.match(/CAPTION OPTIONS[\s\S]*?(?=#️⃣|HASHTAGS|⏰|POST TIME|$)/i);if(m)text=m[0].trim()}else if(section==="hashtags"){const m=currentJett.output.match(/HASHTAGS[^:]*:\s*([\s\S]*?)(?=\n[A-Z⏰🧠🎯]|\n\n|$)/i);if(m)text=m[1].trim()}navigator.clipboard.writeText(text);toast(`Copied ${section}`)}
+window.updateJett=async(status)=>{if(!currentJett)return;try{await fetch(`${API}/api/jett/queue/update`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:currentJett.id,status})});currentJett.status=status;renderJettResult(currentJett);loadJettQueue();loadAll();toast(`Marked ${status} 🤙`)}catch(err){toast("Update failed","error")}}
+async function loadJettQueue(){try{const r=await fetch(`${API}/api/jett/queue`);const data=await r.json();allJettItems=data.queue||[];const box=document.getElementById("tt-recent");if(!allJettItems.length){box.innerHTML=`<div style="font-family:var(--mono);font-size:11px;color:var(--bone);opacity:0.5;padding:20px;text-align:center;">No briefs yet — Jett's ready when you are.</div>`;return}box.innerHTML=allJettItems.map(item=>`<div class="tt-recent-item" onclick="openJettBrief('${item.id}')"><div class="tt-recent-row"><span class="tt-result-mode">${item.mode||"daily"}</span><span class="tt-result-status ${item.status==='filmed'?'filmed':item.status==='posted'?'posted':item.status==='logged'?'logged':''}">${item.status||"planned"}</span><span class="tt-result-time">${timeAgo(item.ts)}</span></div><div class="tt-recent-brief">${escapeHtml((item.brief||"").slice(0,120))}${(item.brief||"").length>120?"…":""}</div></div>`).join("")}catch(e){}}
+window.openJettBrief=(id)=>{const item=allJettItems.find(x=>x.id===id);if(item){renderJettResult(item);window.scrollTo({top:document.getElementById("tt-result").offsetTop-80,behavior:"smooth"})}}
 
-    async function loadAttention() { try { const r = await fetch(`${API}/api/attention`); const data = await r.json(); const box = document.getElementById("attention"); if (!data.items?.length) { box.innerHTML = '<div class="attn-empty">All clear · no pending items</div>'; return; } box.innerHTML = data.items.map(item => `<div class="attn-item" onclick="scrollToQueue('${item.crew}')"><div class="attn-row"><span class="attn-tag ${item.crew} ${item.status === 'escalated' ? 'escalated' : ''}">${item.status === 'escalated' ? 'ESCALATED' : item.crew}</span><span class="attn-time">${timeAgo(item.ts)}</span></div><div class="attn-brief">${escapeHtml((item.brief || '').slice(0, 120))}${(item.brief || '').length > 120 ? '…' : ''}</div></div>`).join(""); } catch (e) {} }
-    window.scrollToQueue = (crew) => { const el = document.getElementById(crew + "-queue"); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); };
-    async function loadQueue(crew) { try { const r = await fetch(`${API}/api/${crew}/queue`); const data = await r.json(); const box = document.getElementById(crew + "-queue"); if (!data.queue?.length) { box.innerHTML = `<div class="empty">No items yet</div>`; return; } box.innerHTML = data.queue.map(item => `<div class="q-item ${item.status}"><div class="q-time">${timeAgo(item.ts)}${item.status !== 'pending' ? `<span class="q-status ${item.status}">${item.status}</span>` : ''}</div>${item.customer_email ? `<div class="q-customer">From: ${escapeHtml(item.customer_email)}</div>` : ''}<div class="q-brief">${escapeHtml(item.brief)}</div><div class="q-output" onclick="this.classList.toggle('expanded')">${escapeHtml(item.output)}</div><div class="q-actions">${item.status === 'pending' ? `<button class="q-btn approve" onclick="updateItem('${crew}','${item.id}','${crew === 'grace' ? 'sent' : 'approved'}')">✓ ${crew === 'grace' ? 'Mark Sent' : 'Approve'}</button><button class="q-btn reject" onclick="updateItem('${crew}','${item.id}','rejected')">✗ Reject</button>` : ''}${item.status === 'escalated' ? `<button class="q-btn approve" onclick="updateItem('${crew}','${item.id}','sent')">✓ Resolved</button>` : ''}<button class="q-btn" onclick="copyItem('${crew}','${item.id}')">Copy</button></div></div>`).join(""); window['_' + crew + 'Items'] = data.queue; } catch (e) {} }
-    window.updateItem = async (crew, id, status) => { await fetch(`${API}/api/${crew}/queue/update`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, status }) }); loadAll(); };
-    window.copyItem = (crew, id) => { const items = window['_' + crew + 'Items'] || []; const item = items.find(i => i.id === id); if (item) { navigator.clipboard.writeText(item.output); toast("Copied"); } };
-    async function loadActivity() { try { const r = await fetch(`${API}/api/activity?limit=30`); const data = await r.json(); const box = document.getElementById("activity"); if (!data.activity?.length) { box.innerHTML = '<div style="font-family:var(--mono);font-size:11px;opacity:0.5;padding:20px;text-align:center;">No activity yet</div>'; return; } box.innerHTML = data.activity.map(a => { let txt = ""; if (a.crew === "sage" && a.action === "chat") txt = `Chat — "${(a.meta?.preview || '').slice(0, 60)}"`; else if (a.crew === "nova" && a.action === "draft") txt = `Drafted — ${(a.meta?.brief || '').slice(0, 60)}`; else if (a.crew === "nova" && a.action === "caption") txt = `Caption — ${a.meta?.product || ''} · ${a.meta?.platform || ''}${a.meta?.photo === 'specific' ? ' (per-photo)' : ''}`; else if (a.crew === "grace" && a.action === "draft") txt = `Replied to ${a.meta?.from || 'customer'} — "${(a.meta?.preview || '').slice(0, 50)}"`; else if (a.crew === "grace" && a.action === "escalation") txt = `ESCALATED from ${a.meta?.from || 'customer'}`; else if (a.crew === "riley" && a.action === "plan") txt = `Plan — ${(a.meta?.brief || '').slice(0, 60)}`; else if (a.crew === "library" && a.action === "bulk-update") txt = `Bulk tagged ${a.meta?.count || 0} items`; else if (a.crew === "library") txt = `${a.action} ${a.meta?.type || ''} — ${a.meta?.id || ''}`; else txt = a.action; return `<div class="activity-row"><span class="activity-time">${timeAgo(a.ts)}</span><span class="activity-crew ${a.crew}">${a.crew}</span><span class="activity-text">${escapeHtml(txt)}</span></div>`; }).join(""); } catch (e) {} }
+// ================== SHOWROOM ==================
+let showroom={products:{}};let openProduct=null;let openPlatform="instagram";let selectedPhotoUrl=null;
+function savedHeroesKey(name){return`inspirit-saved-heroes::${name}`}
+function getSavedHeroes(name){try{const raw=localStorage.getItem(savedHeroesKey(name));return raw?JSON.parse(raw):[]}catch(e){return[]}}
+function addSavedHero(name,url){if(!url)return;const list=getSavedHeroes(name).filter(u=>u!==url);list.unshift(url);try{localStorage.setItem(savedHeroesKey(name),JSON.stringify(list.slice(0,12)))}catch(e){}}
+function removeSavedHero(name,url){const list=getSavedHeroes(name).filter(u=>u!==url);try{localStorage.setItem(savedHeroesKey(name),JSON.stringify(list))}catch(e){}}
+async function loadShowroom(){try{const r=await fetch(`${API}/api/showroom`);showroom=await r.json();renderShowroom()}catch(e){toast("Failed","error")}}
+function renderShowroom(){const grid=document.getElementById("show-grid");const products=Object.values(showroom.products||{});if(!products.length){grid.innerHTML='<div class="empty" style="grid-column:1/-1;">No products loaded</div>';return}grid.innerHTML=products.map(p=>{const extras=(p.extras?.length||0)+(p.videos?.length||0)+getSavedHeroes(p.name).filter(u=>u!==p.hero_url).length;return`<div class="show-card" onclick='openShowroomProduct(${JSON.stringify(p.name)})'><div class="show-hero">${p.hero_url?`<img src="${escapeAttr(p.hero_url)}" alt="${escapeAttr(p.name)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'show-hero-fallback\\'>${escapeAttr(p.name)}</div>'"/>`:`<div class="show-hero-fallback">${escapeHtml(p.name)}</div>`}${extras>0?`<span class="show-extras-badge">+${extras}</span>`:''}</div><div class="show-meta"><div class="show-name">${escapeHtml(p.name)}</div><div class="show-price">$${p.price} AUD</div><div class="show-fit">${escapeHtml(p.fit)}</div></div></div>`}).join("")}
+window.openShowroomProduct=(name)=>{const p=showroom.products[name];if(!p)return;openProduct=p;openPlatform="instagram";selectedPhotoUrl=p.hero_url||null;document.getElementById("show-modal-title").textContent=p.name;document.getElementById("show-modal-sub").textContent=`$${p.price} AUD · ${p.fit}`;document.getElementById("show-hero-input").value=p.hero_url||"";document.querySelectorAll(".show-plat-tab").forEach(t=>t.classList.toggle("active",t.dataset.platform==="instagram"));renderProductPhotos();updateCaptionLabel();loadCaptionFromCache();document.getElementById("show-modal-bg").classList.add("show")}
+window.selectPhotoForCaption=(url)=>{selectedPhotoUrl=url;renderProductPhotos();updateCaptionLabel();loadCaptionFromCache()}
+function updateCaptionLabel(){const label=document.getElementById("show-caption-label");if(!selectedPhotoUrl){label.innerHTML=`<span>Click any photo above to caption it</span>`;return}const isHero=selectedPhotoUrl===openProduct.hero_url;label.innerHTML=`<img src="${escapeAttr(selectedPhotoUrl)}" alt="selected" /><span>CAPTIONING: ${isHero?'HERO':'PHOTO'} — ${openPlatform.toUpperCase()}</span>`}
+function loadCaptionFromCache(){const box=document.getElementById("show-caption");if(!selectedPhotoUrl){box.classList.add("loading");box.textContent="Pick a photo first.";return}fetch(`${API}/api/showroom/caption`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:openProduct.name,platform:openPlatform,regenerate:false,photo_url:selectedPhotoUrl})}).then(r=>r.json()).then(data=>{if(data.caption){box.classList.remove("loading");box.textContent=data.caption}else{box.classList.add("loading");box.textContent="Tap Regenerate to write a caption."}}).catch(()=>{box.classList.add("loading");box.textContent="Tap Regenerate."})}
+function renderProductPhotos(){const box=document.getElementById("show-photos");const heroUrl=openProduct.hero_url;const isSelected=(url)=>url===selectedPhotoUrl;const selClass=(url)=>isSelected(url)?' show-photo-selected':'';const heroHtml=heroUrl?`<div class="show-photo show-photo-hero${selClass(heroUrl)}" onclick="selectPhotoForCaption('${escapeAttr(heroUrl)}')"><img src="${escapeAttr(heroUrl)}" alt="hero" /><div class="show-photo-actions" onclick="event.stopPropagation()"><button onclick="copyAssetUrl('${escapeAttr(heroUrl)}')">Copy URL</button><a href="${escapeAttr(heroUrl)}" target="_blank">Open</a></div></div>`:'';const extrasHtml=(openProduct.extras||[]).filter(x=>x.url!==heroUrl).map(x=>`<div class="show-photo${selClass(x.url)}" onclick="selectPhotoForCaption('${escapeAttr(x.url)}')"><img src="${escapeAttr(x.url)}" alt="${escapeAttr(x.id)}" loading="lazy" /><div class="show-photo-actions" onclick="event.stopPropagation()"><button onclick="setAsHero('photo','${escapeAttr(x.id)}','${escapeAttr(x.url)}')" style="background:var(--pulse);color:var(--void);">★ Hero</button><button onclick="copyAssetUrl('${escapeAttr(x.url)}')">Copy</button><a href="${escapeAttr(x.url)}" target="_blank">Open</a><button onclick="deletePhoto('photo','${escapeAttr(x.id)}')" style="background:rgba(196,115,115,0.2);color:var(--red);">✗</button></div></div>`).join("");const saved=getSavedHeroes(openProduct.name).filter(u=>u!==heroUrl);const savedHtml=saved.map(url=>`<div class="show-photo show-photo-saved${selClass(url)}" onclick="selectPhotoForCaption('${escapeAttr(url)}')"><img src="${escapeAttr(url)}" alt="saved" loading="lazy" /><div class="show-photo-actions" onclick="event.stopPropagation()"><button onclick="setSavedAsHero('${escapeAttr(url)}')" style="background:var(--pulse);color:var(--void);">★ Hero</button><button onclick="copyAssetUrl('${escapeAttr(url)}')">Copy</button><a href="${escapeAttr(url)}" target="_blank">Open</a><button onclick="removeSavedHeroBtn('${escapeAttr(url)}')" style="background:rgba(196,115,115,0.2);color:var(--red);">✗</button></div></div>`).join("");const videosHtml=(openProduct.videos||[]).map(x=>`<div class="show-photo${selClass(x.url)}" onclick="selectPhotoForCaption('${escapeAttr(x.url)}')"><video src="${escapeAttr(x.url)}" muted preload="metadata"></video><div class="show-photo-actions" onclick="event.stopPropagation()"><button onclick="copyAssetUrl('${escapeAttr(x.url)}')">Copy</button><a href="${escapeAttr(x.url)}" target="_blank">Open</a><button onclick="deletePhoto('video','${escapeAttr(x.id)}')" style="background:rgba(196,115,115,0.2);color:var(--red);">✗</button></div></div>`).join("");const addHtml=`<div class="show-add-photo" onclick="document.getElementById('show-file-input').click()"><div class="show-add-photo-mark">+</div><div class="show-add-photo-text">Add shot</div></div>`;box.innerHTML=heroHtml+extrasHtml+savedHtml+videosHtml+addHtml}
+window.setAsHero=async(type,id,url)=>{if(!openProduct)return;const oldHero=openProduct.hero_url;try{const r=await fetch(`${API}/api/showroom/hero`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:openProduct.name,hero_url:url})});if(!r.ok)throw new Error("save failed");if(oldHero&&oldHero!==url)addSavedHero(openProduct.name,oldHero);openProduct.hero_url=url;showroom.products[openProduct.name].hero_url=url;document.getElementById("show-hero-input").value=url;renderProductPhotos();renderShowroom();toast("Set as hero")}catch(err){toast("Failed","error")}}
+window.setSavedAsHero=async(url)=>{if(!openProduct)return;const oldHero=openProduct.hero_url;try{const r=await fetch(`${API}/api/showroom/hero`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:openProduct.name,hero_url:url})});if(!r.ok)throw new Error("save failed");if(oldHero&&oldHero!==url)addSavedHero(openProduct.name,oldHero);removeSavedHero(openProduct.name,url);openProduct.hero_url=url;showroom.products[openProduct.name].hero_url=url;document.getElementById("show-hero-input").value=url;renderProductPhotos();renderShowroom();toast("Set as hero")}catch(err){toast("Failed","error")}}
+window.removeSavedHeroBtn=(url)=>{if(!openProduct)return;if(!confirm("Remove?"))return;removeSavedHero(openProduct.name,url);if(selectedPhotoUrl===url){selectedPhotoUrl=openProduct.hero_url;updateCaptionLabel()}renderProductPhotos();renderShowroom()}
+window.deletePhoto=async(type,id)=>{if(!openProduct)return;if(!confirm(`Remove ${type}?`))return;try{const r=await fetch(`${API}/api/library/delete`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type,id})});if(!r.ok)throw new Error("delete failed");if(type==="photo"){openProduct.extras=(openProduct.extras||[]).filter(x=>x.id!==id)}else{openProduct.videos=(openProduct.videos||[]).filter(x=>x.id!==id)}renderProductPhotos();toast("Deleted")}catch(err){toast("Failed","error")}}
+document.getElementById("show-modal-close").onclick=()=>document.getElementById("show-modal-bg").classList.remove("show");
+document.getElementById("show-modal-bg").onclick=(e)=>{if(e.target.id==="show-modal-bg")e.target.classList.remove("show")}
+document.getElementById("show-hero-save").onclick=async()=>{if(!openProduct)return;const url=document.getElementById("show-hero-input").value.trim();const oldHero=openProduct.hero_url;try{const r=await fetch(`${API}/api/showroom/hero`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:openProduct.name,hero_url:url})});if(!r.ok)throw new Error("save failed");if(oldHero&&oldHero!==url)addSavedHero(openProduct.name,oldHero);openProduct.hero_url=url;showroom.products[openProduct.name].hero_url=url;renderProductPhotos();renderShowroom();toast("Hero saved")}catch(err){toast("Save failed","error")}}
+document.querySelectorAll(".show-plat-tab").forEach(btn=>{btn.onclick=()=>{document.querySelectorAll(".show-plat-tab").forEach(b=>b.classList.remove("active"));btn.classList.add("active");openPlatform=btn.dataset.platform;updateCaptionLabel();loadCaptionFromCache()}});
+async function regenCaption(){if(!selectedPhotoUrl){toast("Pick a photo first","error");return}const box=document.getElementById("show-caption");box.classList.add("loading");box.textContent="Regenerating...";const regenBtn=document.getElementById("show-regen");regenBtn.disabled=true;try{const r=await fetch(`${API}/api/showroom/caption`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:openProduct.name,platform:openPlatform,regenerate:true,photo_url:selectedPhotoUrl})});const data=await r.json();if(!r.ok)throw new Error(data.error||"caption failed");box.classList.remove("loading");box.textContent=data.caption}catch(err){box.classList.remove("loading");box.textContent="Couldn't generate: "+err.message}regenBtn.disabled=false}
+document.getElementById("show-copy").onclick=()=>{const text=document.getElementById("show-caption").textContent;navigator.clipboard.writeText(text);toast("Caption copied")}
+document.getElementById("show-regen").onclick=regenCaption;
+document.getElementById("show-file-input").onchange=async(e)=>{if(!openProduct)return;const files=Array.from(e.target.files);for(const file of files){if(file.size>5*1024*1024){toast(`${file.name} over 5MB`,"error");continue}try{const base64=await fileToBase64(file);const type=file.type.startsWith("video/")?"video":"photo";const r=await fetch(`${API}/api/library/upload`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type,filename:file.name,mime:file.type,base64,products:[openProduct.name],tags:["showroom"],notes:""})});const data=await r.json();if(!r.ok)throw new Error(data.error||"upload failed");if(type==="photo"){openProduct.extras=openProduct.extras||[];openProduct.extras.unshift(data.item)}else{openProduct.videos=openProduct.videos||[];openProduct.videos.unshift(data.item)}}catch(err){toast("Upload failed","error")}}e.target.value="";renderProductPhotos();toast("Uploaded")}
 
-    // ================== SHOWROOM ==================
-    let showroom = { products: {} };
-    let openProduct = null;
-    let openPlatform = "instagram";
-    let selectedPhotoUrl = null;
+// ================== LIBRARY ==================
+let library={photos:[],videos:[]};let libFilter="all";let libSearch="";let libBulkMode=false;let libSelected=new Set();let editingItem=null;
+async function loadLibrary(){try{const r=await fetch(`${API}/api/library`);library=await r.json();renderLibrary();const total=(library.photos?.length||0)+(library.videos?.length||0);const pill=document.getElementById("lib-count");if(total>0){pill.textContent=total;pill.style.display="inline-block"}else pill.style.display="none"}catch(e){toast("Failed","error")}}
+function libItemMatchesSearch(item){if(!libSearch)return true;const q=libSearch.toLowerCase();if(item.id.toLowerCase().includes(q))return true;if((item.products||[]).some(p=>p.toLowerCase().includes(q)))return true;if((item.tags||[]).some(t=>t.toLowerCase().includes(q)))return true;if((item.notes||"").toLowerCase().includes(q))return true;return false}
+function getFilteredItems(){let items=[];if(libFilter==="all"||libFilter==="photos"||libFilter==="untagged")items.push(...(library.photos||[]).map(x=>({...x,type:"photo"})));if(libFilter==="all"||libFilter==="videos"||libFilter==="untagged")items.push(...(library.videos||[]).map(x=>({...x,type:"video"})));if(libFilter==="untagged")items=items.filter(x=>!x.products?.length&&!x.tags?.length);if(libSearch)items=items.filter(libItemMatchesSearch);items.sort((a,b)=>(b.uploadedAt||0)-(a.uploadedAt||0));return items}
+function renderLibrary(){const grid=document.getElementById("library-grid");const items=getFilteredItems();if(!items.length){grid.innerHTML=`<div class="empty" style="grid-column:1/-1;">No ${libFilter} ${libSearch?`matching "${escapeHtml(libSearch)}"`:'items'}</div>`;return}grid.innerHTML=items.map(item=>{const untagged=!item.products?.length&&!item.tags?.length;const isSel=libSelected.has(item.id+":"+item.type);return`<div class="lib-card ${libBulkMode?'bulk-mode':''} ${isSel?'selected':''}" data-id="${item.id}" data-type="${item.type}"><div class="lib-card-checkbox" onclick="toggleSelect('${item.id}','${item.type}')">${isSel?'✓':''}</div><div class="lib-thumb">${item.type==="photo"?`<img src="${item.url}" alt="${item.id}" loading="lazy" onerror="this.style.display='none'"/>`:`<video src="${item.url}" muted preload="metadata"></video>`}<span class="lib-type-badge">${item.type}</span>${untagged?`<span class="lib-untagged-badge">UNTAGGED</span>`:''}</div><div class="lib-meta"><div class="lib-id">${item.id}</div><div class="lib-tags">${(item.products||[]).map(p=>`<span class="lib-pill product">${escapeHtml(p)}</span>`).join("")}${(item.tags||[]).map(t=>`<span class="lib-pill">${escapeHtml(t)}</span>`).join("")}</div></div><div class="lib-actions"><button class="lib-btn" onclick='openTagModal(${JSON.stringify(item).replace(/'/g,"&#39;")})'>Tag</button><button class="lib-btn" onclick="copyAssetUrl('${item.url}')">URL</button><a class="lib-btn" href="${item.url}" target="_blank">Open</a></div></div>`}).join("")}
+document.querySelectorAll(".lib-filter-tab").forEach(btn=>{if(btn.id==="lib-bulk-toggle")return;btn.onclick=()=>{document.querySelectorAll(".lib-filter-tab").forEach(b=>{if(b.id!=="lib-bulk-toggle")b.classList.remove("active")});btn.classList.add("active");libFilter=btn.dataset.filter;renderLibrary()}});
+document.getElementById("lib-search-input").addEventListener("input",e=>{libSearch=e.target.value.trim();renderLibrary()});
+document.getElementById("lib-search-clear").onclick=()=>{document.getElementById("lib-search-input").value="";libSearch="";renderLibrary()}
+document.getElementById("lib-bulk-toggle").onclick=()=>{libBulkMode=!libBulkMode;document.getElementById("lib-bulk-toggle").classList.toggle("active",libBulkMode);document.getElementById("lib-bulk-bar").classList.toggle("show",libBulkMode);if(!libBulkMode)libSelected.clear();renderLibrary();updateBulkCount()}
+window.toggleSelect=(id,type)=>{const k=id+":"+type;if(libSelected.has(k))libSelected.delete(k);else libSelected.add(k);renderLibrary();updateBulkCount()}
+function updateBulkCount(){document.getElementById("lib-bulk-count").textContent=`${libSelected.size} selected`}
+document.getElementById("lib-bulk-clear").onclick=()=>{libSelected.clear();renderLibrary();updateBulkCount()}
+document.getElementById("lib-bulk-selectall").onclick=()=>{getFilteredItems().forEach(x=>libSelected.add(x.id+":"+x.type));renderLibrary();updateBulkCount()}
+document.getElementById("lib-bulk-tag").onclick=()=>{if(!libSelected.size){toast("Select items first","error");return}document.getElementById("bulk-count").textContent=`(${libSelected.size} items)`;document.getElementById("bulk-product-checks").innerHTML=PRODUCTS.map(p=>`<label class="product-check"><input type="checkbox" value="${escapeHtml(p)}"/>${escapeHtml(p)}</label>`).join("");document.getElementById("bulk-tags").value="";document.getElementById("bulk-notes").value="";document.getElementById("bulk-modal").classList.add("show")}
+document.getElementById("bulk-modal-close").onclick=()=>document.getElementById("bulk-modal").classList.remove("show");
+document.getElementById("bulk-modal-cancel").onclick=()=>document.getElementById("bulk-modal").classList.remove("show");
+document.getElementById("bulk-modal-apply").onclick=async()=>{const addProducts=Array.from(document.querySelectorAll("#bulk-product-checks input:checked")).map(i=>i.value);const addTags=document.getElementById("bulk-tags").value.split(",").map(s=>s.trim()).filter(Boolean);const setNotes=document.getElementById("bulk-notes").value.trim();const photoIds=[];const videoIds=[];for(const k of libSelected){const[id,type]=k.split(":");if(type==="photo")photoIds.push(id);else videoIds.push(id)}try{let totalUpdated=0;if(photoIds.length){const body={type:"photo",ids:photoIds};if(addProducts.length)body.addProducts=addProducts;if(addTags.length)body.addTags=addTags;if(setNotes)body.setNotes=setNotes;const r=await fetch(`${API}/api/library/bulk-update`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const d=await r.json();if(r.ok)totalUpdated+=d.updated||0}if(videoIds.length){const body={type:"video",ids:videoIds};if(addProducts.length)body.addProducts=addProducts;if(addTags.length)body.addTags=addTags;if(setNotes)body.setNotes=setNotes;const r=await fetch(`${API}/api/library/bulk-update`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const d=await r.json();if(r.ok)totalUpdated+=d.updated||0}toast(`Updated ${totalUpdated} items`);document.getElementById("bulk-modal").classList.remove("show");libSelected.clear();updateBulkCount();loadLibrary()}catch(err){toast("Bulk failed","error")}}
+window.copyAssetUrl=(url)=>{navigator.clipboard.writeText(url);toast("URL copied")}
+const uploadZone=document.getElementById("upload-zone");const fileInput=document.getElementById("file-input");
+uploadZone.onclick=()=>fileInput.click();
+fileInput.onchange=(e)=>handleFiles(e.target.files);
+uploadZone.addEventListener("dragover",e=>{e.preventDefault();uploadZone.classList.add("dragover")});
+uploadZone.addEventListener("dragleave",()=>uploadZone.classList.remove("dragover"));
+uploadZone.addEventListener("drop",e=>{e.preventDefault();uploadZone.classList.remove("dragover");handleFiles(e.dataTransfer.files)});
+async function handleFiles(files){const arr=Array.from(files);if(!arr.length)return;const progBox=document.getElementById("upload-progress");const progStatus=document.getElementById("upload-status");const progFill=document.getElementById("upload-bar-fill");progBox.classList.remove("hidden");for(let i=0;i<arr.length;i++){const file=arr[i];progStatus.textContent=`Uploading ${i+1}/${arr.length}: ${file.name}`;progFill.style.width=`${(i/arr.length)*100}%`;if(file.size>5*1024*1024){toast(`${file.name} over 5MB`,"error");continue}try{const base64=await fileToBase64(file);const type=file.type.startsWith("video/")?"video":"photo";const r=await fetch(`${API}/api/library/upload`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type,filename:file.name,mime:file.type,base64,products:[],tags:[],notes:""})});const data=await r.json();if(!r.ok)throw new Error(data.error||"upload failed")}catch(err){toast(`Upload failed: ${err.message}`,"error")}}progFill.style.width=`100%`;progStatus.textContent=`Done`;setTimeout(()=>progBox.classList.add("hidden"),1500);fileInput.value="";loadLibrary()}
+window.openTagModal=(item)=>{editingItem=item;document.getElementById("modal-title").textContent=`Edit ${item.type}`;document.getElementById("modal-id").value=item.id;const img=document.getElementById("modal-preview-img");const vid=document.getElementById("modal-preview-video");if(item.type==="photo"){img.src=item.url;img.style.display="block";vid.style.display="none"}else{vid.src=item.url;vid.style.display="block";img.style.display="none"}document.getElementById("product-checks").innerHTML=PRODUCTS.map(p=>`<label class="product-check"><input type="checkbox" value="${escapeHtml(p)}" ${(item.products||[]).includes(p)?"checked":""}/>${escapeHtml(p)}</label>`).join("");document.getElementById("modal-tags").value=(item.tags||[]).join(", ");document.getElementById("modal-notes").value=item.notes||"";document.getElementById("tag-modal").classList.add("show")}
+document.getElementById("modal-close").onclick=()=>document.getElementById("tag-modal").classList.remove("show");
+document.getElementById("tag-modal").onclick=(e)=>{if(e.target.id==="tag-modal")e.target.classList.remove("show")}
+document.getElementById("modal-copy-url").onclick=()=>{if(editingItem)copyAssetUrl(editingItem.url)}
+document.getElementById("modal-save").onclick=async()=>{if(!editingItem)return;const products=Array.from(document.querySelectorAll("#product-checks input:checked")).map(i=>i.value);const tags=document.getElementById("modal-tags").value.split(",").map(s=>s.trim()).filter(Boolean);const notes=document.getElementById("modal-notes").value.trim();try{const r=await fetch(`${API}/api/library/update`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:editingItem.type,id:editingItem.id,products,tags,notes})});if(!r.ok)throw new Error("update failed");toast("Saved");document.getElementById("tag-modal").classList.remove("show");loadLibrary()}catch(err){toast("Failed","error")}}
+document.getElementById("modal-delete").onclick=async()=>{if(!editingItem)return;if(!confirm(`Remove ${editingItem.id}?`))return;try{const r=await fetch(`${API}/api/library/delete`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:editingItem.type,id:editingItem.id})});if(!r.ok)throw new Error("delete failed");toast("Deleted");document.getElementById("tag-modal").classList.remove("show");loadLibrary()}catch(err){toast("Failed","error")}}
 
-    function savedHeroesKey(name) { return `inspirit-saved-heroes::${name}`; }
-    function getSavedHeroes(name) { try { const raw = localStorage.getItem(savedHeroesKey(name)); return raw ? JSON.parse(raw) : []; } catch (e) { return []; } }
-    function addSavedHero(name, url) { if (!url) return; const list = getSavedHeroes(name).filter(u => u !== url); list.unshift(url); try { localStorage.setItem(savedHeroesKey(name), JSON.stringify(list.slice(0, 12))); } catch (e) {} }
-    function removeSavedHero(name, url) { const list = getSavedHeroes(name).filter(u => u !== url); try { localStorage.setItem(savedHeroesKey(name), JSON.stringify(list)); } catch (e) {} }
-
-    async function loadShowroom() { try { const r = await fetch(`${API}/api/showroom`); showroom = await r.json(); renderShowroom(); } catch (e) { toast("Failed to load showroom", "error"); } }
-    function renderShowroom() { const grid = document.getElementById("show-grid"); const products = Object.values(showroom.products || {}); if (!products.length) { grid.innerHTML = '<div class="empty" style="grid-column:1/-1;">No products loaded</div>'; return; } grid.innerHTML = products.map(p => { const extras = (p.extras?.length || 0) + (p.videos?.length || 0) + getSavedHeroes(p.name).filter(u => u !== p.hero_url).length; return `<div class="show-card" onclick='openShowroomProduct(${JSON.stringify(p.name)})'><div class="show-hero">${p.hero_url ? `<img src="${escapeAttr(p.hero_url)}" alt="${escapeAttr(p.name)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'show-hero-fallback\\'>${escapeAttr(p.name)}</div>'"/>` : `<div class="show-hero-fallback">${escapeHtml(p.name)}<br><span style="font-size:10px;font-family:var(--mono);opacity:0.7;">No hero set</span></div>`}${extras > 0 ? `<span class="show-extras-badge">+${extras} extra${extras>1?'s':''}</span>` : ''}</div><div class="show-meta"><div class="show-name">${escapeHtml(p.name)}</div><div class="show-price">$${p.price} AUD</div><div class="show-fit">${escapeHtml(p.fit)}</div></div></div>`; }).join(""); }
-
-    window.openShowroomProduct = (name) => {
-      const p = showroom.products[name]; if (!p) return;
-      openProduct = p; openPlatform = "instagram"; selectedPhotoUrl = p.hero_url || null;
-      document.getElementById("show-modal-title").textContent = p.name;
-      document.getElementById("show-modal-sub").textContent = `$${p.price} AUD · ${p.fit} · ${p.desc}`;
-      document.getElementById("show-hero-input").value = p.hero_url || "";
-      document.querySelectorAll(".show-plat-tab").forEach(t => t.classList.toggle("active", t.dataset.platform === "instagram"));
-      renderProductPhotos(); updateCaptionLabel(); loadCaptionFromCache();
-      document.getElementById("show-modal-bg").classList.add("show");
-    };
-
-    window.selectPhotoForCaption = (url) => {
-      selectedPhotoUrl = url; renderProductPhotos(); updateCaptionLabel(); loadCaptionFromCache();
-      toast("Photo picked — tap Regenerate to write a caption");
-    };
-
-    function updateCaptionLabel() {
-      const label = document.getElementById("show-caption-label");
-      if (!selectedPhotoUrl) { label.innerHTML = `<span>Click any photo above to caption it</span>`; return; }
-      const isHero = selectedPhotoUrl === openProduct.hero_url;
-      label.innerHTML = `<img src="${escapeAttr(selectedPhotoUrl)}" alt="selected" /><span>CAPTIONING: ${isHero ? 'HERO' : 'PHOTO'} — ${openPlatform.toUpperCase()}</span>`;
-    }
-
-    function loadCaptionFromCache() {
-      const box = document.getElementById("show-caption");
-      if (!selectedPhotoUrl) { box.classList.add("loading"); box.textContent = "Pick a photo first."; return; }
-      // Check server-side cache via API (returns cached if exists, else needs regen)
-      fetch(`${API}/api/showroom/caption`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: openProduct.name, platform: openPlatform, regenerate: false, photo_url: selectedPhotoUrl }) })
-        .then(r => r.json())
-        .then(data => {
-          if (data.caption) {
-            box.classList.remove("loading");
-            box.textContent = data.caption;
-          } else if (data.error && /no.*cache|not.*found/i.test(data.error)) {
-            box.classList.add("loading"); box.textContent = "No caption yet for this photo — tap Regenerate.";
-          } else {
-            box.classList.add("loading"); box.textContent = "Tap Regenerate to write a caption.";
-          }
-        })
-        .catch(() => { box.classList.add("loading"); box.textContent = "Tap Regenerate to write a caption."; });
-    }
-
-    function renderProductPhotos() {
-      const box = document.getElementById("show-photos");
-      const heroUrl = openProduct.hero_url;
-      const isSelected = (url) => url === selectedPhotoUrl;
-      const selClass = (url) => isSelected(url) ? ' show-photo-selected' : '';
-
-      const heroHtml = heroUrl ? `<div class="show-photo show-photo-hero${selClass(heroUrl)}" onclick="selectPhotoForCaption('${escapeAttr(heroUrl)}')"><img src="${escapeAttr(heroUrl)}" alt="hero" /><div class="show-photo-actions" onclick="event.stopPropagation()"><button onclick="copyAssetUrl('${escapeAttr(heroUrl)}')">Copy URL</button><a href="${escapeAttr(heroUrl)}" target="_blank">Open</a></div></div>` : '';
-
-      const extrasHtml = (openProduct.extras || []).filter(x => x.url !== heroUrl).map(x => `<div class="show-photo${selClass(x.url)}" onclick="selectPhotoForCaption('${escapeAttr(x.url)}')"><img src="${escapeAttr(x.url)}" alt="${escapeAttr(x.id)}" loading="lazy" /><div class="show-photo-actions" onclick="event.stopPropagation()"><button onclick="setAsHero('photo','${escapeAttr(x.id)}','${escapeAttr(x.url)}')" style="background:var(--pulse);color:var(--void);">★ Hero</button><button onclick="copyAssetUrl('${escapeAttr(x.url)}')">Copy</button><a href="${escapeAttr(x.url)}" target="_blank">Open</a><button onclick="deletePhoto('photo','${escapeAttr(x.id)}')" style="background:rgba(196,115,115,0.2);color:var(--red);">✗</button></div></div>`).join("");
-
-      const saved = getSavedHeroes(openProduct.name).filter(u => u !== heroUrl);
-      const savedHtml = saved.map(url => `<div class="show-photo show-photo-saved${selClass(url)}" onclick="selectPhotoForCaption('${escapeAttr(url)}')"><img src="${escapeAttr(url)}" alt="saved" loading="lazy" /><div class="show-photo-actions" onclick="event.stopPropagation()"><button onclick="setSavedAsHero('${escapeAttr(url)}')" style="background:var(--pulse);color:var(--void);">★ Hero</button><button onclick="copyAssetUrl('${escapeAttr(url)}')">Copy</button><a href="${escapeAttr(url)}" target="_blank">Open</a><button onclick="removeSavedHeroBtn('${escapeAttr(url)}')" style="background:rgba(196,115,115,0.2);color:var(--red);">✗</button></div></div>`).join("");
-
-      const videosHtml = (openProduct.videos || []).map(x => `<div class="show-photo${selClass(x.url)}" onclick="selectPhotoForCaption('${escapeAttr(x.url)}')"><video src="${escapeAttr(x.url)}" muted preload="metadata"></video><div class="show-photo-actions" onclick="event.stopPropagation()"><button onclick="copyAssetUrl('${escapeAttr(x.url)}')">Copy</button><a href="${escapeAttr(x.url)}" target="_blank">Open</a><button onclick="deletePhoto('video','${escapeAttr(x.id)}')" style="background:rgba(196,115,115,0.2);color:var(--red);">✗</button></div></div>`).join("");
-
-      const addHtml = `<div class="show-add-photo" onclick="document.getElementById('show-file-input').click()"><div class="show-add-photo-mark">+</div><div class="show-add-photo-text">Add model shot or video</div></div>`;
-      box.innerHTML = heroHtml + extrasHtml + savedHtml + videosHtml + addHtml;
-    }
-
-    window.setAsHero = async (type, id, url) => {
-      if (!openProduct) return;
-      const oldHero = openProduct.hero_url;
-      try { const r = await fetch(`${API}/api/showroom/hero`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: openProduct.name, hero_url: url }) }); if (!r.ok) throw new Error("save failed"); if (oldHero && oldHero !== url) addSavedHero(openProduct.name, oldHero); openProduct.hero_url = url; showroom.products[openProduct.name].hero_url = url; document.getElementById("show-hero-input").value = url; renderProductPhotos(); renderShowroom(); toast("Set as hero — old one saved"); } catch (err) { toast("Failed: " + err.message, "error"); }
-    };
-    window.setSavedAsHero = async (url) => {
-      if (!openProduct) return;
-      const oldHero = openProduct.hero_url;
-      try { const r = await fetch(`${API}/api/showroom/hero`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: openProduct.name, hero_url: url }) }); if (!r.ok) throw new Error("save failed"); if (oldHero && oldHero !== url) addSavedHero(openProduct.name, oldHero); removeSavedHero(openProduct.name, url); openProduct.hero_url = url; showroom.products[openProduct.name].hero_url = url; document.getElementById("show-hero-input").value = url; renderProductPhotos(); renderShowroom(); toast("Set as hero"); } catch (err) { toast("Failed: " + err.message, "error"); }
-    };
-    window.removeSavedHeroBtn = (url) => { if (!openProduct) return; if (!confirm("Remove this saved photo?")) return; removeSavedHero(openProduct.name, url); if (selectedPhotoUrl === url) { selectedPhotoUrl = openProduct.hero_url; updateCaptionLabel(); } renderProductPhotos(); renderShowroom(); toast("Removed"); };
-    window.deletePhoto = async (type, id) => {
-      if (!openProduct) return;
-      if (!confirm(`Remove this ${type} from the Showroom?`)) return;
-      try { const r = await fetch(`${API}/api/library/delete`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type, id }) }); if (!r.ok) throw new Error("delete failed"); let removedUrl = null; if (type === "photo") { const found = (openProduct.extras || []).find(x => x.id === id); if (found) removedUrl = found.url; openProduct.extras = (openProduct.extras || []).filter(x => x.id !== id); } else { const found = (openProduct.videos || []).find(x => x.id === id); if (found) removedUrl = found.url; openProduct.videos = (openProduct.videos || []).filter(x => x.id !== id); } if (selectedPhotoUrl === removedUrl) { selectedPhotoUrl = openProduct.hero_url; updateCaptionLabel(); } renderProductPhotos(); toast("Deleted"); } catch (err) { toast("Delete failed: " + err.message, "error"); }
-    };
-
-    document.getElementById("show-modal-close").onclick = () => document.getElementById("show-modal-bg").classList.remove("show");
-    document.getElementById("show-modal-bg").onclick = (e) => { if (e.target.id === "show-modal-bg") e.target.classList.remove("show"); };
-
-    document.getElementById("show-hero-save").onclick = async () => {
-      if (!openProduct) return;
-      const url = document.getElementById("show-hero-input").value.trim();
-      const oldHero = openProduct.hero_url;
-      try { const r = await fetch(`${API}/api/showroom/hero`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: openProduct.name, hero_url: url }) }); if (!r.ok) throw new Error("save failed"); if (oldHero && oldHero !== url) addSavedHero(openProduct.name, oldHero); openProduct.hero_url = url; showroom.products[openProduct.name].hero_url = url; renderProductPhotos(); renderShowroom(); toast("Hero saved"); } catch (err) { toast("Save failed", "error"); }
-    };
-
-    document.querySelectorAll(".show-plat-tab").forEach(btn => { btn.onclick = () => { document.querySelectorAll(".show-plat-tab").forEach(b => b.classList.remove("active")); btn.classList.add("active"); openPlatform = btn.dataset.platform; updateCaptionLabel(); loadCaptionFromCache(); }; });
-
-    async function regenCaption() {
-      if (!selectedPhotoUrl) { toast("Pick a photo first", "error"); return; }
-      const box = document.getElementById("show-caption");
-      box.classList.add("loading"); box.textContent = "Regenerating caption for selected photo...";
-      const regenBtn = document.getElementById("show-regen"); regenBtn.disabled = true;
-      try {
-        const r = await fetch(`${API}/api/showroom/caption`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: openProduct.name, platform: openPlatform, regenerate: true, photo_url: selectedPhotoUrl }) });
-        const data = await r.json();
-        if (!r.ok) throw new Error(data.error || "caption failed");
-        box.classList.remove("loading"); box.textContent = data.caption;
-      } catch (err) { box.classList.remove("loading"); box.textContent = "Couldn't generate: " + err.message; }
-      regenBtn.disabled = false;
-    }
-
-    document.getElementById("show-copy").onclick = () => { const text = document.getElementById("show-caption").textContent; navigator.clipboard.writeText(text); toast("Caption copied — paste into " + openPlatform); };
-    document.getElementById("show-regen").onclick = regenCaption;
-
-    document.getElementById("show-file-input").onchange = async (e) => {
-      if (!openProduct) return;
-      const files = Array.from(e.target.files);
-      for (const file of files) {
-        if (file.size > 5 * 1024 * 1024) { toast(`${file.name} over 5MB — skipped`, "error"); continue; }
-        try { const base64 = await fileToBase64(file); const type = file.type.startsWith("video/") ? "video" : "photo"; const r = await fetch(`${API}/api/library/upload`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type, filename: file.name, mime: file.type, base64, products: [openProduct.name], tags: ["showroom"], notes: "" }) }); const data = await r.json(); if (!r.ok) throw new Error(data.error || "upload failed"); if (type === "photo") { openProduct.extras = openProduct.extras || []; openProduct.extras.unshift(data.item); } else { openProduct.videos = openProduct.videos || []; openProduct.videos.unshift(data.item); } } catch (err) { toast("Upload failed: " + err.message, "error"); }
-      }
-      e.target.value = "";
-      renderProductPhotos();
-      toast("Uploaded — click a pic to caption it");
-    };
-
-    function escapeAttr(s) { return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" })[c]); }
-
-    // ================== LIBRARY ==================
-    let library = { photos: [], videos: [] };
-    let libFilter = "all";
-    let libSearch = "";
-    let libBulkMode = false;
-    let libSelected = new Set();
-    let editingItem = null;
-
-    const PRODUCTS = ["Feeding 5000 Tee", "Jesus Fish Tee — White", "Jesus Fish Tee — Black", "Spiritual Badass Tee — Black", "Spiritual Badass Tee — White", "Heart Tee — Black", "Heart Tee — White", "Inspirit Hoodie", "Spiritual Badass Hoodie", "Jesus Fish Jumper", "Inspirit Bucket Hat", "Spiritual Badass Bucket Hat", "Inspirit Beanie"];
-
-    async function loadLibrary() { try { const r = await fetch(`${API}/api/library`); library = await r.json(); renderLibrary(); const total = (library.photos?.length || 0) + (library.videos?.length || 0); const pill = document.getElementById("lib-count"); if (total > 0) { pill.textContent = total; pill.style.display = "inline-block"; } else pill.style.display = "none"; } catch (e) { toast("Failed to load library", "error"); } }
-
-    function libItemMatchesSearch(item) {
-      if (!libSearch) return true;
-      const q = libSearch.toLowerCase();
-      if (item.id.toLowerCase().includes(q)) return true;
-      if ((item.products || []).some(p => p.toLowerCase().includes(q))) return true;
-      if ((item.tags || []).some(t => t.toLowerCase().includes(q))) return true;
-      if ((item.notes || "").toLowerCase().includes(q)) return true;
-      return false;
-    }
-
-    function getFilteredItems() {
-      let items = [];
-      if (libFilter === "all" || libFilter === "photos" || libFilter === "untagged") items.push(...(library.photos || []).map(x => ({...x, type: "photo"})));
-      if (libFilter === "all" || libFilter === "videos" || libFilter === "untagged") items.push(...(library.videos || []).map(x => ({...x, type: "video"})));
-      if (libFilter === "untagged") items = items.filter(x => !x.products?.length && !x.tags?.length);
-      if (libSearch) items = items.filter(libItemMatchesSearch);
-      items.sort((a, b) => (b.uploadedAt || 0) - (a.uploadedAt || 0));
-      return items;
-    }
-
-    function renderLibrary() {
-      const grid = document.getElementById("library-grid");
-      const items = getFilteredItems();
-      if (!items.length) { grid.innerHTML = `<div class="empty" style="grid-column:1/-1;">No ${libFilter} ${libSearch ? `matching "${escapeHtml(libSearch)}"` : 'items'}</div>`; return; }
-      grid.innerHTML = items.map(item => {
-        const untagged = !item.products?.length && !item.tags?.length;
-        const isSel = libSelected.has(item.id + ":" + item.type);
-        return `<div class="lib-card ${libBulkMode ? 'bulk-mode' : ''} ${isSel ? 'selected' : ''}" data-id="${item.id}" data-type="${item.type}">
-          <div class="lib-card-checkbox" onclick="toggleSelect('${item.id}','${item.type}')">${isSel ? '✓' : ''}</div>
-          <div class="lib-thumb">
-            ${item.type === "photo" ? `<img src="${item.url}" alt="${item.id}" loading="lazy" onerror="this.style.display='none'"/>` : `<video src="${item.url}" muted preload="metadata"></video>`}
-            <span class="lib-type-badge">${item.type}</span>
-            ${untagged ? `<span class="lib-untagged-badge">UNTAGGED</span>` : ''}
-          </div>
-          <div class="lib-meta">
-            <div class="lib-id">${item.id}</div>
-            <div class="lib-tags">${(item.products || []).map(p => `<span class="lib-pill product">${escapeHtml(p)}</span>`).join("")}${(item.tags || []).map(t => `<span class="lib-pill">${escapeHtml(t)}</span>`).join("")}</div>
-          </div>
-          <div class="lib-actions">
-            <button class="lib-btn" onclick='openTagModal(${JSON.stringify(item).replace(/'/g, "&#39;")})'>Tag</button>
-            <button class="lib-btn" onclick="copyAssetUrl('${item.url}')">URL</button>
-            <a class="lib-btn" href="${item.url}" target="_blank" style="text-decoration:none;text-align:center;">Open</a>
-          </div>
-        </div>`;
-      }).join("");
-    }
-
-    document.querySelectorAll(".lib-filter-tab").forEach(btn => { if (btn.id === "lib-bulk-toggle") return; btn.onclick = () => { document.querySelectorAll(".lib-filter-tab").forEach(b => { if (b.id !== "lib-bulk-toggle") b.classList.remove("active"); }); btn.classList.add("active"); libFilter = btn.dataset.filter; renderLibrary(); }; });
-
-    document.getElementById("lib-search-input").addEventListener("input", e => { libSearch = e.target.value.trim(); renderLibrary(); });
-    document.getElementById("lib-search-clear").onclick = () => { document.getElementById("lib-search-input").value = ""; libSearch = ""; renderLibrary(); };
-
-    // Bulk mode
-    document.getElementById("lib-bulk-toggle").onclick = () => {
-      libBulkMode = !libBulkMode;
-      document.getElementById("lib-bulk-toggle").classList.toggle("active", libBulkMode);
-      document.getElementById("lib-bulk-bar").classList.toggle("show", libBulkMode);
-      if (!libBulkMode) libSelected.clear();
-      renderLibrary();
-      updateBulkCount();
-    };
-    window.toggleSelect = (id, type) => { const k = id + ":" + type; if (libSelected.has(k)) libSelected.delete(k); else libSelected.add(k); renderLibrary(); updateBulkCount(); };
-    function updateBulkCount() { document.getElementById("lib-bulk-count").textContent = `${libSelected.size} selected`; }
-    document.getElementById("lib-bulk-clear").onclick = () => { libSelected.clear(); renderLibrary(); updateBulkCount(); };
-    document.getElementById("lib-bulk-selectall").onclick = () => { getFilteredItems().forEach(x => libSelected.add(x.id + ":" + x.type)); renderLibrary(); updateBulkCount(); };
-    document.getElementById("lib-bulk-tag").onclick = () => {
-      if (!libSelected.size) { toast("Select some items first", "error"); return; }
-      document.getElementById("bulk-count").textContent = `(${libSelected.size} items)`;
-      document.getElementById("bulk-product-checks").innerHTML = PRODUCTS.map(p => `<label class="product-check"><input type="checkbox" value="${escapeHtml(p)}"/>${escapeHtml(p)}</label>`).join("");
-      document.getElementById("bulk-tags").value = "";
-      document.getElementById("bulk-notes").value = "";
-      document.getElementById("bulk-modal").classList.add("show");
-    };
-    document.getElementById("bulk-modal-close").onclick = () => document.getElementById("bulk-modal").classList.remove("show");
-    document.getElementById("bulk-modal-cancel").onclick = () => document.getElementById("bulk-modal").classList.remove("show");
-    document.getElementById("bulk-modal-apply").onclick = async () => {
-      const addProducts = Array.from(document.querySelectorAll("#bulk-product-checks input:checked")).map(i => i.value);
-      const addTags = document.getElementById("bulk-tags").value.split(",").map(s => s.trim()).filter(Boolean);
-      const setNotes = document.getElementById("bulk-notes").value.trim();
-      // Group by type
-      const photoIds = []; const videoIds = [];
-      for (const k of libSelected) { const [id, type] = k.split(":"); if (type === "photo") photoIds.push(id); else videoIds.push(id); }
-      try {
-        let totalUpdated = 0;
-        if (photoIds.length) {
-          const body = { type: "photo", ids: photoIds };
-          if (addProducts.length) body.addProducts = addProducts;
-          if (addTags.length) body.addTags = addTags;
-          if (setNotes) body.setNotes = setNotes;
-          const r = await fetch(`${API}/api/library/bulk-update`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-          const d = await r.json(); if (r.ok) totalUpdated += d.updated || 0;
-        }
-        if (videoIds.length) {
-          const body = { type: "video", ids: videoIds };
-          if (addProducts.length) body.addProducts = addProducts;
-          if (addTags.length) body.addTags = addTags;
-          if (setNotes) body.setNotes = setNotes;
-          const r = await fetch(`${API}/api/library/bulk-update`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-          const d = await r.json(); if (r.ok) totalUpdated += d.updated || 0;
-        }
-        toast(`Updated ${totalUpdated} items`);
-        document.getElementById("bulk-modal").classList.remove("show");
-        libSelected.clear(); updateBulkCount();
-        loadLibrary();
-      } catch (err) { toast("Bulk update failed: " + err.message, "error"); }
-    };
-
-    window.copyAssetUrl = (url) => { navigator.clipboard.writeText(url); toast("URL copied"); };
-
-    const uploadZone = document.getElementById("upload-zone"); const fileInput = document.getElementById("file-input");
-    uploadZone.onclick = () => fileInput.click();
-    fileInput.onchange = (e) => handleFiles(e.target.files);
-    uploadZone.addEventListener("dragover", e => { e.preventDefault(); uploadZone.classList.add("dragover"); });
-    uploadZone.addEventListener("dragleave", () => uploadZone.classList.remove("dragover"));
-    uploadZone.addEventListener("drop", e => { e.preventDefault(); uploadZone.classList.remove("dragover"); handleFiles(e.dataTransfer.files); });
-
-    async function handleFiles(files) { const arr = Array.from(files); if (!arr.length) return; const progBox = document.getElementById("upload-progress"); const progStatus = document.getElementById("upload-status"); const progFill = document.getElementById("upload-bar-fill"); progBox.classList.remove("hidden"); for (let i = 0; i < arr.length; i++) { const file = arr[i]; progStatus.textContent = `Uploading ${i+1}/${arr.length}: ${file.name}`; progFill.style.width = `${((i) / arr.length) * 100}%`; if (file.size > 5 * 1024 * 1024) { toast(`${file.name} over 5 MB — skipped`, "error"); continue; } try { const base64 = await fileToBase64(file); const type = file.type.startsWith("video/") ? "video" : "photo"; const r = await fetch(`${API}/api/library/upload`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type, filename: file.name, mime: file.type, base64, products: [], tags: [], notes: "" }) }); const data = await r.json(); if (!r.ok) throw new Error(data.error || "upload failed"); } catch (err) { toast(`Upload failed: ${err.message}`, "error"); } } progFill.style.width = `100%`; progStatus.textContent = `Done`; setTimeout(() => progBox.classList.add("hidden"), 1500); fileInput.value = ""; loadLibrary(); }
-
-    function fileToBase64(file) { return new Promise((resolve, reject) => { const r = new FileReader(); r.onload = () => resolve(r.result.split(",")[1]); r.onerror = reject; r.readAsDataURL(file); }); }
-
-    window.openTagModal = (item) => { editingItem = item; document.getElementById("modal-title").textContent = `Edit ${item.type}`; document.getElementById("modal-id").value = item.id; const img = document.getElementById("modal-preview-img"); const vid = document.getElementById("modal-preview-video"); if (item.type === "photo") { img.src = item.url; img.style.display = "block"; vid.style.display = "none"; } else { vid.src = item.url; vid.style.display = "block"; img.style.display = "none"; } document.getElementById("product-checks").innerHTML = PRODUCTS.map(p => `<label class="product-check"><input type="checkbox" value="${escapeHtml(p)}" ${(item.products || []).includes(p) ? "checked" : ""}/>${escapeHtml(p)}</label>`).join(""); document.getElementById("modal-tags").value = (item.tags || []).join(", "); document.getElementById("modal-notes").value = item.notes || ""; document.getElementById("tag-modal").classList.add("show"); };
-    document.getElementById("modal-close").onclick = () => document.getElementById("tag-modal").classList.remove("show");
-    document.getElementById("tag-modal").onclick = (e) => { if (e.target.id === "tag-modal") e.target.classList.remove("show"); };
-    document.getElementById("modal-copy-url").onclick = () => { if (editingItem) copyAssetUrl(editingItem.url); };
-    document.getElementById("modal-save").onclick = async () => { if (!editingItem) return; const products = Array.from(document.querySelectorAll("#product-checks input:checked")).map(i => i.value); const tags = document.getElementById("modal-tags").value.split(",").map(s => s.trim()).filter(Boolean); const notes = document.getElementById("modal-notes").value.trim(); try { const r = await fetch(`${API}/api/library/update`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: editingItem.type, id: editingItem.id, products, tags, notes }) }); if (!r.ok) throw new Error("update failed"); toast("Saved"); document.getElementById("tag-modal").classList.remove("show"); loadLibrary(); } catch (err) { toast(`Save failed: ${err.message}`, "error"); } };
-    document.getElementById("modal-delete").onclick = async () => { if (!editingItem) return; if (!confirm(`Remove ${editingItem.id} from the Library?`)) return; try { const r = await fetch(`${API}/api/library/delete`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: editingItem.type, id: editingItem.id }) }); if (!r.ok) throw new Error("delete failed"); toast("Deleted"); document.getElementById("tag-modal").classList.remove("show"); loadLibrary(); } catch (err) { toast(`Delete failed: ${err.message}`, "error"); } };
-
-    function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" })[c]); }
-    function timeAgo(ts) { const sec = Math.floor((Date.now() - ts) / 1000); if (sec < 60) return sec + "s ago"; if (sec < 3600) return Math.floor(sec / 60) + "m ago"; if (sec < 86400) return Math.floor(sec / 3600) + "h ago"; return Math.floor(sec / 86400) + "d ago"; }
-    function updateClock() { const now = new Date(); const t = now.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit", hour12: false }); const d = now.toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" }); document.getElementById("clock").textContent = `${d.toUpperCase()} · ${t}`; }
-    function loadAll() { loadStats(); loadAttention(); loadActivity(); loadQueue("nova"); loadQueue("grace"); loadQueue("riley"); loadLibrary(); }
-    updateClock(); setInterval(updateClock, 1000 * 30);
-    loadHistory();
-    loadAll();
-    setInterval(loadAll, 30000);
-  </script>
+function updateClock(){const now=new Date();const t=now.toLocaleTimeString("en-AU",{hour:"2-digit",minute:"2-digit",hour12:false});const d=now.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"});document.getElementById("clock").textContent=`${d.toUpperCase()} · ${t}`}
+function loadAll(){loadStats();loadAttention();loadActivity();loadQueue("nova");loadQueue("grace");loadQueue("riley");loadQueue("jett");loadLibrary()}
+updateClock();setInterval(updateClock,30000);
+loadHistory();
+loadAll();
+setInterval(loadAll,30000);
+</script>
 </body>
 </html>
