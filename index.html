@@ -183,7 +183,130 @@
     .crew-tile-pill { display: inline-block; margin-top: 6px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; background: var(--whisper); color: var(--bone); }
     .crew-tile.online .crew-tile-pill { background: var(--pulse); color: var(--void); }
 
-    /* ===== LIBRARY TAB ===== */
+    /* ===== SHOWROOM ===== */
+    .show-intro { font-family: var(--mono); font-size: 12px; color: var(--bone); opacity: 0.7; margin-bottom: 20px; line-height: 1.6; }
+    .show-grid {
+      display: grid; gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      margin-bottom: 24px;
+    }
+    .show-card {
+      background: var(--ink); border: 1px solid var(--line); border-radius: 6px;
+      overflow: hidden; cursor: pointer; transition: all 0.2s;
+    }
+    .show-card:hover { border-color: var(--pulse); transform: translateY(-2px); }
+    .show-hero {
+      width: 100%; aspect-ratio: 4/5; background: var(--whisper);
+      display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;
+    }
+    .show-hero img { width: 100%; height: 100%; object-fit: cover; }
+    .show-hero-fallback { font-family: var(--serif); font-size: 14px; color: var(--bone); opacity: 0.4; padding: 20px; text-align: center; }
+    .show-extras-badge {
+      position: absolute; bottom: 8px; right: 8px;
+      background: rgba(10,9,8,0.9); color: var(--pulse);
+      font-family: var(--mono); font-size: 9px; padding: 3px 7px; border-radius: 3px;
+      letter-spacing: 0.06em;
+    }
+    .show-meta { padding: 14px; }
+    .show-name { font-family: var(--serif); font-size: 15px; font-weight: 500; line-height: 1.3; }
+    .show-price { font-family: var(--mono); font-size: 12px; color: var(--pulse); margin-top: 4px; letter-spacing: 0.04em; }
+    .show-fit { font-family: var(--mono); font-size: 9px; color: var(--bone); opacity: 0.5; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
+
+    /* SHOWROOM MODAL */
+    .show-modal-bg {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      display: none; align-items: flex-start; justify-content: center; z-index: 100;
+      padding: 20px; overflow-y: auto;
+    }
+    .show-modal-bg.show { display: flex; }
+    .show-modal {
+      background: var(--ink); border: 1px solid var(--line); border-radius: 8px;
+      max-width: 760px; width: 100%; margin: auto;
+    }
+    .show-modal-head {
+      padding: 18px 22px; border-bottom: 1px solid var(--line);
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+    }
+    .show-modal-title { font-family: var(--serif); font-size: 22px; font-weight: 500; line-height: 1.2; }
+    .show-modal-sub { font-family: var(--mono); font-size: 11px; color: var(--bone); opacity: 0.6; margin-top: 4px; letter-spacing: 0.06em; }
+    .show-modal-close { background: transparent; border: none; color: var(--bone); cursor: pointer; font-size: 24px; padding: 0; line-height: 1; }
+
+    .show-modal-body { padding: 20px 22px; }
+    .show-photos {
+      display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px;
+      margin-bottom: 16px; scroll-snap-type: x mandatory;
+    }
+    .show-photos::-webkit-scrollbar { height: 6px; }
+    .show-photos::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+    .show-photo {
+      flex: 0 0 auto; width: 200px; aspect-ratio: 4/5;
+      background: var(--whisper); border-radius: 4px; overflow: hidden;
+      position: relative; scroll-snap-align: start;
+    }
+    .show-photo img, .show-photo video { width: 100%; height: 100%; object-fit: cover; }
+    .show-photo-actions {
+      position: absolute; bottom: 4px; left: 4px; right: 4px;
+      display: flex; gap: 4px;
+    }
+    .show-photo-actions button, .show-photo-actions a {
+      flex: 1; background: rgba(10,9,8,0.85); color: var(--paper);
+      border: none; padding: 4px; font-size: 9px; font-family: var(--mono);
+      letter-spacing: 0.06em; border-radius: 3px; cursor: pointer; text-align: center;
+      text-decoration: none;
+    }
+    .show-photo-actions button:hover, .show-photo-actions a:hover { background: var(--pulse); color: var(--void); }
+    .show-photo-hero { border: 2px solid var(--pulse); }
+    .show-photo-hero::before {
+      content: 'HERO'; position: absolute; top: 4px; left: 4px;
+      background: var(--pulse); color: var(--void);
+      font-family: var(--mono); font-size: 8px; padding: 2px 5px; border-radius: 2px;
+      letter-spacing: 0.1em;
+    }
+
+    .show-add-photo {
+      flex: 0 0 auto; width: 200px; aspect-ratio: 4/5;
+      background: var(--whisper); border: 2px dashed var(--line); border-radius: 4px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s; scroll-snap-align: start;
+    }
+    .show-add-photo:hover, .show-add-photo.dragover { border-color: var(--pulse); background: var(--ink); }
+    .show-add-photo-mark { font-family: var(--serif); font-size: 36px; color: var(--pulse); }
+    .show-add-photo-text { font-family: var(--mono); font-size: 10px; color: var(--bone); letter-spacing: 0.08em; text-align: center; padding: 0 8px; margin-top: 6px; }
+
+    .show-hero-edit {
+      display: flex; gap: 8px; margin-bottom: 16px; padding: 10px 12px;
+      background: var(--whisper); border: 1px solid var(--line); border-radius: 4px;
+    }
+    .show-hero-edit input {
+      flex: 1; background: transparent; border: none; color: var(--paper);
+      font-family: var(--mono); font-size: 11px; outline: none;
+    }
+    .show-hero-edit button {
+      background: var(--pulse); color: var(--void); border: none;
+      padding: 4px 10px; font-size: 10px; font-family: var(--mono);
+      letter-spacing: 0.06em; border-radius: 3px; cursor: pointer;
+    }
+
+    .show-platforms { display: flex; gap: 4px; margin-bottom: 12px; }
+    .show-plat-tab {
+      flex: 1; font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+      padding: 8px 12px; border-radius: 4px; background: transparent; border: 1px solid var(--line);
+      color: var(--bone); cursor: pointer; text-transform: uppercase;
+    }
+    .show-plat-tab.active { background: var(--pulse); color: var(--void); border-color: var(--pulse); }
+
+    .show-caption {
+      background: var(--whisper); border: 1px solid var(--line); border-radius: 6px;
+      padding: 14px; font-size: 13px; line-height: 1.6; white-space: pre-wrap;
+      min-height: 100px; max-height: 300px; overflow-y: auto; color: var(--paper);
+      font-family: var(--sans);
+    }
+    .show-caption.loading { color: var(--bone); opacity: 0.5; font-family: var(--mono); font-size: 11px; }
+    .show-caption-actions {
+      display: flex; gap: 8px; margin-top: 12px;
+    }
+
+    /* ===== LIBRARY (existing) ===== */
     .lib-toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
     .lib-toolbar h2 { font-family: var(--serif); font-weight: 500; font-size: 22px; flex: 1; min-width: 200px; }
     .lib-tabs { display: flex; gap: 4px; }
@@ -290,7 +413,7 @@
       <h1 class="brand-title">The <em>Bridge</em></h1>
     </div>
     <div class="header-meta">
-      <div class="live"><span class="live-dot"></span>ALL SYSTEMS ONLINE · v0.6</div>
+      <div class="live"><span class="live-dot"></span>ALL SYSTEMS ONLINE · v0.7</div>
       <div id="clock"></div>
     </div>
   </header>
@@ -301,9 +424,50 @@
 
   <!-- TABS -->
   <nav class="tabs">
+    <button class="tab" data-pane="showroom">Showroom</button>
     <button class="tab active" data-pane="ops">Ops</button>
     <button class="tab" data-pane="library">Library <span id="lib-count" class="tab-pill" style="display:none;">0</span></button>
   </nav>
+
+  <!-- PANE: SHOWROOM -->
+  <div id="pane-showroom" class="pane">
+    <div class="show-intro">
+      Pre-loaded with all 13 products. Click any product → see hero + your model shots + ready-to-go captions for IG, TikTok, FB. Tap Copy → paste into the platform → done. First load takes ~30 sec to generate captions.
+    </div>
+    <div class="show-grid" id="show-grid"></div>
+  </div>
+
+  <!-- SHOWROOM PRODUCT MODAL -->
+  <div class="show-modal-bg" id="show-modal-bg">
+    <div class="show-modal">
+      <div class="show-modal-head">
+        <div>
+          <div class="show-modal-title" id="show-modal-title">Product</div>
+          <div class="show-modal-sub" id="show-modal-sub">$0 · unisex</div>
+        </div>
+        <button class="show-modal-close" id="show-modal-close">×</button>
+      </div>
+      <div class="show-modal-body">
+        <div class="show-hero-edit">
+          <input id="show-hero-input" placeholder="Hero photo URL (paste any image link)" />
+          <button id="show-hero-save">Set Hero</button>
+        </div>
+        <div class="show-photos" id="show-photos"></div>
+        <input type="file" id="show-file-input" multiple accept="image/*,video/*" style="display:none;" />
+
+        <div class="show-platforms">
+          <button class="show-plat-tab active" data-platform="instagram">Instagram</button>
+          <button class="show-plat-tab" data-platform="tiktok">TikTok</button>
+          <button class="show-plat-tab" data-platform="facebook">Facebook</button>
+        </div>
+        <div class="show-caption loading" id="show-caption">Loading...</div>
+        <div class="show-caption-actions">
+          <button class="btn" id="show-copy">Copy Caption</button>
+          <button class="btn-ghost btn" id="show-regen">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- PANE: OPS -->
   <div id="pane-ops" class="pane active">
@@ -466,7 +630,7 @@
 
   <div id="toast" class="toast"></div>
 
-  <footer>INSPIRIT OS · v0.6 · BUILT BY CHRIS · GOLD COAST</footer>
+  <footer>INSPIRIT OS · v0.7 · BUILT BY CHRIS · GOLD COAST</footer>
 
   <script>
     // ============================================================
@@ -498,6 +662,7 @@
         btn.classList.add("active");
         document.getElementById("pane-" + btn.dataset.pane).classList.add("active");
         if (btn.dataset.pane === "library") loadLibrary();
+        if (btn.dataset.pane === "showroom") loadShowroom();
       };
     });
 
@@ -720,6 +885,209 @@
         }).join("");
       } catch (e) {}
     }
+
+    // ============================================================
+    // SHOWROOM
+    // ============================================================
+    let showroom = { products: {} };
+    let openProduct = null;
+    let openPlatform = "instagram";
+
+    async function loadShowroom() {
+      try {
+        const r = await fetch(`${API}/api/showroom`);
+        showroom = await r.json();
+        renderShowroom();
+      } catch (e) {
+        toast("Failed to load showroom", "error");
+      }
+    }
+
+    function renderShowroom() {
+      const grid = document.getElementById("show-grid");
+      const products = Object.values(showroom.products || {});
+      if (!products.length) {
+        grid.innerHTML = '<div class="empty" style="grid-column: 1/-1;">No products loaded</div>';
+        return;
+      }
+      grid.innerHTML = products.map(p => {
+        const extras = (p.extras?.length || 0) + (p.videos?.length || 0);
+        return `
+          <div class="show-card" onclick='openShowroomProduct(${JSON.stringify(p.name)})'>
+            <div class="show-hero">
+              ${p.hero_url
+                ? `<img src="${escapeAttr(p.hero_url)}" alt="${escapeAttr(p.name)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'show-hero-fallback\\'>${escapeAttr(p.name)}</div>'"/>`
+                : `<div class="show-hero-fallback">${escapeHtml(p.name)}<br><span style="font-size:10px;font-family:var(--mono);opacity:0.7;">No hero set — click to add</span></div>`}
+              ${extras > 0 ? `<span class="show-extras-badge">+${extras} extra${extras>1?'s':''}</span>` : ''}
+            </div>
+            <div class="show-meta">
+              <div class="show-name">${escapeHtml(p.name)}</div>
+              <div class="show-price">$${p.price} AUD</div>
+              <div class="show-fit">${escapeHtml(p.fit)}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    window.openShowroomProduct = (name) => {
+      const p = showroom.products[name];
+      if (!p) return;
+      openProduct = p;
+      openPlatform = "instagram";
+
+      document.getElementById("show-modal-title").textContent = p.name;
+      document.getElementById("show-modal-sub").textContent = `$${p.price} AUD · ${p.fit} · ${p.desc}`;
+      document.getElementById("show-hero-input").value = p.hero_url || "";
+
+      // Reset platform tabs
+      document.querySelectorAll(".show-plat-tab").forEach(t => t.classList.toggle("active", t.dataset.platform === "instagram"));
+
+      renderProductPhotos();
+      loadCaption(false);
+      document.getElementById("show-modal-bg").classList.add("show");
+    };
+
+    function renderProductPhotos() {
+      const box = document.getElementById("show-photos");
+      const heroHtml = openProduct.hero_url
+        ? `<div class="show-photo show-photo-hero">
+             <img src="${escapeAttr(openProduct.hero_url)}" alt="hero" />
+             <div class="show-photo-actions">
+               <button onclick="copyAssetUrl('${escapeAttr(openProduct.hero_url)}')">Copy URL</button>
+               <a href="${escapeAttr(openProduct.hero_url)}" target="_blank">Open</a>
+             </div>
+           </div>` : '';
+      const extrasHtml = (openProduct.extras || []).map(x => `
+        <div class="show-photo">
+          <img src="${escapeAttr(x.url)}" alt="${escapeAttr(x.id)}" loading="lazy" />
+          <div class="show-photo-actions">
+            <button onclick="copyAssetUrl('${escapeAttr(x.url)}')">Copy</button>
+            <a href="${escapeAttr(x.url)}" target="_blank">Open</a>
+          </div>
+        </div>
+      `).join("");
+      const videosHtml = (openProduct.videos || []).map(x => `
+        <div class="show-photo">
+          <video src="${escapeAttr(x.url)}" muted preload="metadata"></video>
+          <div class="show-photo-actions">
+            <button onclick="copyAssetUrl('${escapeAttr(x.url)}')">Copy</button>
+            <a href="${escapeAttr(x.url)}" target="_blank">Open</a>
+          </div>
+        </div>
+      `).join("");
+      const addHtml = `
+        <div class="show-add-photo" onclick="document.getElementById('show-file-input').click()">
+          <div class="show-add-photo-mark">+</div>
+          <div class="show-add-photo-text">Add model shot or video</div>
+        </div>
+      `;
+      box.innerHTML = heroHtml + extrasHtml + videosHtml + addHtml;
+    }
+
+    document.getElementById("show-modal-close").onclick = () => document.getElementById("show-modal-bg").classList.remove("show");
+    document.getElementById("show-modal-bg").onclick = (e) => {
+      if (e.target.id === "show-modal-bg") e.target.classList.remove("show");
+    };
+
+    document.getElementById("show-hero-save").onclick = async () => {
+      if (!openProduct) return;
+      const url = document.getElementById("show-hero-input").value.trim();
+      try {
+        const r = await fetch(`${API}/api/showroom/hero`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: openProduct.name, hero_url: url })
+        });
+        if (!r.ok) throw new Error("save failed");
+        openProduct.hero_url = url;
+        showroom.products[openProduct.name].hero_url = url;
+        renderProductPhotos();
+        renderShowroom();
+        toast("Hero photo saved");
+      } catch (err) {
+        toast("Save failed: " + err.message, "error");
+      }
+    };
+
+    document.querySelectorAll(".show-plat-tab").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll(".show-plat-tab").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        openPlatform = btn.dataset.platform;
+        loadCaption(false);
+      };
+    });
+
+    async function loadCaption(regenerate) {
+      const box = document.getElementById("show-caption");
+      box.classList.add("loading");
+      box.textContent = regenerate ? "Regenerating..." : "Loading caption...";
+      try {
+        const r = await fetch(`${API}/api/showroom/caption`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: openProduct.name, platform: openPlatform, regenerate: !!regenerate })
+        });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || "caption failed");
+        box.classList.remove("loading");
+        box.textContent = data.caption;
+        // Update local state
+        if (showroom.products[openProduct.name]) {
+          showroom.products[openProduct.name].captions[openPlatform] = data.caption;
+        }
+      } catch (err) {
+        box.classList.remove("loading");
+        box.textContent = "Couldn't generate caption: " + err.message;
+      }
+    }
+
+    document.getElementById("show-copy").onclick = () => {
+      const text = document.getElementById("show-caption").textContent;
+      navigator.clipboard.writeText(text);
+      toast("Caption copied — paste into " + openPlatform);
+    };
+
+    document.getElementById("show-regen").onclick = () => loadCaption(true);
+
+    // Photo upload from showroom — auto-tags to current product
+    document.getElementById("show-file-input").onchange = async (e) => {
+      if (!openProduct) return;
+      const files = Array.from(e.target.files);
+      for (const file of files) {
+        if (file.size > 5 * 1024 * 1024) {
+          toast(`${file.name} over 5MB — skipped`, "error");
+          continue;
+        }
+        try {
+          const base64 = await fileToBase64(file);
+          const type = file.type.startsWith("video/") ? "video" : "photo";
+          const r = await fetch(`${API}/api/library/upload`, {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              type, filename: file.name, mime: file.type, base64,
+              products: [openProduct.name], tags: ["showroom"], notes: ""
+            })
+          });
+          const data = await r.json();
+          if (!r.ok) throw new Error(data.error || "upload failed");
+          // Add to local state
+          if (type === "photo") {
+            openProduct.extras = openProduct.extras || [];
+            openProduct.extras.unshift(data.item);
+          } else {
+            openProduct.videos = openProduct.videos || [];
+            openProduct.videos.unshift(data.item);
+          }
+        } catch (err) {
+          toast("Upload failed: " + err.message, "error");
+        }
+      }
+      e.target.value = "";
+      renderProductPhotos();
+      toast("Uploaded");
+    };
+
+    function escapeAttr(s) { return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" })[c]); }
 
     // ============================================================
     // LIBRARY
