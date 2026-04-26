@@ -9,14 +9,14 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--void:#0a0908;--ink:#14110f;--whisper:#1f1c19;--line:#2a2622;--bone:#d6cfbe;--paper:#f5f1e8;--pulse:#c9b87a;--green:#7cc174;--amber:#d4a544;--red:#c47373;--blue:#7a9cc9;--pink:#c97abf;--jett:#ff3b6b;--mono:'JetBrains Mono',ui-monospace,monospace;--serif:'Fraunces',Georgia,serif;--sans:'Manrope',-apple-system,sans-serif}
+:root{--void:#0a0908;--ink:#14110f;--whisper:#1f1c19;--line:#2a2622;--bone:#d6cfbe;--paper:#f5f1e8;--pulse:#c9b87a;--green:#7cc174;--amber:#d4a544;--red:#c47373;--blue:#7a9cc9;--pink:#c97abf;--jett:#ff3b6b;--kai:#6dd3a7;--atlas:#ffa94d;--nyx:#b794f6;--mono:'JetBrains Mono',ui-monospace,monospace;--serif:'Fraunces',Georgia,serif;--sans:'Manrope',-apple-system,sans-serif}
 html,body{height:100%}
-body{font-family:var(--sans);background:var(--void);color:var(--paper);font-size:15px;line-height:1.5;min-height:100vh;padding:24px;background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(201,184,122,0.04),transparent)}
+body{font-family:var(--sans);background:var(--void);color:var(--paper);font-size:15px;line-height:1.5;min-height:100vh;padding:24px;background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(183,148,246,0.05),transparent)}
 .header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:18px;margin-bottom:24px;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:16px}
 .brand{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
 .brand-mark{font-family:var(--mono);font-weight:700;letter-spacing:0.18em;font-size:13px;color:var(--bone)}
 .brand-title{font-family:var(--serif);font-weight:500;font-size:28px;letter-spacing:-0.01em}
-.brand-title em{font-style:italic;color:var(--pulse);font-weight:400}
+.brand-title em{font-style:italic;color:var(--nyx);font-weight:400}
 .header-meta{font-family:var(--mono);font-size:11px;color:var(--bone);opacity:0.7;text-align:right}
 .header-meta .live{color:var(--green)}
 .live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:6px;animation:pulse 2s ease-in-out infinite}
@@ -24,7 +24,7 @@ body{font-family:var(--sans);background:var(--void);color:var(--paper);font-size
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:20px;flex-wrap:wrap}
 .tab{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;padding:10px 18px;background:transparent;border:none;color:var(--bone);cursor:pointer;opacity:0.6;border-bottom:2px solid transparent;margin-bottom:-1px}
 .tab:hover{opacity:1}
-.tab.active{opacity:1;color:var(--pulse);border-bottom-color:var(--pulse)}
+.tab.active{opacity:1;color:var(--nyx);border-bottom-color:var(--nyx)}
 .tab.tiktok.active{color:var(--jett);border-bottom-color:var(--jett)}
 .tab-pill{display:inline-block;min-width:18px;padding:1px 6px;border-radius:9px;background:var(--amber);color:var(--void);font-size:9px;margin-left:6px;vertical-align:middle}
 .pane{display:none}
@@ -33,31 +33,32 @@ body{font-family:var(--sans);background:var(--void);color:var(--paper);font-size
 .btn:hover{opacity:0.85}
 .btn:disabled{opacity:0.4;cursor:not-allowed}
 .btn-ghost{background:transparent;color:var(--paper);border:1px solid var(--line)}
-.btn-ghost:hover{border-color:var(--pulse);background:var(--whisper)}
+.btn-ghost:hover{border-color:var(--nyx);background:var(--whisper)}
 .btn-jett{background:var(--jett);color:var(--paper);border:none;padding:10px 18px;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:13px;cursor:pointer}
 .btn-jett:hover{opacity:0.85}
 
-/* SAGE PINNED CHAT — v1.0.1 */
-.sage-pinned{background:var(--ink);border:1px solid var(--line);border-radius:6px;display:flex;flex-direction:column;margin-bottom:20px;height:340px;overflow:hidden}
-.sage-head{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);flex-shrink:0}
-.sage-mark{width:32px;height:32px;border-radius:50%;background:var(--whisper);border:1px solid var(--pulse);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;font-size:14px;color:var(--pulse)}
-.sage-meta{flex:1}
-.sage-name{font-family:var(--serif);font-weight:500;font-size:16px}
-.sage-role{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--bone);opacity:0.6}
-.sage-status{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green)}
-.sage-clear{font-family:var(--mono);font-size:10px;padding:4px 8px;background:transparent;border:1px solid var(--line);color:var(--bone);border-radius:3px;cursor:pointer}
-.sage-clear:hover{border-color:var(--red);color:var(--red)}
+/* NYX PINNED CHAT */
+.nyx-pinned{background:linear-gradient(180deg,var(--ink),rgba(183,148,246,0.03));border:1px solid var(--nyx);border-radius:6px;display:flex;flex-direction:column;margin-bottom:20px;height:380px;overflow:hidden}
+.nyx-head{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);flex-shrink:0;background:rgba(183,148,246,0.04)}
+.nyx-mark{width:32px;height:32px;border-radius:50%;background:var(--whisper);border:1px solid var(--nyx);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;font-size:14px;color:var(--nyx)}
+.nyx-meta{flex:1}
+.nyx-name{font-family:var(--serif);font-weight:500;font-size:16px;color:var(--paper)}
+.nyx-name em{color:var(--nyx);font-style:italic}
+.nyx-role{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--bone);opacity:0.6}
+.nyx-status{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green)}
+.nyx-clear{font-family:var(--mono);font-size:10px;padding:4px 8px;background:transparent;border:1px solid var(--line);color:var(--bone);border-radius:3px;cursor:pointer}
+.nyx-clear:hover{border-color:var(--red);color:var(--red)}
 #chat{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:0}
 #chat::-webkit-scrollbar{width:6px}#chat::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
 .msg{max-width:88%;padding:10px 14px;border-radius:12px;font-size:13.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
 .msg.user{align-self:flex-end;background:var(--paper);color:var(--void);font-weight:500}
-.msg.sage{align-self:flex-start;background:var(--whisper);color:var(--paper);border:1px solid var(--line);font-family:var(--serif);font-size:14px}
+.msg.sage,.msg.nyx{align-self:flex-start;background:var(--whisper);color:var(--paper);border:1px solid var(--line);font-family:var(--serif);font-size:14px}
 .msg.thinking{align-self:flex-start;font-family:var(--mono);font-size:10px;color:var(--bone);opacity:0.6;letter-spacing:0.08em;padding:4px 8px}
 .msg.thinking::after{content:'...';display:inline-block;width:18px;text-align:left;animation:dots 1.4s steps(4,end) infinite}
 @keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%,100%{content:'...'}}
 .chat-input{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);flex-shrink:0}
 .chat-input input{flex:1;background:var(--whisper);border:1px solid var(--line);color:var(--paper);padding:10px 14px;border-radius:8px;font-family:var(--sans);font-size:13.5px}
-.chat-input input:focus{outline:none;border-color:var(--pulse)}
+.chat-input input:focus{outline:none;border-color:var(--nyx)}
 
 .stats{display:grid;gap:1px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-bottom:20px}
 .stat{padding:14px 16px;background:var(--ink)}
@@ -72,7 +73,7 @@ body{font-family:var(--sans);background:var(--void);color:var(--paper);font-size
 .chart-title{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--bone);opacity:0.7}
 .chart-tabs{display:flex;gap:4px;flex-wrap:wrap}
 .chart-tab{font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:3px;background:transparent;border:1px solid var(--line);color:var(--bone);cursor:pointer;text-transform:uppercase}
-.chart-tab.active{background:var(--pulse);color:var(--void);border-color:var(--pulse)}
+.chart-tab.active{background:var(--nyx);color:var(--void);border-color:var(--nyx)}
 #chart{width:100%;height:120px}
 
 .attention-panel{background:var(--ink);border:1px solid var(--line);border-radius:4px;margin-bottom:16px}
@@ -88,6 +89,8 @@ body{font-family:var(--sans);background:var(--void);color:var(--paper);font-size
 .attn-tag.grace{background:rgba(124,193,116,0.15);color:var(--green)}
 .attn-tag.riley{background:rgba(122,156,201,0.15);color:var(--blue)}
 .attn-tag.jett{background:rgba(255,59,107,0.15);color:var(--jett)}
+.attn-tag.kai{background:rgba(109,211,167,0.15);color:var(--kai)}
+.attn-tag.atlas{background:rgba(255,169,77,0.15);color:var(--atlas)}
 .attn-tag.escalated{background:var(--red);color:var(--void)}
 .attn-time{font-family:var(--mono);font-size:10px;color:var(--bone);opacity:0.5;margin-left:auto}
 .attn-brief{font-family:var(--mono);font-size:11px;color:var(--bone);opacity:0.85;line-height:1.4}
@@ -100,6 +103,8 @@ body{font-family:var(--sans);background:var(--void);color:var(--paper);font-size
 .crew-mark.riley{color:var(--blue);border-color:var(--blue)}
 .crew-mark.nova{color:var(--pink);border-color:var(--pink)}
 .crew-mark.jett{color:var(--jett);border-color:var(--jett);background:linear-gradient(135deg,rgba(255,59,107,0.15),rgba(255,59,107,0.05))}
+.crew-mark.kai{color:var(--kai);border-color:var(--kai);background:linear-gradient(135deg,rgba(109,211,167,0.15),rgba(109,211,167,0.05))}
+.crew-mark.atlas{color:var(--atlas);border-color:var(--atlas);background:linear-gradient(135deg,rgba(255,169,77,0.15),rgba(255,169,77,0.05))}
 .crew-meta{flex:1;min-width:0}
 .crew-name{font-family:var(--serif);font-weight:500;font-size:15px}
 .crew-role{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--bone);opacity:0.7}
@@ -130,6 +135,8 @@ body{font-family:var(--sans);background:var(--void);color:var(--paper);font-size
 .q-status.planned{background:var(--whisper);color:var(--bone);border:1px solid var(--line)}
 .q-customer{font-family:var(--mono);font-size:10px;color:var(--bone);opacity:0.6;margin-bottom:4px}
 .q-mode{display:inline-block;font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:3px;background:rgba(255,59,107,0.15);color:var(--jett);margin-right:4px;text-transform:uppercase}
+.q-mode.kai{background:rgba(109,211,167,0.15);color:var(--kai)}
+.q-mode.atlas{background:rgba(255,169,77,0.15);color:var(--atlas)}
 .empty{padding:40px 20px;text-align:center;color:var(--bone);opacity:0.5;font-family:var(--mono);font-size:11px}
 
 .activity-panel{background:var(--ink);border:1px solid var(--line);border-radius:4px;padding:16px;margin-bottom:20px}
@@ -137,7 +144,14 @@ body{font-family:var(--sans);background:var(--void);color:var(--paper);font-size
 .activity-row{display:flex;gap:12px;padding:6px 0;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px}
 .activity-time{color:var(--bone);opacity:0.5;min-width:55px}
 .activity-crew{letter-spacing:0.08em;text-transform:uppercase;min-width:55px;font-weight:700}
-.activity-crew.sage{color:var(--pulse)}.activity-crew.nova{color:var(--pink)}.activity-crew.grace{color:var(--green)}.activity-crew.riley{color:var(--blue)}.activity-crew.jett{color:var(--jett)}.activity-crew.library{color:var(--amber)}
+.activity-crew.sage,.activity-crew.nyx{color:var(--nyx)}
+.activity-crew.nova{color:var(--pink)}
+.activity-crew.grace{color:var(--green)}
+.activity-crew.riley{color:var(--blue)}
+.activity-crew.jett{color:var(--jett)}
+.activity-crew.kai{color:var(--kai)}
+.activity-crew.atlas{color:var(--atlas)}
+.activity-crew.library{color:var(--amber)}
 .activity-text{flex:1;color:var(--bone);opacity:0.85}
 
 .roster-head{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--bone);opacity:0.7}
@@ -145,16 +159,25 @@ body{font-family:var(--sans);background:var(--void);color:var(--paper);font-size
 .crew-grid{display:grid;gap:6px;grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
 .crew-tile{background:var(--ink);border:1px solid var(--line);border-radius:4px;padding:12px 10px;text-align:center}
 .crew-tile.online{border-color:var(--pulse);background:linear-gradient(180deg,var(--ink),rgba(201,184,122,0.04))}
+.crew-tile.online.nyx{border-color:var(--nyx);background:linear-gradient(180deg,var(--ink),rgba(183,148,246,0.06))}
 .crew-tile.online.jett{border-color:var(--jett);background:linear-gradient(180deg,var(--ink),rgba(255,59,107,0.06))}
+.crew-tile.online.kai{border-color:var(--kai);background:linear-gradient(180deg,var(--ink),rgba(109,211,167,0.06))}
+.crew-tile.online.atlas{border-color:var(--atlas);background:linear-gradient(180deg,var(--ink),rgba(255,169,77,0.06))}
 .crew-tile.offline{opacity:0.5}
 .crew-tile-mark{width:32px;height:32px;margin:0 auto 6px;border-radius:50%;background:var(--whisper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;font-size:14px;color:var(--bone)}
 .crew-tile.online .crew-tile-mark{color:var(--pulse);border-color:var(--pulse)}
+.crew-tile.online.nyx .crew-tile-mark{color:var(--nyx);border-color:var(--nyx)}
 .crew-tile.online.jett .crew-tile-mark{color:var(--jett);border-color:var(--jett)}
+.crew-tile.online.kai .crew-tile-mark{color:var(--kai);border-color:var(--kai)}
+.crew-tile.online.atlas .crew-tile-mark{color:var(--atlas);border-color:var(--atlas)}
 .crew-tile-name{font-family:var(--serif);font-weight:500;font-size:13px}
 .crew-tile-role{font-family:var(--mono);font-size:9px;color:var(--bone);opacity:0.6;margin-top:2px;text-transform:uppercase}
 .crew-tile-pill{display:inline-block;margin-top:5px;font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:3px;background:var(--whisper);color:var(--bone)}
 .crew-tile.online .crew-tile-pill{background:var(--pulse);color:var(--void)}
+.crew-tile.online.nyx .crew-tile-pill{background:var(--nyx);color:var(--void)}
 .crew-tile.online.jett .crew-tile-pill{background:var(--jett);color:var(--paper)}
+.crew-tile.online.kai .crew-tile-pill{background:var(--kai);color:var(--void)}
+.crew-tile.online.atlas .crew-tile-pill{background:var(--atlas);color:var(--void)}
 
 .show-intro{font-family:var(--mono);font-size:12px;color:var(--bone);opacity:0.7;margin-bottom:20px;line-height:1.6}
 .show-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-bottom:24px}
@@ -296,7 +319,7 @@ body{font-family:var(--sans);background:var(--void);color:var(--paper);font-size
 .product-check{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--whisper);border-radius:4px;cursor:pointer;font-size:12px;font-family:var(--mono)}
 
 footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);text-align:center;font-family:var(--mono);font-size:10px;color:var(--bone);opacity:0.4}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);border:1px solid var(--pulse);color:var(--paper);padding:12px 20px;border-radius:6px;font-family:var(--mono);font-size:12px;z-index:200;opacity:0;transition:opacity 0.3s}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);border:1px solid var(--nyx);color:var(--paper);padding:12px 20px;border-radius:6px;font-family:var(--mono);font-size:12px;z-index:200;opacity:0;transition:opacity 0.3s}
 .toast.show{opacity:1}
 .toast.error{border-color:var(--red);color:var(--red)}
 </style>
@@ -304,12 +327,12 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);text-al
 <body>
 <header class="header">
 <div class="brand"><span class="brand-mark">INSPIRIT // OS</span><h1 class="brand-title">The <em>Bridge</em></h1></div>
-<div class="header-meta"><div class="live"><span class="live-dot"></span>5/8 CREW · v1.0.1 HARDENED</div><div id="clock"></div></div>
+<div class="header-meta"><div class="live"><span class="live-dot"></span>7/8 CREW · v1.2.0 NYX</div><div id="clock"></div></div>
 </header>
 <nav class="tabs">
 <button class="tab" data-pane="showroom">Showroom</button>
 <button class="tab active" data-pane="ops">Ops</button>
-<button class="tab tiktok" data-pane="tiktok">🎬 TikTok Studio</button>
+<button class="tab tiktok" data-pane="tiktok">🎬 TikTok</button>
 <button class="tab" data-pane="library">Library <span id="lib-count" class="tab-pill" style="display:none;">0</span></button>
 </nav>
 
@@ -333,19 +356,19 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);text-al
 </div>
 </div>
 
-<!-- OPS — SAGE PINNED AT TOP -->
+<!-- OPS — NYX PINNED AT TOP -->
 <div id="pane-ops" class="pane active">
 
-<!-- 🛡️ SAGE CHAT PINNED -->
-<div class="sage-pinned">
-<div class="sage-head">
-<div class="sage-mark">S</div>
-<div class="sage-meta"><div class="sage-name">Sage</div><div class="sage-role">Chief of Staff · Hardened v1.0.1</div></div>
-<div class="sage-status">● ONLINE</div>
-<button class="sage-clear" id="sage-clear">Clear</button>
+<!-- 🌟 NYX CHAT PINNED -->
+<div class="nyx-pinned">
+<div class="nyx-head">
+<div class="nyx-mark">N</div>
+<div class="nyx-meta"><div class="nyx-name"><em>NYX</em></div><div class="nyx-role">Chief of Staff · v1.2.0</div></div>
+<div class="nyx-status">● ONLINE</div>
+<button class="nyx-clear" id="sage-clear">Clear</button>
 </div>
 <div id="chat"></div>
-<div class="chat-input"><input id="chat-input" placeholder="Talk to Sage…" autocomplete="off" /><button id="chat-send" class="btn">Send</button></div>
+<div class="chat-input"><input id="chat-input" placeholder="Talk to NYX…" autocomplete="off" /><button id="chat-send" class="btn">Send</button></div>
 </div>
 
 <section class="stats" id="stats"></section>
@@ -367,18 +390,20 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);text-al
 <div class="qpanel"><div class="panel-head"><div class="crew-mark grace">G</div><div class="crew-meta"><div class="crew-name">Grace</div><div class="crew-role">CX</div></div></div><div class="q-list" id="grace-queue"></div></div>
 <div class="qpanel"><div class="panel-head"><div class="crew-mark riley">R</div><div class="crew-meta"><div class="crew-name">Riley</div><div class="crew-role">Strategy</div></div></div><div class="q-list" id="riley-queue"></div></div>
 <div class="qpanel"><div class="panel-head"><div class="crew-mark jett">J</div><div class="crew-meta"><div class="crew-name">Jett</div><div class="crew-role">TikTok</div></div></div><div class="q-list" id="jett-queue"></div></div>
+<div class="qpanel"><div class="panel-head"><div class="crew-mark kai">K</div><div class="crew-meta"><div class="crew-name">Kai</div><div class="crew-role">Email · Retention</div></div></div><div class="q-list" id="kai-queue"></div></div>
+<div class="qpanel"><div class="panel-head"><div class="crew-mark atlas">A</div><div class="crew-meta"><div class="crew-name">Atlas</div><div class="crew-role">Ads · Influencer</div></div></div><div class="q-list" id="atlas-queue"></div></div>
 </section>
 
 <div class="roster-head">CREW ROSTER · 8</div>
 <section class="crew-grid">
-<div class="crew-tile online"><div class="crew-tile-mark">S</div><div class="crew-tile-name">Sage</div><div class="crew-tile-role">Chief</div><div class="crew-tile-pill">Online</div></div>
+<div class="crew-tile online nyx"><div class="crew-tile-mark">N</div><div class="crew-tile-name">NYX</div><div class="crew-tile-role">Chief</div><div class="crew-tile-pill">Online</div></div>
 <div class="crew-tile online"><div class="crew-tile-mark">N</div><div class="crew-tile-name">Nova</div><div class="crew-tile-role">Creative</div><div class="crew-tile-pill">Online</div></div>
 <div class="crew-tile online"><div class="crew-tile-mark">G</div><div class="crew-tile-name">Grace</div><div class="crew-tile-role">CX</div><div class="crew-tile-pill">Online</div></div>
 <div class="crew-tile online"><div class="crew-tile-mark">R</div><div class="crew-tile-name">Riley</div><div class="crew-tile-role">Strategy</div><div class="crew-tile-pill">Online</div></div>
 <div class="crew-tile online jett"><div class="crew-tile-mark">J</div><div class="crew-tile-name">Jett</div><div class="crew-tile-role">TikTok</div><div class="crew-tile-pill">Online</div></div>
+<div class="crew-tile online kai"><div class="crew-tile-mark">K</div><div class="crew-tile-name">Kai</div><div class="crew-tile-role">Email</div><div class="crew-tile-pill">NEW</div></div>
+<div class="crew-tile online atlas"><div class="crew-tile-mark">A</div><div class="crew-tile-name">Atlas</div><div class="crew-tile-role">Growth</div><div class="crew-tile-pill">NEW</div></div>
 <div class="crew-tile offline"><div class="crew-tile-mark">M</div><div class="crew-tile-name">Marcus</div><div class="crew-tile-role">CFO</div><div class="crew-tile-pill">Phase 4</div></div>
-<div class="crew-tile offline"><div class="crew-tile-mark">A</div><div class="crew-tile-name">Atlas</div><div class="crew-tile-role">Growth</div><div class="crew-tile-pill">Phase 4</div></div>
-<div class="crew-tile offline"><div class="crew-tile-mark">P</div><div class="crew-tile-name">Pax</div><div class="crew-tile-role">Ops</div><div class="crew-tile-pill">Phase 5</div></div>
 </section>
 </div>
 
@@ -459,14 +484,13 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);text-al
 </div>
 
 <div id="toast" class="toast"></div>
-<footer>INSPIRIT OS · v1.0.1 · SAGE HARDENED · NO PASSWORD ASKS · BUILT BY CHRIS</footer>
+<footer>INSPIRIT OS · v1.2.0 · NYX CHIEF OF STAFF · 7/8 CREW · BUILT BY CHRIS</footer>
 
 <script>
 const API = "https://inspirit-os.breezusmoon.workers.dev";
 const sessionId = (() => { let id = localStorage.getItem("inspirit-session"); if (!id) { id = "s_" + Math.random().toString(36).slice(2, 12); localStorage.setItem("inspirit-session", id); } return id; })();
 const PRODUCTS = ["Feeding 5000 Tee","Jesus Fish Tee — White","Jesus Fish Tee — Black","Spiritual Badass Tee — Black","Spiritual Badass Tee — White","Heart Tee — Black","Heart Tee — White","Inspirit Hoodie","Spiritual Badass Hoodie","Jesus Fish Jumper","Inspirit Bucket Hat","Spiritual Badass Bucket Hat","Inspirit Beanie"];
 
-// 🚀 v1.0.1 EFFICIENCY: track which tabs have loaded
 const loadedOnce = { showroom: false, library: false, tiktok: false };
 
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c])}
@@ -475,31 +499,30 @@ function timeAgo(ts){const sec=Math.floor((Date.now()-ts)/1000);if(sec<60)return
 function toast(msg,kind="ok"){const t=document.getElementById("toast");t.textContent=msg;t.className="toast show"+(kind==="error"?" error":"");setTimeout(()=>t.classList.remove("show"),3500)}
 function fileToBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(",")[1]);r.onerror=rej;r.readAsDataURL(file)})}
 
-// 🚀 v1.0.1: Lazy-load tabs on first click
 document.querySelectorAll(".tab").forEach(btn=>{btn.onclick=()=>{document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));document.querySelectorAll(".pane").forEach(p=>p.classList.remove("active"));btn.classList.add("active");document.getElementById("pane-"+btn.dataset.pane).classList.add("active");const pane=btn.dataset.pane;if(pane==="library"){loadLibrary();loadedOnce.library=true}if(pane==="showroom"){loadShowroom();loadedOnce.showroom=true}if(pane==="tiktok"){loadJettQueue();loadedOnce.tiktok=true}}});
 
-// SAGE
+// NYX CHAT
 const chat=document.getElementById("chat");const input=document.getElementById("chat-input");const sendBtn=document.getElementById("chat-send");
 function addMsg(role,text){const div=document.createElement("div");div.className="msg "+role;div.textContent=text;chat.appendChild(div);chat.scrollTop=chat.scrollHeight;return div}
-async function loadHistory(){try{const r=await fetch(`${API}/api/sage/history?sessionId=${sessionId}`);const data=await r.json();chat.innerHTML="";if(!data.history?.length)addMsg("sage","Hey Chris. v1.0.1 hardened — I'll never ask for passwords or login details again. The crew drafts, you post manually. Always. What do you need?");else data.history.forEach(m=>addMsg(m.role==="user"?"user":"sage",m.content))}catch(e){addMsg("sage","Can't reach the worker.")}}
-async function send(){const text=input.value.trim();if(!text)return;addMsg("user",text);input.value="";sendBtn.disabled=true;const thinking=addMsg("thinking","Sage is thinking");try{const r=await fetch(`${API}/api/sage/chat`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text,sessionId})});const data=await r.json();thinking.remove();addMsg("sage",data.reply||data.error||"Something went wrong.");loadOpsRefresh()}catch(e){thinking.remove();addMsg("sage","Connection error: "+e.message)}sendBtn.disabled=false;input.focus()}
+async function loadHistory(){try{const r=await fetch(`${API}/api/sage/history?sessionId=${sessionId}`);const data=await r.json();chat.innerHTML="";if(!data.history?.length)addMsg("nyx","Hey Chris. NYX online — Chief of Staff v1.2.0. Type 'morning' for daily briefing, or just tell me what you need.");else data.history.forEach(m=>addMsg(m.role==="user"?"user":"nyx",m.content))}catch(e){addMsg("nyx","Can't reach the worker.")}}
+async function send(){const text=input.value.trim();if(!text)return;addMsg("user",text);input.value="";sendBtn.disabled=true;const thinking=addMsg("thinking","NYX is thinking");try{const r=await fetch(`${API}/api/sage/chat`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text,sessionId})});const data=await r.json();thinking.remove();addMsg("nyx",data.reply||data.error||"Something went wrong.");loadOpsRefresh()}catch(e){thinking.remove();addMsg("nyx","Connection error: "+e.message)}sendBtn.disabled=false;input.focus()}
 sendBtn.onclick=send;input.addEventListener("keydown",e=>{if(e.key==="Enter")send()});
-document.getElementById("sage-clear").onclick=async()=>{if(!confirm("Clear chat history with Sage?"))return;try{await fetch(`${API}/api/sage/clear`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sessionId})});chat.innerHTML="";addMsg("sage","Chat cleared. What's next?");toast("Chat cleared")}catch(e){toast("Failed","error")}};
+document.getElementById("sage-clear").onclick=async()=>{if(!confirm("Clear chat history with NYX?"))return;try{await fetch(`${API}/api/sage/clear`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sessionId})});chat.innerHTML="";addMsg("nyx","Chat cleared. What's next?");toast("Chat cleared")}catch(e){toast("Failed","error")}};
 
-// STATS + CHART
+// STATS
 let currentMetric="visitors";let currentDaily=[];
-async function loadStats(){try{const r=await fetch(`${API}/api/stats`);const s=await r.json();currentDaily=s.daily||[];const attn=(s.pending_drafts||0)+(s.pending_replies||0)+(s.pending_plans||0)+(s.pending_videos||0)+(s.escalations||0);document.getElementById("stats").innerHTML=`<div class="stat"><div class="stat-label">Today's Revenue</div><div class="stat-value"><span class="currency">$</span>${(s.today_revenue||0).toLocaleString('en-AU',{maximumFractionDigits:0})}</div><div class="stat-sub">today</div></div><div class="stat"><div class="stat-label">Orders</div><div class="stat-value">${s.today_orders||0}</div><div class="stat-sub">today</div></div><div class="stat"><div class="stat-label">Visitors</div><div class="stat-value">${s.today_visitors||0}</div><div class="stat-sub">${s.today_pageviews||0} pv</div></div><div class="stat"><div class="stat-label">7d Revenue</div><div class="stat-value"><span class="currency">$</span>${(s.week_revenue||0).toLocaleString('en-AU',{maximumFractionDigits:0})}</div><div class="stat-sub">${s.week_visitors||0} visitors</div></div><div class="stat"><div class="stat-label">Pending</div><div class="stat-value ${attn>0?'stat-attn':''}">${attn}</div><div class="stat-sub">items</div></div><div class="stat"><div class="stat-label">Crew Online</div><div class="stat-value">${s.crew_online||5}<span style="opacity:.4;font-size:18px;"> / ${s.crew_total||8}</span></div><div class="stat-sub">phase 3+</div></div>`;drawChart()}catch(e){}}
-function drawChart(){const svg=document.getElementById("chart");const data=currentDaily.map(d=>({...d,val:d[currentMetric]||0}));const max=Math.max(...data.map(d=>d.val),1);const w=700,h=120,pad=18;const innerW=w-pad*2,innerH=h-pad*2;const stepX=innerW/Math.max(data.length-1,1);const points=data.map((d,i)=>({x:pad+i*stepX,y:pad+innerH-(d.val/max)*innerH}));const path=points.map((p,i)=>(i===0?`M ${p.x},${p.y}`:`L ${p.x},${p.y}`)).join(" ");const fillPath=`${path} L ${points[points.length-1].x},${pad+innerH} L ${points[0].x},${pad+innerH} Z`;let gridLines="";for(let i=1;i<4;i++){const y=pad+(innerH/4)*i;gridLines+=`<line x1="${pad}" y1="${y}" x2="${w-pad}" y2="${y}" stroke="#2a2622" stroke-width="0.5" stroke-dasharray="2,3"/>`}const labels=data.map((d,i)=>`<text x="${points[i].x}" y="${h-2}" font-family="JetBrains Mono" font-size="9" fill="#d6cfbe" opacity="0.5" text-anchor="middle">${d.label}</text>`).join("");const dots=points.map((p,i)=>`<circle cx="${p.x}" cy="${p.y}" r="3" fill="#c9b87a"><title>${data[i].label}: ${currentMetric==='revenue'?'$':''}${data[i].val}</title></circle>`).join("");svg.innerHTML=`${gridLines}<path d="${fillPath}" fill="rgba(201,184,122,0.1)"/><path d="${path}" stroke="#c9b87a" stroke-width="1.5" fill="none"/>${dots}${labels}<text x="${pad}" y="12" font-family="JetBrains Mono" font-size="9" fill="#d6cfbe" opacity="0.5">${currentMetric==='revenue'?'$':''}${max}</text>`}
+async function loadStats(){try{const r=await fetch(`${API}/api/stats`);const s=await r.json();currentDaily=s.daily||[];const attn=(s.pending_drafts||0)+(s.pending_replies||0)+(s.pending_plans||0)+(s.pending_videos||0)+(s.pending_emails||0)+(s.pending_growth||0)+(s.escalations||0);document.getElementById("stats").innerHTML=`<div class="stat"><div class="stat-label">Today's Revenue</div><div class="stat-value"><span class="currency">$</span>${(s.today_revenue||0).toLocaleString('en-AU',{maximumFractionDigits:0})}</div><div class="stat-sub">today</div></div><div class="stat"><div class="stat-label">Orders</div><div class="stat-value">${s.today_orders||0}</div><div class="stat-sub">today</div></div><div class="stat"><div class="stat-label">Visitors</div><div class="stat-value">${s.today_visitors||0}</div><div class="stat-sub">${s.today_pageviews||0} pv</div></div><div class="stat"><div class="stat-label">7d Revenue</div><div class="stat-value"><span class="currency">$</span>${(s.week_revenue||0).toLocaleString('en-AU',{maximumFractionDigits:0})}</div><div class="stat-sub">${s.week_visitors||0} visitors</div></div><div class="stat"><div class="stat-label">Pending</div><div class="stat-value ${attn>0?'stat-attn':''}">${attn}</div><div class="stat-sub">items</div></div><div class="stat"><div class="stat-label">Crew Online</div><div class="stat-value">${s.crew_online||7}<span style="opacity:.4;font-size:18px;"> / ${s.crew_total||8}</span></div><div class="stat-sub">phase 3+</div></div>`;drawChart()}catch(e){}}
+function drawChart(){const svg=document.getElementById("chart");const data=currentDaily.map(d=>({...d,val:d[currentMetric]||0}));const max=Math.max(...data.map(d=>d.val),1);const w=700,h=120,pad=18;const innerW=w-pad*2,innerH=h-pad*2;const stepX=innerW/Math.max(data.length-1,1);const points=data.map((d,i)=>({x:pad+i*stepX,y:pad+innerH-(d.val/max)*innerH}));const path=points.map((p,i)=>(i===0?`M ${p.x},${p.y}`:`L ${p.x},${p.y}`)).join(" ");const fillPath=`${path} L ${points[points.length-1].x},${pad+innerH} L ${points[0].x},${pad+innerH} Z`;let gridLines="";for(let i=1;i<4;i++){const y=pad+(innerH/4)*i;gridLines+=`<line x1="${pad}" y1="${y}" x2="${w-pad}" y2="${y}" stroke="#2a2622" stroke-width="0.5" stroke-dasharray="2,3"/>`}const labels=data.map((d,i)=>`<text x="${points[i].x}" y="${h-2}" font-family="JetBrains Mono" font-size="9" fill="#d6cfbe" opacity="0.5" text-anchor="middle">${d.label}</text>`).join("");const dots=points.map((p,i)=>`<circle cx="${p.x}" cy="${p.y}" r="3" fill="#b794f6"><title>${data[i].label}: ${currentMetric==='revenue'?'$':''}${data[i].val}</title></circle>`).join("");svg.innerHTML=`${gridLines}<path d="${fillPath}" fill="rgba(183,148,246,0.1)"/><path d="${path}" stroke="#b794f6" stroke-width="1.5" fill="none"/>${dots}${labels}<text x="${pad}" y="12" font-family="JetBrains Mono" font-size="9" fill="#d6cfbe" opacity="0.5">${currentMetric==='revenue'?'$':''}${max}</text>`}
 document.querySelectorAll(".chart-tab").forEach(btn=>{btn.onclick=()=>{document.querySelectorAll(".chart-tab").forEach(b=>b.classList.remove("active"));btn.classList.add("active");currentMetric=btn.dataset.metric;drawChart()}});
 
 async function loadAttention(){try{const r=await fetch(`${API}/api/attention`);const data=await r.json();const box=document.getElementById("attention");if(!data.items?.length){box.innerHTML='<div class="attn-empty">All clear · no pending items</div>';return}box.innerHTML=data.items.slice(0,10).map(item=>`<div class="attn-item" onclick="scrollToQueue('${item.crew}')"><div class="attn-row"><span class="attn-tag ${item.crew} ${item.status==='escalated'?'escalated':''}">${item.status==='escalated'?'ESCALATED':item.crew}</span><span class="attn-time">${timeAgo(item.ts)}</span></div><div class="attn-brief">${escapeHtml((item.brief||'').slice(0,100))}${(item.brief||'').length>100?'…':''}</div></div>`).join("")}catch(e){}}
 window.scrollToQueue=(crew)=>{const el=document.getElementById(crew+"-queue");if(el)el.scrollIntoView({behavior:"smooth",block:"center"})}
 
-async function loadQueue(crew){try{const r=await fetch(`${API}/api/${crew}/queue`);const data=await r.json();const box=document.getElementById(crew+"-queue");if(!data.queue?.length){box.innerHTML=`<div class="empty">No items yet</div>`;return}box.innerHTML=data.queue.map(item=>{const isJett=crew==="jett";let actions="";if(isJett){if(item.status==="planned")actions=`<button class="q-btn jett" onclick="updateItem('jett','${item.id}','filmed')">🎥 Filmed</button>`;else if(item.status==="filmed")actions=`<button class="q-btn approve" onclick="updateItem('jett','${item.id}','posted')">📤 Posted</button>`;else if(item.status==="posted")actions=`<button class="q-btn" style="border-color:var(--pulse);color:var(--pulse);" onclick="updateItem('jett','${item.id}','logged')">📊 Logged</button>`}else{if(item.status==='pending')actions=`<button class="q-btn approve" onclick="updateItem('${crew}','${item.id}','${crew==='grace'?'sent':'approved'}')">✓ ${crew==='grace'?'Sent':'Approve'}</button><button class="q-btn reject" onclick="updateItem('${crew}','${item.id}','rejected')">✗</button>`;if(item.status==='escalated')actions=`<button class="q-btn approve" onclick="updateItem('${crew}','${item.id}','sent')">✓ Resolved</button>`}const modeBadge=isJett&&item.mode?`<span class="q-mode">${item.mode}</span>`:"";return`<div class="q-item ${item.status}"><div class="q-time">${modeBadge}${timeAgo(item.ts)}${item.status!=='pending'&&item.status!=='planned'?`<span class="q-status ${item.status}">${item.status}</span>`:''}${item.status==='planned'?`<span class="q-status planned">planned</span>`:''}</div>${item.customer_email?`<div class="q-customer">From: ${escapeHtml(item.customer_email)}</div>`:''}<div class="q-brief">${escapeHtml(item.brief)}</div><div class="q-output" onclick="this.classList.toggle('expanded')">${escapeHtml(item.output)}</div><div class="q-actions">${actions}<button class="q-btn" onclick="copyItem('${crew}','${item.id}')">Copy</button></div></div>`}).join("");window['_'+crew+'Items']=data.queue}catch(e){}}
+async function loadQueue(crew){try{const r=await fetch(`${API}/api/${crew}/queue`);const data=await r.json();const box=document.getElementById(crew+"-queue");if(!data.queue?.length){box.innerHTML=`<div class="empty">No items yet</div>`;return}box.innerHTML=data.queue.map(item=>{const isJett=crew==="jett";const isModed=isJett||crew==="kai"||crew==="atlas";let actions="";if(isJett){if(item.status==="planned")actions=`<button class="q-btn jett" onclick="updateItem('jett','${item.id}','filmed')">🎥 Filmed</button>`;else if(item.status==="filmed")actions=`<button class="q-btn approve" onclick="updateItem('jett','${item.id}','posted')">📤 Posted</button>`;else if(item.status==="posted")actions=`<button class="q-btn" style="border-color:var(--pulse);color:var(--pulse);" onclick="updateItem('jett','${item.id}','logged')">📊 Logged</button>`}else{if(item.status==='pending')actions=`<button class="q-btn approve" onclick="updateItem('${crew}','${item.id}','${crew==='grace'?'sent':'approved'}')">✓ ${crew==='grace'?'Sent':'Approve'}</button><button class="q-btn reject" onclick="updateItem('${crew}','${item.id}','rejected')">✗</button>`;if(item.status==='escalated')actions=`<button class="q-btn approve" onclick="updateItem('${crew}','${item.id}','sent')">✓ Resolved</button>`}const modeBadge=isModed&&item.mode?`<span class="q-mode ${crew}">${item.mode}</span>`:"";return`<div class="q-item ${item.status}"><div class="q-time">${modeBadge}${timeAgo(item.ts)}${item.status!=='pending'&&item.status!=='planned'?`<span class="q-status ${item.status}">${item.status}</span>`:''}${item.status==='planned'?`<span class="q-status planned">planned</span>`:''}</div>${item.customer_email?`<div class="q-customer">From: ${escapeHtml(item.customer_email)}</div>`:''}<div class="q-brief">${escapeHtml(item.brief)}</div><div class="q-output" onclick="this.classList.toggle('expanded')">${escapeHtml(item.output)}</div><div class="q-actions">${actions}<button class="q-btn" onclick="copyItem('${crew}','${item.id}')">Copy</button></div></div>`}).join("");window['_'+crew+'Items']=data.queue}catch(e){}}
 window.updateItem=async(crew,id,status)=>{await fetch(`${API}/api/${crew}/queue/update`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,status})});loadOpsRefresh()}
 window.copyItem=(crew,id)=>{const items=window['_'+crew+'Items']||[];const item=items.find(i=>i.id===id);if(item){navigator.clipboard.writeText(item.output);toast("Copied")}}
 
-async function loadActivity(){try{const r=await fetch(`${API}/api/activity?limit=20`);const data=await r.json();const box=document.getElementById("activity");if(!data.activity?.length){box.innerHTML='<div style="font-family:var(--mono);font-size:11px;opacity:0.5;padding:20px;text-align:center;">No activity yet</div>';return}box.innerHTML=data.activity.map(a=>{let txt="";if(a.crew==="sage"&&a.action==="chat")txt=`Chat — "${(a.meta?.preview||'').slice(0,55)}"`;else if(a.crew==="sage"&&a.action==="sanitized-violation")txt=`🛡️ Caught violation — refused`;else if(a.crew==="riley"&&a.action==="sanitized-violation")txt=`🛡️ Riley violation caught`;else if(a.crew==="nova"&&a.action==="draft")txt=`Drafted — ${(a.meta?.brief||'').slice(0,55)}`;else if(a.crew==="nova"&&a.action==="caption")txt=`Caption — ${a.meta?.product||''} · ${a.meta?.platform||''}`;else if(a.crew==="grace"&&a.action==="draft")txt=`Reply to ${a.meta?.from||'customer'}`;else if(a.crew==="grace"&&a.action==="escalation")txt=`ESCALATED from ${a.meta?.from||'customer'}`;else if(a.crew==="riley"&&a.action==="plan")txt=`Plan — ${(a.meta?.brief||'').slice(0,55)}`;else if(a.crew==="jett")txt=`Video [${a.action.replace('video-','')}] — ${(a.meta?.brief||'').slice(0,45)}`;else if(a.crew==="library")txt=`${a.action} ${a.meta?.type||''}`;else txt=a.action;return`<div class="activity-row"><span class="activity-time">${timeAgo(a.ts)}</span><span class="activity-crew ${a.crew}">${a.crew}</span><span class="activity-text">${escapeHtml(txt)}</span></div>`}).join("")}catch(e){}}
+async function loadActivity(){try{const r=await fetch(`${API}/api/activity?limit=20`);const data=await r.json();const box=document.getElementById("activity");if(!data.activity?.length){box.innerHTML='<div style="font-family:var(--mono);font-size:11px;opacity:0.5;padding:20px;text-align:center;">No activity yet</div>';return}box.innerHTML=data.activity.map(a=>{let txt="";if(a.crew==="nyx"&&a.action==="chat")txt=`Chat — "${(a.meta?.preview||'').slice(0,55)}"`;else if(a.crew==="nyx"&&a.action==="sanitized-violation")txt=`🛡️ Caught violation`;else if(a.crew==="riley"&&a.action==="sanitized-violation")txt=`🛡️ Riley violation caught`;else if(a.crew==="nova"&&a.action==="draft")txt=`Drafted — ${(a.meta?.brief||'').slice(0,55)}`;else if(a.crew==="nova"&&a.action==="caption")txt=`Caption — ${a.meta?.product||''} · ${a.meta?.platform||''}`;else if(a.crew==="grace"&&a.action==="draft")txt=`Reply to ${a.meta?.from||'customer'}`;else if(a.crew==="grace"&&a.action==="escalation")txt=`ESCALATED from ${a.meta?.from||'customer'}`;else if(a.crew==="riley"&&a.action==="plan")txt=`Plan — ${(a.meta?.brief||'').slice(0,55)}`;else if(a.crew==="jett")txt=`Video [${a.action.replace('video-','')}] — ${(a.meta?.brief||'').slice(0,45)}`;else if(a.crew==="kai")txt=`Email [${a.action.replace('email-','')}] — ${(a.meta?.brief||'').slice(0,45)}`;else if(a.crew==="atlas")txt=`Growth [${a.action.replace('growth-','')}] — ${(a.meta?.brief||'').slice(0,45)}`;else if(a.crew==="library")txt=`${a.action} ${a.meta?.type||''}`;else txt=a.action;return`<div class="activity-row"><span class="activity-time">${timeAgo(a.ts)}</span><span class="activity-crew ${a.crew}">${a.crew}</span><span class="activity-text">${escapeHtml(txt)}</span></div>`}).join("")}catch(e){}}
 
 // JETT
 let jettMode="daily";let currentJett=null;let allJettItems=[];
@@ -574,14 +597,12 @@ document.getElementById("modal-delete").onclick=async()=>{if(!editingItem)return
 
 function updateClock(){const now=new Date();const t=now.toLocaleTimeString("en-AU",{hour:"2-digit",minute:"2-digit",hour12:false});const d=now.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"});document.getElementById("clock").textContent=`${d.toUpperCase()} · ${t}`}
 
-// 🚀 v1.0.1 EFFICIENCY: Only refresh Ops data on auto-cycle. Library/Showroom/TikTok stay cached until user re-clicks.
-function loadOpsRefresh(){loadStats();loadAttention();loadActivity();loadQueue("nova");loadQueue("grace");loadQueue("riley");loadQueue("jett")}
+function loadOpsRefresh(){loadStats();loadAttention();loadActivity();loadQueue("nova");loadQueue("grace");loadQueue("riley");loadQueue("jett");loadQueue("kai");loadQueue("atlas")}
 function loadInitial(){loadOpsRefresh()}
 
 updateClock();setInterval(updateClock,30000);
 loadHistory();
 loadInitial();
-// 🚀 60s auto-refresh (was 30s) — half the Workers AI calls
 setInterval(loadOpsRefresh,60000);
 </script>
 </body>
