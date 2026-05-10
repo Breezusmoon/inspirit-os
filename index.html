@@ -710,6 +710,24 @@
     </div>
   </div>
 
+  <!-- HOURLY CHART -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.05em">Page Views Today — By Hour</div>
+      <div style="font-size:10px;color:var(--text-dim);font-family:'Space Mono',monospace" id="hourlyDate">—</div>
+    </div>
+    <div id="hourlyChart" style="display:flex;align-items:flex-end;gap:3px;height:80px">
+      <div style="color:var(--text-dim);font-size:11px;margin:auto">Loading...</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:6px">
+      <span style="font-size:9px;color:var(--text-dim);font-family:'Space Mono',monospace">12am</span>
+      <span style="font-size:9px;color:var(--text-dim);font-family:'Space Mono',monospace">6am</span>
+      <span style="font-size:9px;color:var(--text-dim);font-family:'Space Mono',monospace">12pm</span>
+      <span style="font-size:9px;color:var(--text-dim);font-family:'Space Mono',monospace">6pm</span>
+      <span style="font-size:9px;color:var(--text-dim);font-family:'Space Mono',monospace">11pm</span>
+    </div>
+  </div>
+
   <!-- QUICK ACTIONS -->
   <div class="quick-actions">
     <button class="quick-btn" onclick="askSage('How is the store performing this week?')">📊 Weekly report</button>
@@ -1268,6 +1286,33 @@ function copyCaption(sha) {
 
 // Init newsletter countdown on load
 updateNewsletterCountdown();
+
+// ── HOURLY CHART ──
+async function loadHourlyChart() {
+  try {
+    const res = await fetch(`${WORKER}/api/hourly`);
+    if (!res.ok) throw new Error();
+    const d = await res.json();
+    const hours = d.hours;
+    const values = Object.values(hours);
+    const max = Math.max(...values, 1);
+    const now = new Date().toLocaleString('en-AU', { timeZone: 'Australia/Brisbane', hour: '2-digit', hour12: false });
+    const currentHour = parseInt(now);
+
+    document.getElementById('hourlyDate').textContent = d.date;
+    document.getElementById('hourlyChart').innerHTML = Object.entries(hours).map(([h, v]) => {
+      const pct = Math.round((v / max) * 100);
+      const isNow = parseInt(h) === currentHour;
+      const color = isNow ? 'var(--purple)' : v > 0 ? 'rgba(139,92,246,0.4)' : 'var(--surface2)';
+      return `<div title="${h}:00 — ${v} view${v !== 1 ? 's' : ''}" style="flex:1;background:${color};height:${Math.max(pct, 3)}%;border-radius:2px 2px 0 0;transition:height 0.3s;cursor:default;min-height:3px"></div>`;
+    }).join('');
+  } catch(e) {
+    document.getElementById('hourlyChart').innerHTML = '<div style="color:var(--text-dim);font-size:11px;margin:auto">No data yet</div>';
+  }
+}
+
+loadHourlyChart();
+setInterval(loadHourlyChart, 120000); // refresh every 2 mins
 </script>
 </body>
 </html>
