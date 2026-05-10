@@ -616,45 +616,7 @@
   .sage-send:active { transform: scale(0.95); }
   .sage-send:disabled { background: var(--surface2); cursor: not-allowed; }
 
-  /* ── WORKER URL SETUP ── */
-  .setup-banner {
-    background: var(--gold-dim);
-    border: 1px solid rgba(240,192,96,0.25);
-    border-radius: 10px;
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    font-size: 12px;
-    color: var(--gold);
-  }
-
-  .setup-banner input {
-    flex: 1;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(240,192,96,0.3);
-    border-radius: 6px;
-    padding: 6px 10px;
-    color: var(--text);
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    outline: none;
-  }
-
-  .setup-banner button {
-    background: var(--gold);
-    color: #000;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 12px;
-    font-size: 11px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: 'Syne', sans-serif;
-    letter-spacing: 0.05em;
-    white-space: nowrap;
-  }
+  /* setup banner hidden - URL hardcoded */
 
   /* ── QUICK ACTIONS ── */
   .quick-actions {
@@ -723,13 +685,6 @@
       <div class="last-updated" id="lastUpdated">—</div>
     </div>
   </header>
-
-  <!-- WORKER URL SETUP -->
-  <div class="setup-banner" id="setupBanner">
-    ⚙️&nbsp; <strong>Worker URL:</strong>
-    <input type="text" id="workerUrl" placeholder="https://inspirit-os.YOUR_ACCOUNT.workers.dev" />
-    <button onclick="saveWorkerUrl()">Connect</button>
-  </div>
 
   <!-- METRICS -->
   <div class="metrics-grid">
@@ -870,6 +825,8 @@
 
 <script>
 // ── CONFIG ──
+const WORKER = 'https://inspirit-os.breezusmoon.workers.dev';
+
 const CREW = {
   Sage:   { emoji:'🧭', role:'Chief of Staff',    system:'You are Sage, the chief of staff for Inspirit Clothing Co — a faith-based streetwear brand ("Spiritual Badass"). You are the user\'s main point of contact across all business areas. Be direct, warm, practical, and concise. Chris is a solo entrepreneur who values speed and clarity. Give real, actionable answers.' },
   Nova:   { emoji:'✨', role:'Content & Copy',     system:'You are Nova, the content and copy specialist for Inspirit Clothing Co. You write Instagram captions, product descriptions, and marketing copy in the Inspirit brand voice: bold, faith-forward, streetwear energy. "Spiritual Badass" is the core vibe. Be creative, punchy, and authentic.' },
@@ -881,20 +838,16 @@ const CREW = {
   Echo:   { emoji:'🌙', role:'Night Shift',         system:'You are Echo, the night shift operator for Inspirit Clothing Co. You handle overnight tasks: monitoring, scheduled posts, nightly reports, and flagging anything urgent for morning review. Be efficient and vigilant.' }
 };
 
-let workerUrl = localStorage.getItem('inspirit_worker_url') || '';
 let activeCrew = 'Sage';
 let chatHistory = [];
 let isTyping = false;
 
 // ── INIT ──
 window.addEventListener('load', () => {
-  if (workerUrl) {
-    document.getElementById('workerUrl').value = workerUrl;
-    document.getElementById('setupBanner').style.opacity = '0.5';
-    refreshMetrics();
-    loadActivity();
-  }
+  refreshMetrics();
+  loadActivity();
   updateTimestamp();
+  setInterval(refreshMetrics, 60000); // auto-refresh every 60s
 });
 
 // ── WORKER URL ──
@@ -910,9 +863,8 @@ function saveWorkerUrl() {
 
 // ── METRICS ──
 async function refreshMetrics() {
-  if (!workerUrl) return;
   try {
-    const res = await fetch(`${workerUrl}/api/stats`);
+    const res = await fetch(`${WORKER}/api/stats`);
     if (!res.ok) throw new Error('stats failed');
     const d = await res.json();
     setMetric('mRevenue', d.revenue ? '$' + d.revenue.toLocaleString('en-AU', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—', 'mRevenueDelta', d.revenueDelta, 'vs last period');
@@ -949,9 +901,8 @@ function updateTimestamp() {
 
 // ── ACTIVITY ──
 async function loadActivity() {
-  if (!workerUrl) return;
   try {
-    const res = await fetch(`${workerUrl}/api/activity`);
+    const res = await fetch(`${WORKER}/api/activity`);
     if (!res.ok) throw new Error('activity failed');
     const items = await res.json();
     renderActivity(items);
