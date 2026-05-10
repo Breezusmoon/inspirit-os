@@ -688,25 +688,25 @@
 
   <!-- METRICS -->
   <div class="metrics-grid">
-    <div class="metric-card revenue">
-      <div class="metric-label">Revenue (30d)</div>
-      <div class="metric-value" id="mRevenue"><span class="skeleton" style="width:90px;display:inline-block"></span></div>
-      <div class="metric-delta neutral" id="mRevenueDelta">— vs last period</div>
-    </div>
     <div class="metric-card visits">
-      <div class="metric-label">Sessions (7d)</div>
+      <div class="metric-label">Page Views (7d)</div>
       <div class="metric-value" id="mVisits"><span class="skeleton" style="width:70px;display:inline-block"></span></div>
       <div class="metric-delta neutral" id="mVisitsDelta">— vs last week</div>
+    </div>
+    <div class="metric-card cvr">
+      <div class="metric-label">Active Carts</div>
+      <div class="metric-value" id="mCvr"><span class="skeleton" style="width:60px;display:inline-block"></span></div>
+      <div class="metric-delta neutral" id="mCvrDelta">— right now</div>
     </div>
     <div class="metric-card orders">
       <div class="metric-label">Orders (30d)</div>
       <div class="metric-value" id="mOrders"><span class="skeleton" style="width:50px;display:inline-block"></span></div>
       <div class="metric-delta neutral" id="mOrdersDelta">— vs last period</div>
     </div>
-    <div class="metric-card cvr">
-      <div class="metric-label">Conv. Rate</div>
-      <div class="metric-value" id="mCvr"><span class="skeleton" style="width:60px;display:inline-block"></span></div>
-      <div class="metric-delta neutral" id="mCvrDelta">— site avg</div>
+    <div class="metric-card revenue">
+      <div class="metric-label">Revenue (30d)</div>
+      <div class="metric-value" id="mRevenue"><span class="skeleton" style="width:90px;display:inline-block"></span></div>
+      <div class="metric-delta neutral" id="mRevenueDelta">— vs last period</div>
     </div>
   </div>
 
@@ -867,13 +867,12 @@ async function refreshMetrics() {
     const res = await fetch(`${WORKER}/api/stats`);
     if (!res.ok) throw new Error('stats failed');
     const d = await res.json();
+    setMetric('mVisits',  d.sessions ?? d.visits ?? '—', 'mVisitsDelta', d.sessionsDelta, 'vs last week');
+    setMetric('mCvr',     d.activeCarts ?? '—',          'mCvrDelta',    null,             'right now');
+    setMetric('mOrders',  d.orders ?? '—',               'mOrdersDelta', d.ordersDelta,   'vs last period');
     setMetric('mRevenue', d.revenue ? '$' + d.revenue.toLocaleString('en-AU', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—', 'mRevenueDelta', d.revenueDelta, 'vs last period');
-    setMetric('mVisits',  d.sessions ?? d.visits ?? '—',  'mVisitsDelta',  d.sessionsDelta,  'vs last week');
-    setMetric('mOrders',  d.orders   ?? '—',              'mOrdersDelta',  d.ordersDelta,    'vs last period');
-    setMetric('mCvr',     d.cvr ? d.cvr.toFixed(1) + '%' : '—', 'mCvrDelta', null, 'site avg');
     updateTimestamp();
   } catch(e) {
-    // Worker not connected or endpoint not implemented yet
     ['mRevenue','mVisits','mOrders','mCvr'].forEach(id => {
       document.getElementById(id).textContent = '—';
     });
