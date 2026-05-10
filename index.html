@@ -866,6 +866,66 @@
     </div>
   </div>
 
+  <!-- MARCUS — EXPENSE TRACKER -->
+  <div style="margin-top:28px">
+    <div class="section-label">Marcus — Business Expenses</div>
+    <div class="activity-feed">
+      <div class="activity-header">
+        <span class="activity-title">💸 Money Spent on the Business</span>
+        <div style="display:flex;gap:10px;align-items:center">
+          <span style="font-size:11px;color:var(--gold);font-family:'Space Mono',monospace;font-weight:700" id="expenseTotal">$0.00 AUD</span>
+          <button class="quick-btn" onclick="toggleExpenseForm()" style="padding:5px 12px;font-size:10px">+ Add Expense</button>
+        </div>
+      </div>
+
+      <!-- ADD FORM -->
+      <div id="expenseForm" style="display:none;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--surface2)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div>
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;font-family:'Space Mono',monospace">AMOUNT (AUD)</div>
+            <input id="expAmount" type="number" step="0.01" placeholder="0.00" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;outline:none">
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;font-family:'Space Mono',monospace">DATE</div>
+            <input id="expDate" type="date" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;outline:none">
+          </div>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;font-family:'Space Mono',monospace">CATEGORY</div>
+          <select id="expCategory" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none">
+            <option>Stock / Inventory</option>
+            <option>Marketing / Ads</option>
+            <option>Shopify / Platform</option>
+            <option>Shipping / Postage</option>
+            <option>Design / Creative</option>
+            <option>Equipment / Tools</option>
+            <option>Domain / Hosting</option>
+            <option>Packaging</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;font-family:'Space Mono',monospace">DESCRIPTION</div>
+          <input id="expDesc" type="text" placeholder="e.g. Shopify monthly plan" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none">
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="quick-btn" onclick="submitExpense()" style="padding:7px 16px;color:var(--teal);border-color:rgba(52,211,153,0.3)">✅ Save Expense</button>
+          <button class="quick-btn" onclick="toggleExpenseForm()" style="padding:7px 12px">Cancel</button>
+        </div>
+      </div>
+
+      <!-- CATEGORY SUMMARY -->
+      <div id="expenseSummary" style="padding:12px 20px;border-bottom:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap">
+        <div style="color:var(--text-dim);font-size:11px">No expenses logged yet</div>
+      </div>
+
+      <!-- EXPENSE LIST -->
+      <div id="expenseList" style="max-height:320px;overflow-y:auto">
+        <div style="padding:20px;text-align:center;color:var(--text-dim);font-size:12px">Add your first expense above 👆</div>
+      </div>
+    </div>
+  </div>
+
   <!-- NEWSLETTER AGENT (Grace) -->
   <div style="margin-top:28px">
     <div class="section-label">Grace — Newsletter Agent</div>
@@ -1310,6 +1370,120 @@ function copyCaption(sha) {
     setTimeout(() => btn.textContent = '📋 Copy', 2000);
   });
 }
+
+// ── MARCUS — EXPENSE TRACKER ──
+const CATEGORIES = {
+  'Stock / Inventory':    '#f0c060',
+  'Marketing / Ads':      '#8b5cf6',
+  'Shopify / Platform':   '#34d399',
+  'Shipping / Postage':   '#60a5fa',
+  'Design / Creative':    '#f472b6',
+  'Equipment / Tools':    '#fb923c',
+  'Domain / Hosting':     '#a78bfa',
+  'Packaging':            '#4ade80',
+  'Other':                '#94a3b8',
+};
+
+let allExpenses = [];
+
+async function loadExpenses() {
+  try {
+    const res = await fetch(`${WORKER}/api/expenses`);
+    allExpenses = await res.json();
+    renderExpenses();
+  } catch(e) {}
+}
+
+function renderExpenses() {
+  const total = allExpenses.reduce((s, e) => s + e.amount, 0);
+  document.getElementById('expenseTotal').textContent = `$${total.toFixed(2)} AUD total`;
+
+  // Category summary
+  const cats = {};
+  allExpenses.forEach(e => { cats[e.category] = (cats[e.category] || 0) + e.amount; });
+  const summaryEl = document.getElementById('expenseSummary');
+  if (!Object.keys(cats).length) {
+    summaryEl.innerHTML = '<div style="color:var(--text-dim);font-size:11px">No expenses logged yet</div>';
+  } else {
+    summaryEl.innerHTML = Object.entries(cats)
+      .sort((a,b) => b[1]-a[1])
+      .map(([cat, amt]) => `
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 10px;display:flex;align-items:center;gap:6px">
+          <div style="width:6px;height:6px;border-radius:50%;background:${CATEGORIES[cat]||'#94a3b8'};flex-shrink:0"></div>
+          <span style="font-size:10px;color:var(--text-muted)">${cat}</span>
+          <span style="font-size:10px;color:var(--gold);font-family:'Space Mono',monospace;font-weight:700">$${amt.toFixed(2)}</span>
+        </div>
+      `).join('');
+  }
+
+  // Expense list
+  const listEl = document.getElementById('expenseList');
+  if (!allExpenses.length) {
+    listEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:12px">Add your first expense above 👆</div>';
+    return;
+  }
+  listEl.innerHTML = allExpenses.map(e => `
+    <div style="display:flex;align-items:center;gap:12px;padding:11px 20px;border-bottom:1px solid var(--border)" id="exp-${e.id}">
+      <div style="width:8px;height:8px;border-radius:50%;background:${CATEGORIES[e.category]||'#94a3b8'};flex-shrink:0"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.description || e.category}</div>
+        <div style="font-size:10px;color:var(--text-dim);font-family:'Space Mono',monospace;margin-top:2px">${e.category} · ${e.date}</div>
+      </div>
+      <div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--gold);flex-shrink:0">$${e.amount.toFixed(2)}</div>
+      <button onclick="removeExpense('${e.id}')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;padding:2px 4px;flex-shrink:0" title="Delete">×</button>
+    </div>
+  `).join('');
+}
+
+function toggleExpenseForm() {
+  const form = document.getElementById('expenseForm');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  if (form.style.display === 'block') {
+    // Set today's date
+    document.getElementById('expDate').value = new Date().toISOString().slice(0,10);
+    document.getElementById('expAmount').focus();
+  }
+}
+
+async function submitExpense() {
+  const amount = parseFloat(document.getElementById('expAmount').value);
+  const date = document.getElementById('expDate').value;
+  const category = document.getElementById('expCategory').value;
+  const description = document.getElementById('expDesc').value.trim();
+
+  if (!amount || amount <= 0) { alert('Enter a valid amount'); return; }
+
+  try {
+    const res = await fetch(`${WORKER}/api/expenses`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount, date, category, description })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      allExpenses.unshift(data.expense);
+      renderExpenses();
+      toggleExpenseForm();
+      document.getElementById('expAmount').value = '';
+      document.getElementById('expDesc').value = '';
+    }
+  } catch(e) { alert('Failed to save. Check Worker is deployed.'); }
+}
+
+async function removeExpense(id) {
+  if (!confirm('Delete this expense?')) return;
+  try {
+    await fetch(`${WORKER}/api/expenses/delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
+    });
+    allExpenses = allExpenses.filter(e => e.id !== id);
+    renderExpenses();
+  } catch(e) {}
+}
+
+loadExpenses();
 
 // ── ECHO — MORNING BRIEF ──
 async function generateMorningBrief() {
